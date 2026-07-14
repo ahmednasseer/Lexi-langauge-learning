@@ -1,0 +1,282 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== USERS ====================
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  name              String
+  password          String?
+  avatar            String?
+  provider          String    @default("local") // local, google, apple, guest
+  providerId        String?
+  nativeLanguage    String?
+  learningLanguage  String?
+  level             String    @default("A1")
+  xp                Int       @default(0)
+  totalXp           Int       @default(0)
+  streak            Int       @default(0)
+  bestStreak        Int       @default(0)
+  dailyXp           Int       @default(0)
+  dailyGoal         Int       @default(50)
+  learningGoal      String?   // Travel, Work, Study, Conversation, Hobby
+  isPremium         Boolean   @default(false)
+  isActive          Boolean   @default(true)
+  role              String    @default("user") // user, admin
+  subscriptionId    String?
+  subscriptionEnd   DateTime?
+  lastActiveAt      DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  progress          UserProgress[]
+  chatHistory       ChatHistory[]
+  achievements      UserAchievement[]
+  learningPlan      LearningPlan[]
+  aiUsage           AiUsage[]
+  audioFiles        AudioFile[]
+  subscriptions     Subscription[]
+
+  @@index([email])
+  @@index([provider, providerId])
+  @@index([isActive])
+  @@index([role])
+}
+
+// ==================== LESSONS ====================
+model Language {
+  id          String   @id @default(cuid())
+  code        String   @unique // en, ar, fr, es, de, it
+  name        String
+  nativeName  String
+  flag        String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  lessons     Lesson[]
+}
+
+model Lesson {
+  id          String   @id @default(cuid())
+  languageId  String
+  language    Language @relation(fields: [languageId], references: [id])
+  level       String   // A1, A2, B1, B2, C1, C2
+  category    String   // Vocabulary, Grammar, Listening, Speaking
+  title       String
+  description String
+  content     Json     // Flexible content storage
+  xpReward    Int      @default(50)
+  orderIndex  Int      @default(0)
+  isPublished Boolean  @default(false)
+  audioKey    String?  // S3 key for lesson audio
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  vocabulary  Vocabulary[]
+  grammar     GrammarRule[]
+  quiz        QuizQuestion[]
+  progress    UserProgress[]
+
+  @@index([languageId, level, category])
+  @@index([isPublished])
+}
+
+model Vocabulary {
+  id                String   @id @default(cuid())
+  lessonId          String
+  lesson            Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  word              String
+  translation       String
+  pronunciation     String?
+  audioUrl          String?
+  audioKey          String?  // S3 key for word audio
+  imageUrl          String?
+  example           String
+  exampleTranslation String
+  orderIndex        Int      @default(0)
+
+  @@index([lessonId])
+}
+
+model GrammarRule {
+  id          String   @id @default(cuid())
+  lessonId    String
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  title       String
+  explanation String
+  examples    String[] // PostgreSQL array
+  tip         String?
+
+  @@index([lessonId])
+}
+
+model QuizQuestion {
+  id            String   @id @default(cuid())
+  lessonId      String
+  lesson        Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  question      String
+  correctAnswer String
+  options       String[] // PostgreSQL array
+  explanation   String?
+  type          String   @default("multiple_choice")
+  orderIndex    Int      @default(0)
+
+  @@index([lessonId])
+}
+
+// ==================== USER PROGRESS ====================
+model UserProgress {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId    String
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  score       Float
+  completed   Boolean  @default(false)
+  timeSpent   Int      @default(0) // seconds
+  xpEarned    Int      @default(0)
+  completedAt DateTime @default(now())
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+  @@index([lessonId])
+}
+
+// ==================== AI CHAT ====================
+model ChatHistory {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message     String
+  aiResponse  String
+  correction  String?
+  explanation String?
+  tokensUsed  Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
+
+// ==================== AI USAGE TRACKING ====================
+model AiUsage {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date          DateTime @db.Date
+  messagesCount Int      @default(0)
+  tokensUsed    Int      @default(0)
+  model         String   @default("gpt-4o-mini")
+  createdAt     DateTime @default(now())
+
+  @@unique([userId, date])
+  @@index([userId, date])
+  @@index([date])
+}
+
+// ==================== AUDIO FILES ====================
+model AudioFile {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  key           String   // S3/R2 key
+  url           String   // Public URL
+  fileName      String
+  fileSize      Int      // bytes
+  format        String   // mp3, wav, ogg
+  duration      Float?   // seconds
+  language      String
+  level         String?
+  category      String   // tts, pronunciation, lesson
+  transcription String?  // For pronunciation scoring
+  score         Float?   // Pronunciation score 0-100
+  createdAt     DateTime @default(now())
+
+  @@index([userId, language])
+  @@index([key])
+}
+
+// ==================== ACHIEVEMENTS ====================
+model Achievement {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  icon        String
+  type        String   // lessons, words, streak, quiz, pronunciation, chat, days
+  targetValue Int
+  xpReward    Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  users       UserAchievement[]
+}
+
+model UserAchievement {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  unlockedAt    DateTime    @default(now())
+
+  @@unique([userId, achievementId])
+  @@index([userId])
+}
+
+// ==================== LEARNING PLAN ====================
+model LearningPlan {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  planData    Json     // AI-generated plan
+  startDate   DateTime @default(now())
+  endDate     DateTime?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  @@index([userId, isActive])
+}
+
+// ==================== SUBSCRIPTIONS ====================
+model Subscription {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planId        String   // monthly, yearly
+  status        String   @default("active") // active, cancelled, expired
+  provider      String   // stripe, revenuecat
+  externalId    String?
+  startDate     DateTime @default(now())
+  endDate       DateTime
+  cancelledAt   DateTime?
+  createdAt     DateTime @default(now())
+
+  @@index([userId])
+  @@index([status])
+  @@index([externalId])
+}
+
+// ==================== PAYMENT TRANSACTIONS ====================
+model PaymentTransaction {
+  id            String   @id @default(cuid())
+  userId        String
+  subscriptionId String
+  amount        Int      // cents
+  currency      String   @default("usd")
+  status        String   // pending, completed, failed, refunded
+  provider      String   // stripe
+  externalId    String?  // Stripe payment intent ID
+  metadata      Json?
+  createdAt     DateTime @default(now())
+
+  @@index([userId])
+  @@index([externalId])
+  @@index([createdAt])
+}

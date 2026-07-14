@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "618826760391",
+    "project_id": "lexi-33b14",
+    "storage_bucket": "lexi-33b14.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618826760391:android:bf3bcd70fb9d69f9ca3ee2",
+        "android_client_info": {
+          "package_name": "com.lexi.learning"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhEE1JVFmRRFHRqILNoV1tLy5L2ralNIc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

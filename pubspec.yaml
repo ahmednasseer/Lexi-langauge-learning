@@ -1,0 +1,42 @@
+name: lexi
+description: "Lexi - AI-Powered Language Learning Platform"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  google_fonts: ^8.1.0
+  flutter_animate: ^4.5.2
+  percent_indicator: ^4.2.5
+  speech_to_text: ^7.4.0
+  flutter_tts: ^4.2.5
+  shared_preferences: ^2.5.5
+  http: ^1.6.0
+  shimmer: ^3.0.0
+  intl: ^0.20.2
+  path_provider: ^2.1.6
+
+  # Firebase
+  firebase_core: ^3.8.1
+  firebase_auth: ^5.4.1
+  google_sign_in: ^6.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/icons/
