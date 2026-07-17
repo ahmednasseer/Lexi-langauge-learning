@@ -25,9 +25,11 @@ class SpeechService {
         _lastRecognizedWords = result.recognizedWords;
         onResult(result.recognizedWords);
       },
-      listenFor: const Duration(seconds: 5),
-      pauseFor: const Duration(seconds: 3),
-      localeId: localeId,
+      listenOptions: stt.SpeechListenOptions(
+        listenFor: const Duration(seconds: 5),
+        pauseFor: const Duration(seconds: 3),
+        localeId: localeId,
+      ),
     );
     _speech.statusListener = (status) {
       if (status == 'done' || status == 'notListening') onDone();

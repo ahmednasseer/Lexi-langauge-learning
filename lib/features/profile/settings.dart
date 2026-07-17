@@ -18,7 +18,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Settings', style: GoogleFonts.poppins(fontWeight: FontWeight.bold))),
+      backgroundColor: const Color(0xFF0A0E21),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF1A1E36),
+        title: Text('Settings', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, color: Colors.white)),
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
       body: ListView(padding: const EdgeInsets.all(20), children: [
         _section('Appearance', [
           _switchTile(Icons.dark_mode, 'Dark Mode', _darkMode, (v) => setState(() => _darkMode = v)),
@@ -51,25 +56,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _section(String title, List<Widget> children) {
-    return Container(decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)]), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    return Container(decoration: BoxDecoration(color: const Color(0xFF1A1E36), borderRadius: BorderRadius.circular(16), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 10)]), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(padding: const EdgeInsets.fromLTRB(16, 16, 16, 8), child: Text(title, style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.primary))),
       ...children,
     ]));
   }
 
   Widget _switchTile(IconData icon, String title, bool value, ValueChanged<bool> onChanged) {
-    return ListTile(leading: Icon(icon, color: AppColors.primary), title: Text(title, style: GoogleFonts.poppins(fontSize: 14)), trailing: Switch(value: value, onChanged: onChanged, activeThumbColor: AppColors.primary));
+    return ListTile(leading: Icon(icon, color: AppColors.primary), title: Text(title, style: GoogleFonts.poppins(fontSize: 14, color: Colors.white)), trailing: Switch(value: value, onChanged: onChanged, activeThumbColor: AppColors.primary));
   }
 
   Widget _dropdownTile(IconData icon, String title, String value, List<String> items, ValueChanged<String?> onChanged) {
-    return ListTile(leading: Icon(icon, color: AppColors.primary), title: Text(title, style: GoogleFonts.poppins(fontSize: 14)), trailing: DropdownButton<String>(value: value, underline: const SizedBox(), items: items.map((i) => DropdownMenuItem(value: i, child: Text(i))).toList(), onChanged: onChanged));
+    return ListTile(leading: Icon(icon, color: AppColors.primary), title: Text(title, style: GoogleFonts.poppins(fontSize: 14, color: Colors.white)), trailing: DropdownButton<String>(value: value, underline: const SizedBox(), dropdownColor: const Color(0xFF1A1E36), items: items.map((i) => DropdownMenuItem(value: i, child: Text(i, style: const TextStyle(color: Colors.white)))).toList(), onChanged: onChanged));
   }
 
   Widget _sliderTile(IconData icon, String title, int value, ValueChanged<double> onChanged) {
-    return ListTile(leading: Icon(icon, color: AppColors.primary), title: Text('$title: $value XP', style: GoogleFonts.poppins(fontSize: 14)), trailing: SizedBox(width: 150, child: Slider(value: value.toDouble(), min: 10, max: 200, activeColor: AppColors.primary, onChanged: onChanged)));
+    return ListTile(leading: Icon(icon, color: AppColors.primary), title: Text('$title: $value XP', style: GoogleFonts.poppins(fontSize: 14, color: Colors.white)), trailing: SizedBox(width: 150, child: Slider(value: value.toDouble(), min: 10, max: 200, activeColor: AppColors.primary, onChanged: onChanged)));
   }
 
   Widget _navTile(IconData icon, String title, VoidCallback onTap, {Color? color}) {
-    return ListTile(leading: Icon(icon, color: color ?? AppColors.primary), title: Text(title, style: GoogleFonts.poppins(fontSize: 14, color: color)), trailing: Icon(Icons.arrow_forward_ios, size: 16, color: color ?? Colors.grey), onTap: onTap);
+    return ListTile(leading: Icon(icon, color: color ?? AppColors.primary), title: Text(title, style: GoogleFonts.poppins(fontSize: 14, color: color ?? Colors.white)), trailing: Icon(Icons.arrow_forward_ios, size: 16, color: color ?? Colors.white54), onTap: onTap);
   }
 }

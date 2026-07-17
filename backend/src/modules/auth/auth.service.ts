@@ -77,7 +77,12 @@ export class AuthService {
   }
 
   private generateToken(user: any) {
-    const payload = { sub: user.id, email: user.email };
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      isPremium: user.isPremium ?? false,
+      role: user.role ?? 'user',
+    };
     return {
       accessToken: this.jwt.sign(payload),
       user: {

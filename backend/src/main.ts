@@ -15,16 +15,21 @@ async function bootstrap() {
   // ==================== SECURITY ====================
   app.use(helmet());
   app.setGlobalPrefix('api/v1');
+  app.set('trust proxy', 1);
 
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
     forbidNonWhitelisted: true,
     transform: true,
-    forbidNonWhitelisted: true,
   }));
 
+  const corsOrigin = process.env.CORS_ORIGIN;
+  const allowedOrigins = (corsOrigin && corsOrigin !== '*')
+    ? corsOrigin.split(',').map((o) => o.trim())
+    : ['http://localhost:3000', 'http://10.0.2.2:3000'];
+
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: allowedOrigins,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],

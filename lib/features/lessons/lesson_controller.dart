@@ -11,11 +11,15 @@ class LessonController extends ChangeNotifier {
   String _selectedLevel = 'A1';
   String _selectedCategory = 'Vocabulary';
   bool _isLoading = false;
+  bool _isOffline = false;
+  String? _error;
 
   List<LessonModel> get lessons => _lessons;
   String get selectedLevel => _selectedLevel;
   String get selectedCategory => _selectedCategory;
   bool get isLoading => _isLoading;
+  bool get isOffline => _isOffline;
+  String? get error => _error;
 
   List<LessonModel> get filtered =>
       _lessons.where((l) => l.level == _selectedLevel && l.category == _selectedCategory).toList();
@@ -30,16 +34,36 @@ class LessonController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void loadLessons(String language) {
+  Future<void> loadLessons(String language) async {
     _isLoading = true;
+    _error = null;
     notifyListeners();
-    _lessons = _repository.getAllLessons(language);
+
+    _isOffline = false;
+    try {
+      _lessons = await _repository.getAllLessons(language);
+    } catch (e) {
+      _error = 'Failed to load lessons.';
+    }
     _isLoading = false;
     notifyListeners();
   }
 
-  void completeLesson(String lessonId, double score) {
-    _repository.completeLesson(lessonId, score);
+  Future<void> loadLessonsByLevelCategory(String level, String category, String language) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+    try {
+      _lessons = await _repository.getLessons(level, category, language);
+    } catch (e) {
+      _error = 'Failed to load lessons.';
+    }
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> completeLesson(String lessonId, double score, int timeSpent) async {
+    await _repository.completeLesson(lessonId, score, timeSpent);
     final i = _lessons.indexWhere((l) => l.id == lessonId);
     if (i != -1) {
       _lessons[i] = _lessons[i].copyWith(isCompleted: true, progress: score);

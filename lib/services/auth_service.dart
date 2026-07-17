@@ -1,13 +1,19 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
+import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../shared/models/user_model.dart';
 import 'api_service.dart';
+import 'analytics_service.dart';
 
 class AuthService {
   static final AuthService instance = AuthService._();
   AuthService._();
 
   final ApiService _api = ApiService();
+  final fb.FirebaseAuth _firebaseAuth = fb.FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
   UserModel? _currentUser;
   bool _isGuest = false;
   bool _firebaseAvailable = false;
@@ -28,65 +34,161 @@ class AuthService {
         await prefs.remove('current_user');
       }
     }
-  }
+    _firebaseAvailable = true;
 
-  void setFirebaseAvailable(bool available) {
-    _firebaseAvailable = available;
+    _api.onUnauthorized = _handleUnauthorizedRefresh;
+
+    _firebaseAuth.authStateChanges().listen((fb.User? user) async {
+      if (user != null && _currentUser != null && user.uid == _currentUser!.id) {
+        try {
+          final token = await user.getIdToken();
+          if (token != null) _api.setToken(token);
+        } catch (e) {
+          debugPrint('Token refresh failed: $e');
+        }
+      }
+    });
   }
 
   Future<bool> signInWithEmail(String email, String password) async {
     try {
-      if (_firebaseAvailable) {
-        // Try Firebase Auth
-        // TODO: Implement firebase_auth
-      }
-      // Fallback to API
-      final result = await _api.login(email, password);
-      _currentUser = UserModel.fromJson(result['user']);
-      await _saveUser();
-      _api.setToken(result['accessToken']);
-      return true;
-    } catch (e) {
-      // Offline fallback - create local user
-      _currentUser = UserModel(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        name: email.split('@').first,
+      if (!_firebaseAvailable) return false;
+      final credential = await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
-        level: 'A1',
-        xp: 0,
-        streak: 0,
-        createdAt: DateTime.now(),
+        password: password,
       );
-      _isGuest = false;
-      await _saveUser();
-      return true;
+      final fbUser = credential.user;
+      if (fbUser != null) {
+        _currentUser = UserModel(
+          id: fbUser.uid,
+          name: fbUser.displayName ?? email.split('@').first,
+          email: fbUser.email ?? email,
+          level: 'A1',
+          xp: 0,
+          streak: 0,
+          createdAt: DateTime.now(),
+        );
+        await _syncToken(fbUser);
+        await _saveUser();
+        AnalyticsService.instance.logLogin(method: 'email');
+        return true;
+      }
+      return false;
+    } on fb.FirebaseAuthException catch (e) {
+      debugPrint('Firebase Auth error: ${e.message}');
+      return false;
+    } catch (e) {
+      debugPrint('Sign in error: $e');
+      return false;
     }
   }
 
   Future<bool> signUp(String name, String email, String password) async {
     try {
-      if (_firebaseAvailable) {
-        // TODO: Implement firebase_auth
-      }
-      final result = await _api.register(name, email, password);
-      _currentUser = UserModel.fromJson(result['user']);
-      await _saveUser();
-      _api.setToken(result['accessToken']);
-      return true;
-    } catch (e) {
-      // Offline fallback
-      _currentUser = UserModel(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        name: name,
+      if (!_firebaseAvailable) return false;
+      final credential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
-        level: 'A1',
-        xp: 0,
-        streak: 0,
-        createdAt: DateTime.now(),
+        password: password,
       );
-      _isGuest = false;
-      await _saveUser();
-      return true;
+      final fbUser = credential.user;
+      if (fbUser != null) {
+        await fbUser.updateDisplayName(name);
+        _currentUser = UserModel(
+          id: fbUser.uid,
+          name: name,
+          email: fbUser.email ?? email,
+          level: 'A1',
+          xp: 0,
+          streak: 0,
+          createdAt: DateTime.now(),
+        );
+        await _syncToken(fbUser);
+        await _saveUser();
+        AnalyticsService.instance.logLogin(method: 'email_signup');
+        return true;
+      }
+      return false;
+    } on fb.FirebaseAuthException catch (e) {
+      debugPrint('Firebase Auth error: ${e.message}');
+      return false;
+    } catch (e) {
+      debugPrint('Sign up error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> signInWithGoogle() async {
+    try {
+      if (!_firebaseAvailable) return false;
+
+      final googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) return false;
+
+      final googleAuth = await googleUser.authentication;
+      final credential = fb.GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential = await _firebaseAuth.signInWithCredential(credential);
+      final fbUser = userCredential.user;
+      if (fbUser != null) {
+        _currentUser = UserModel(
+          id: fbUser.uid,
+          name: fbUser.displayName ?? 'User',
+          email: fbUser.email ?? '',
+          level: 'A1',
+          xp: 0,
+          streak: 0,
+          createdAt: DateTime.now(),
+        );
+        await _syncToken(fbUser);
+        await _saveUser();
+        AnalyticsService.instance.logLogin(method: 'google');
+        return true;
+      }
+      return false;
+    } on fb.FirebaseAuthException catch (e) {
+      debugPrint('Google sign-in Firebase error: ${e.message}');
+      return false;
+    } catch (e) {
+      debugPrint('Google sign-in error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> signInWithApple() async {
+    try {
+      if (!_firebaseAvailable) return false;
+
+      final appleProvider = fb.AppleAuthProvider()
+        ..addScope('email')
+        ..addScope('name');
+
+      final userCredential = await _firebaseAuth.signInWithProvider(appleProvider);
+      final fbUser = userCredential.user;
+      if (fbUser != null) {
+        _currentUser = UserModel(
+          id: fbUser.uid,
+          name: fbUser.displayName ?? 'User',
+          email: fbUser.email ?? '',
+          level: 'A1',
+          xp: 0,
+          streak: 0,
+          createdAt: DateTime.now(),
+        );
+        await _syncToken(fbUser);
+        await _saveUser();
+        AnalyticsService.instance.logLogin(method: 'apple');
+        return true;
+      }
+      return false;
+    } on fb.FirebaseAuthException catch (e) {
+      debugPrint('Apple sign-in Firebase error: ${e.message}');
+      return false;
+    } catch (e) {
+      debugPrint('Apple sign-in error: $e');
+      return false;
     }
   }
 
@@ -104,9 +206,18 @@ class AuthService {
     await _saveUser();
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('is_guest', true);
+    AnalyticsService.instance.logLogin(method: 'guest');
   }
 
   Future<void> signOut() async {
+    try {
+      if (_firebaseAvailable) {
+        await _googleSignIn.signOut();
+        await _firebaseAuth.signOut();
+      }
+    } catch (e) {
+      debugPrint('Sign out error: $e');
+    }
     _currentUser = null;
     _isGuest = false;
     _api.clearToken();
@@ -114,6 +225,19 @@ class AuthService {
     await prefs.remove('current_user');
     await prefs.remove('auth_token');
     await prefs.remove('is_guest');
+  }
+
+  Future<void> _syncToken(fb.User fbUser) async {
+    try {
+      final token = await fbUser.getIdToken();
+      if (token != null) {
+        _api.setToken(token);
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('auth_token', token);
+      }
+    } catch (e) {
+      debugPrint('Token sync failed: $e');
+    }
   }
 
   Future<void> updateProfile({String? name, String? level, int? xp}) async {
@@ -142,6 +266,40 @@ class AuthService {
   Future<bool> getOnboarded() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('onboarded') ?? false;
+  }
+
+  Future<void> refreshIdToken() async {
+    final fbUser = _firebaseAuth.currentUser;
+    if (fbUser != null) {
+      try {
+        final token = await fbUser.getIdToken(true);
+        if (token != null) _api.setToken(token);
+      } catch (e) {
+        debugPrint('Token refresh failed: $e');
+      }
+    }
+  }
+
+  /// Called by ApiService on HTTP 401. Refreshes the Firebase ID token and
+  /// returns true if a fresh token was obtained (so the request can be retried).
+  Future<bool> _handleUnauthorizedRefresh() async {
+    if (!_firebaseAvailable) return false;
+    final fbUser = _firebaseAuth.currentUser;
+    if (fbUser == null) {
+      _api.clearToken();
+      return false;
+    }
+    try {
+      final token = await fbUser.getIdToken(true);
+      if (token != null) {
+        _api.setToken(token);
+        return true;
+      }
+    } catch (e) {
+      debugPrint('Token refresh on 401 failed: $e');
+    }
+    _api.clearToken();
+    return false;
   }
 
   Future<void> _saveUser() async {

@@ -143,7 +143,7 @@ class _AiTutorScreenState extends State<AiTutorScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 2))],
       ),
       child: Row(children: [
@@ -204,7 +204,7 @@ class _AiTutorScreenState extends State<AiTutorScreen> {
               width: 60,
               child: LinearProgressIndicator(
                 value: percentage,
-                backgroundColor: Colors.grey.shade300,
+                backgroundColor: AppColors.border,
                 valueColor: AlwaysStoppedAnimation(
                   percentage > 0.3 ? AppColors.primary : AppColors.error,
                 ),
@@ -229,7 +229,7 @@ class _AiTutorScreenState extends State<AiTutorScreen> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 gradient: isUser ? AppColors.primaryGradient : null,
-                color: isUser ? null : Colors.white,
+                color: isUser ? null : AppColors.surface,
                 borderRadius: BorderRadius.circular(20).copyWith(
                   bottomRight: isUser ? const Radius.circular(4) : null,
                   bottomLeft: !isUser ? const Radius.circular(4) : null,
@@ -238,7 +238,7 @@ class _AiTutorScreenState extends State<AiTutorScreen> {
               ),
               child: Text(
                 m.content,
-                style: GoogleFonts.poppins(fontSize: 14, color: isUser ? Colors.white : Colors.black87, height: 1.5),
+                style: GoogleFonts.poppins(fontSize: 14, color: isUser ? Colors.white : AppColors.textPrimary, height: 1.5),
               ),
             ),
             const SizedBox(height: 4),
@@ -259,7 +259,7 @@ class _AiTutorScreenState extends State<AiTutorScreen> {
         margin: const EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(20),
           boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)],
         ),
@@ -284,13 +284,13 @@ class _AiTutorScreenState extends State<AiTutorScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -2))],
+      color: AppColors.surface,
+      boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -2))],
       ),
       child: Row(children: [
         Expanded(
           child: Container(
-            decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(24)),
+            decoration: BoxDecoration(color: AppColors.surfaceLight, borderRadius: BorderRadius.circular(24)),
             child: TextField(
               controller: _msgController,
               enabled: _ai.canSendMessages,
@@ -299,7 +299,7 @@ class _AiTutorScreenState extends State<AiTutorScreen> {
                 hintStyle: GoogleFonts.poppins(color: Colors.grey.shade500),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(24), borderSide: BorderSide.none),
                 filled: true,
-                fillColor: Colors.grey.shade100,
+                fillColor: AppColors.surfaceLight,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               ),
               onSubmitted: (_) => _send(),

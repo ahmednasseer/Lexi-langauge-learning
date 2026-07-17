@@ -3,6 +3,7 @@ import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { PaymentsService } from './payments.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Request } from 'express';
+import { CheckoutDto } from './dto/checkout.dto';
 
 @ApiTags('Payments')
 @Controller('payments')
@@ -13,7 +14,7 @@ export class PaymentsController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create checkout session' })
-  async createCheckout(@Req() req, @Body() body: { planId: string }) {
+  async createCheckout(@Req() req, @Body() body: CheckoutDto) {
     return this.paymentsService.createCheckoutSession(req.user.sub, body.planId);
   }
 

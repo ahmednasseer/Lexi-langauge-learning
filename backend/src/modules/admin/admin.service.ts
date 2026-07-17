@@ -62,7 +62,7 @@ export class AdminService {
         orderBy: { createdAt: 'desc' },
         select: {
           id: true, name: true, email: true, isPremium: true,
-          createdAt: true, lastLoginAt: true,
+          createdAt: true, lastActiveAt: true,
         },
       }),
       this.prisma.user.count({ where }),

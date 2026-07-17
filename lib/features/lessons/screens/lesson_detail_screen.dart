@@ -3,7 +3,10 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../services/auth_service.dart';
+import '../../../services/analytics_service.dart';
 import '../models/lesson_model.dart';
+import '../lesson_repository.dart';
 
 class LessonDetailScreen extends StatefulWidget {
   final LessonModel lesson;
@@ -21,12 +24,14 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> with SingleTick
   String? _answer;
   bool _showExplanation = false;
   final FlutterTts _tts = FlutterTts();
+  final DateTime _startTime = DateTime.now();
 
   @override
   void initState() {
     super.initState();
     _tab = TabController(length: 3, vsync: this);
     _initTts();
+    AnalyticsService.instance.logLessonStart(widget.lesson.id, level: widget.lesson.level);
   }
 
   @override
@@ -50,16 +55,17 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> with SingleTick
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF0A0E21),
       body: SafeArea(
         child: Column(children: [
           Container(
             padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(color: Colors.white, boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 2))]),
+            decoration: BoxDecoration(color: const Color(0xFF1A1E36), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 2))]),
             child: Column(children: [
               Row(children: [
-                IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_ios)),
+                IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
                 Expanded(child: Column(children: [
-                  Text(widget.lesson.title, style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(widget.lesson.title, style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
                   Text('${widget.lesson.level} • German', style: GoogleFonts.poppins(fontSize: 14, color: AppColors.primary)),
                 ])),
                 Container(
@@ -72,7 +78,7 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> with SingleTick
                 ),
               ]),
               const SizedBox(height: 16),
-              TabBar(controller: _tab, labelColor: AppColors.primary, unselectedLabelColor: Colors.grey, indicatorColor: AppColors.primary, tabs: const [Tab(text: 'Vocabulary'), Tab(text: 'Grammar'), Tab(text: 'Quiz')]),
+              TabBar(controller: _tab, labelColor: AppColors.primary, unselectedLabelColor: Colors.white54, indicatorColor: AppColors.primary, tabs: const [Tab(text: 'Vocabulary'), Tab(text: 'Grammar'), Tab(text: 'Quiz')]),
             ]),
           ),
           Expanded(child: TabBarView(controller: _tab, children: [_vocabTab(), _grammarTab(), _quizTab()])),
@@ -97,11 +103,11 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> with SingleTick
         return Container(
           margin: const EdgeInsets.only(bottom: 16),
           padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)]),
+          decoration: BoxDecoration(color: const Color(0xFF1A1E36), borderRadius: BorderRadius.circular(20), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 10)]),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(v.word, style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold)),
+                Text(v.word, style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
                 Text(v.translation, style: GoogleFonts.poppins(fontSize: 16, color: AppColors.primary, fontWeight: FontWeight.w500)),
               ])),
               IconButton(
@@ -145,11 +151,11 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> with SingleTick
         return Container(
           margin: const EdgeInsets.only(bottom: 16),
           padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)]),
+          decoration: BoxDecoration(color: const Color(0xFF1A1E36), borderRadius: BorderRadius.circular(20), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 10)]),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(g.title, style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(g.title, style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
             const SizedBox(height: 12),
-            Text(g.explanation, style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey.shade700, height: 1.5)),
+            Text(g.explanation, style: GoogleFonts.poppins(fontSize: 14, color: Colors.white70, height: 1.5)),
             const SizedBox(height: 16),
             ...g.examples.map((e) => Container(
               margin: const EdgeInsets.only(bottom: 8),
@@ -189,12 +195,12 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> with SingleTick
     }
     if (_quizDone) return _quizResult();
     final q = widget.lesson.quiz[_quizIdx];
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         LinearProgressIndicator(value: (_quizIdx + 1) / widget.lesson.quiz.length, backgroundColor: AppColors.primary.withValues(alpha: 0.1), valueColor: const AlwaysStoppedAnimation(AppColors.primary)),
         const SizedBox(height: 16),
-        Text('Question ${_quizIdx + 1} of ${widget.lesson.quiz.length}', style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey.shade600)),
+        Text('Question ${_quizIdx + 1} of ${widget.lesson.quiz.length}', style: GoogleFonts.poppins(fontSize: 14, color: Colors.white54)),
         const SizedBox(height: 24),
         Container(
           width: double.infinity,
@@ -215,15 +221,15 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> with SingleTick
             child: Container(
               margin: const EdgeInsets.only(bottom: 12),
               padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(color: bg ?? Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: bd ?? Colors.grey.shade200, width: 2)),
+              decoration: BoxDecoration(color: bg ?? const Color(0xFF1A1E36), borderRadius: BorderRadius.circular(16), border: Border.all(color: bd ?? Colors.white24, width: 2)),
               child: Row(children: [
                 Container(
                   width: 32, height: 32,
-                  decoration: BoxDecoration(color: isSel ? AppColors.primary : Colors.grey.shade100, shape: BoxShape.circle),
-                  child: Center(child: Text(String.fromCharCode(65 + q.options.indexOf(o)), style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600, color: isSel ? Colors.white : Colors.grey.shade600))),
+                  decoration: BoxDecoration(color: isSel ? AppColors.primary : Colors.white12, shape: BoxShape.circle),
+                  child: Center(child: Text(String.fromCharCode(65 + q.options.indexOf(o)), style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600, color: isSel ? Colors.white : Colors.white70))),
                 ),
                 const SizedBox(width: 16),
-                Expanded(child: Text(o, style: GoogleFonts.poppins(fontSize: 16))),
+                Expanded(child: Text(o, style: GoogleFonts.poppins(fontSize: 16, color: Colors.white))),
                 if (_showExplanation && isCorrect) const Icon(Icons.check_circle, color: AppColors.success),
                 if (_showExplanation && isSel && !isCorrect) const Icon(Icons.cancel, color: AppColors.error),
               ]),
@@ -257,6 +263,27 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> with SingleTick
       setState(() { _quizIdx++; _answer = null; _showExplanation = false; });
     } else {
       setState(() => _quizDone = true);
+      _reportCompletion();
+    }
+  }
+
+  Future<void> _reportCompletion() async {
+    final pct = (widget.lesson.quiz.isNotEmpty)
+        ? (_score / widget.lesson.quiz.length * 100).toInt()
+        : 100;
+    final score = pct / 100.0;
+    final timeSpent = DateTime.now().difference(_startTime).inSeconds;
+
+    try {
+      await LessonRepository().completeLesson(widget.lesson.id, score, timeSpent);
+      final xp = widget.lesson.xpReward;
+      await AuthService.instance.addXp(xp);
+      AnalyticsService.instance.logLessonComplete(widget.lesson.id, score, xpEarned: xp);
+    } catch (_) {
+      // Local-only fallback
+    }
+    if (mounted) {
+      AnalyticsService.instance.logXpEarned(widget.lesson.xpReward, source: 'lesson');
     }
   }
 
@@ -264,7 +291,7 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> with SingleTick
     final pct = (_score / widget.lesson.quiz.length * 100).toInt();
     final pass = pct >= 70;
     return Center(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Container(
@@ -277,7 +304,7 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> with SingleTick
           const SizedBox(height: 16),
           Text('$pct%', style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold, color: pass ? AppColors.success : AppColors.error)),
           const SizedBox(height: 8),
-          Text('$_score out of ${widget.lesson.quiz.length}', style: GoogleFonts.poppins(fontSize: 16, color: Colors.grey.shade600)),
+          Text('$_score out of ${widget.lesson.quiz.length}', style: GoogleFonts.poppins(fontSize: 16, color: Colors.white54)),
           const SizedBox(height: 32),
           if (pass) Text('+${widget.lesson.xpReward} XP', style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondary)),
           const SizedBox(height: 32),

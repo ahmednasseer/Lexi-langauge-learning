@@ -1,23 +1,53 @@
+import '../../services/api_service.dart';
+import '../../data/german_content.dart';
 import 'models/lesson_model.dart';
 
 class LessonRepository {
-  List<LessonModel> getLessons(String level, String category, String language) {
-    return _allLessons.where((l) => l.level == level && l.category == category && l.language == language).toList();
+  final ApiService _api = ApiService();
+
+  Future<List<LessonModel>> getLessons(String level, String category, String language) async {
+    try {
+      final result = await _api.getLessons(language.toLowerCase(), level: level, category: category);
+      if (result.isSuccess && result.data!.isNotEmpty) {
+        return result.data!.map((e) => LessonModel.fromJson(e as Map<String, dynamic>)).toList();
+      }
+    } catch (_) {}
+    // Local fallback
+    return GermanContent.getLessonsByCategory(level, category)
+        .where((l) => l.language == language)
+        .toList();
   }
 
-  List<LessonModel> getAllLessons(String language) {
-    return _allLessons.where((l) => l.language == language).toList();
+  Future<List<LessonModel>> getAllLessons(String language) async {
+    try {
+      final result = await _api.getLessons(language.toLowerCase());
+      if (result.isSuccess && result.data!.isNotEmpty) {
+        return result.data!.map((e) => LessonModel.fromJson(e as Map<String, dynamic>)).toList();
+      }
+    } catch (_) {}
+    return GermanContent.getAllLessons().where((l) => l.language == language).toList();
   }
 
-  void completeLesson(String lessonId, double score) {
-    final i = _allLessons.indexWhere((l) => l.id == lessonId);
-    if (i != -1) _allLessons[i] = _allLessons[i].copyWith(isCompleted: true, progress: score);
+  Future<LessonModel?> getLessonDetail(String lessonId, String language) async {
+    try {
+      final result = await _api.getLessonDetail(lessonId);
+      if (result.isSuccess) {
+        return LessonModel.fromJson(result.data!);
+      }
+    } catch (_) {}
+    final local = GermanContent.getAllLessons().where((l) => l.language == language);
+    try {
+      return local.firstWhere((l) => l.id == lessonId);
+    } catch (_) {
+      return null;
+    }
   }
 
-  List<LessonModel> _allLessons = [
-    LessonModel(id: '1', title: 'Greetings', description: 'Learn basic greetings', level: 'A1', language: 'English', category: 'Vocabulary', vocabulary: [], quiz: [], xpReward: 50),
-    LessonModel(id: '2', title: 'Numbers 1-10', description: 'Learn to count', level: 'A1', language: 'English', category: 'Vocabulary', vocabulary: [], quiz: [], xpReward: 50),
-    LessonModel(id: '3', title: 'Sentence Structure', description: 'Learn SVO order', level: 'A1', language: 'English', category: 'Grammar', grammar: [], quiz: [], xpReward: 75),
-    LessonModel(id: '4', title: 'Listening Practice', description: 'Improve listening skills', level: 'A1', language: 'English', category: 'Listening', quiz: [], xpReward: 60),
-  ];
+  Future<void> completeLesson(String lessonId, double score, int timeSpent) async {
+    try {
+      await _api.completeLesson(lessonId, score, timeSpent);
+    } catch (_) {
+      // Offline: track locally only
+    }
+  }
 }

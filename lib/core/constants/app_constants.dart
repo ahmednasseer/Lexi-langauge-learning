@@ -4,7 +4,7 @@ class AppConstants {
   static const String appName = 'Lexi';
   static const String appTagline = 'Learn Languages with AI';
 
-  static const String apiBaseUrl = 'https://api.lexi.com';
+  static const String apiBaseUrl = 'http://10.0.2.2:3000';
 
   static const int maxFreeAiMessages = 10;
   static const int maxFreeLessons = 5;

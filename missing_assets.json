@@ -1,0 +1,53 @@
+[
+  {
+    "category": "character_illustrations",
+    "items": [
+      { "filename": "lexi_teacher_happy.webp", "folder": "assets/images/characters/", "size": "1024x1024", "format": "WebP", "transparent": true, "usage": "Home/Lessons mascot" },
+      { "filename": "lexi_teacher_thinking.webp", "folder": "assets/images/characters/", "size": "1024x1024", "format": "WebP", "transparent": true, "usage": "AI Coach" },
+      { "filename": "lexi_teacher_celebrate.webp", "folder": "assets/images/characters/", "size": "1024x1024", "format": "WebP", "transparent": true, "usage": "Success states" }
+    ]
+  },
+  {
+    "category": "frames",
+    "items": [
+      { "filename": "frame_gold.webp", "folder": "assets/images/frames/", "size": "512x512", "format": "WebP", "transparent": true, "usage": "Profile frame (gem store)" },
+      { "filename": "frame_neon.webp", "folder": "assets/images/frames/", "size": "512x512", "format": "WebP", "transparent": true, "usage": "Profile frame (premium)" }
+    ]
+  },
+  {
+    "category": "backgrounds",
+    "items": [
+      { "filename": "bg_cosmic.webp", "folder": "assets/images/backgrounds/", "size": "1080x1920", "format": "WebP", "usage": "Chat/profile background" },
+      { "filename": "bg_aurora.webp", "folder": "assets/images/backgrounds/", "size": "1080x1920", "format": "WebP", "usage": "Chat/profile background (premium)" }
+    ]
+  },
+  {
+    "category": "badges",
+    "items": [
+      { "filename": "badge_streak.webp", "folder": "assets/images/badges/", "size": "256x256", "format": "WebP", "transparent": true, "usage": "Achievements" },
+      { "filename": "badge_fluent.webp", "folder": "assets/images/badges/", "size": "256x256", "format": "WebP", "transparent": true, "usage": "Achievements" }
+    ]
+  },
+  {
+    "category": "empty_states",
+    "items": [
+      { "filename": "empty_friends.webp", "folder": "assets/images/empty/", "size": "400x400", "format": "WebP", "transparent": true, "usage": "Friends empty state" },
+      { "filename": "empty_inbox.webp", "folder": "assets/images/empty/", "size": "400x400", "format": "WebP", "transparent": true, "usage": "Inbox empty state" }
+    ]
+  },
+  {
+    "category": "lottie",
+    "items": [
+      { "filename": "confetti.json", "folder": "assets/lottie/", "duration": "4s", "loop": false, "usage": "Payment/level success" },
+      { "filename": "loading_spinner.json", "folder": "assets/lottie/", "duration": "1.2s", "loop": true, "usage": "Loading states" }
+    ]
+  },
+  {
+    "category": "audio",
+    "items": [
+      { "filename": "sfx_correct.mp3", "folder": "assets/audio/", "duration": "0.4s", "format": "MP3", "usage": "Quiz correct" },
+      { "filename": "sfx_wrong.mp3", "folder": "assets/audio/", "duration": "0.4s", "format": "MP3", "usage": "Quiz wrong" },
+      { "filename": "sfx_levelup.mp3", "folder": "assets/audio/", "duration": "0.8s", "format": "MP3", "usage": "Level up" }
+    ]
+  }
+]

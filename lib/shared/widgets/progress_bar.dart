@@ -23,17 +23,15 @@ class ProgressBar extends StatelessWidget {
     this.showPercentage = false,
   });
 
-  const ProgressBar.linear({super.key, required double value, this.label, this.showPercentage = true})
-      : value = value,
-        height = 8,
+  const ProgressBar.linear({super.key, required this.value, this.label, this.showPercentage = true})
+      : height = 8,
         backgroundColor = null,
         valueColor = null,
         gradient = AppColors.primaryGradient,
         borderRadius = const BorderRadius.all(Radius.circular(4));
 
-  const ProgressBar.circular({super.key, required double value})
-      : value = value,
-        height = 8,
+  const ProgressBar.circular({super.key, required this.value})
+      : height = 8,
         backgroundColor = null,
         valueColor = AppColors.primary,
         gradient = null,

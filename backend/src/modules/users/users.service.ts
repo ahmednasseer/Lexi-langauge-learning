@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
 
 @Injectable()
@@ -79,5 +79,100 @@ export class UsersService {
     if (totalXp >= 1000) return 'B1';
     if (totalXp >= 500) return 'A2';
     return 'A1';
+  }
+
+  async getAchievements(userId: string) {
+    const achievements = await this.prisma.achievement.findMany({
+      include: { users: { where: { userId } } },
+    });
+    return achievements.map((a: any) => ({
+      id: a.id,
+      title: a.title,
+      description: a.description,
+      icon: a.icon,
+      type: a.type,
+      xpReward: a.xpReward,
+      isUnlocked: a.users.length > 0,
+      unlockedAt: a.users[0]?.unlockedAt ?? null,
+    }));
+  }
+
+  async getWallet(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { gems: true, id: true },
+    });
+    if (!user) throw new NotFoundException('User not found');
+    const recentTransactions = await this.prisma.transaction.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: 'desc' },
+      take: 20,
+    });
+    return {
+      gems: user.gems,
+      transactions: recentTransactions,
+    };
+  }
+
+  async spendGems(userId: string, amount: number, description: string) {
+    if (!amount || amount <= 0) {
+      throw new BadRequestException('Amount must be greater than zero');
+    }
+
+    return this.prisma.$transaction(async (tx) => {
+      const user = await tx.user.findUnique({
+        where: { id: userId },
+        select: { gems: true },
+      });
+      if (!user) throw new NotFoundException('User not found');
+      if (user.gems < amount) {
+        throw new BadRequestException('Insufficient gems');
+      }
+
+      await tx.user.update({
+        where: { id: userId },
+        data: { gems: { decrement: amount } },
+      });
+
+      const transaction = await tx.transaction.create({
+        data: {
+          userId,
+          type: 'spending',
+          amount,
+          description: description || 'Gem purchase',
+        },
+      });
+
+      const updated = await tx.user.findUnique({
+        where: { id: userId },
+        select: { gems: true },
+      });
+
+      return {
+        gems: updated?.gems ?? user.gems - amount,
+        transaction,
+      };
+    });
+  }
+
+  async getGrowth(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        xp: true, totalXp: true, streak: true, bestStreak: true,
+        dailyXp: true, createdAt: true, isPremium: true,
+      },
+    });
+    if (!user) throw new NotFoundException('User not found');
+    const daysActive = Math.max(1, Math.floor((Date.now() - user.createdAt.getTime()) / (1000 * 60 * 60 * 24)));
+    return {
+      totalXp: user.totalXp,
+      currentStreak: user.streak,
+      bestStreak: user.bestStreak,
+      dailyXp: user.dailyXp,
+      daysActive,
+      isPremium: user.isPremium,
+      level: this.calculateLevel(user.totalXp),
+    };
   }
 }

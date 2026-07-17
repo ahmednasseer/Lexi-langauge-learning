@@ -173,14 +173,14 @@ class _PronunciationScreenState extends State<PronunciationScreen> {
                   margin: const EdgeInsets.only(bottom: 12),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: isCur ? AppColors.primary.withValues(alpha: 0.1) : Colors.white,
+                    color: isCur ? AppColors.primary.withValues(alpha: 0.1) : AppColors.surface,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: isCur ? AppColors.primary : Colors.grey.shade200, width: 2),
+                    border: Border.all(color: isCur ? AppColors.primary : AppColors.border, width: 2),
                   ),
                   child: Row(children: [
                     Container(
                       width: 40, height: 40,
-                      decoration: BoxDecoration(color: isCur ? AppColors.primary : Colors.grey.shade100, shape: BoxShape.circle),
+                      decoration: BoxDecoration(color: isCur ? AppColors.primary : AppColors.surfaceLight, shape: BoxShape.circle),
                       child: Center(child: Text('${i + 1}', style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600, color: isCur ? Colors.white : Colors.grey.shade600))),
                     ),
                     const SizedBox(width: 16),

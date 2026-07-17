@@ -41,7 +41,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
   }
 
   Widget _toggle() {
-    return Container(padding: const EdgeInsets.all(4), decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(12)), child: Row(children: [
+    return Container(padding: const EdgeInsets.all(4), decoration: BoxDecoration(color: AppColors.surfaceLight, borderRadius: BorderRadius.circular(12)), child: Row(children: [
       Expanded(child: GestureDetector(onTap: () => setState(() => _isYearly = false), child: AnimatedContainer(duration: const Duration(milliseconds: 300), padding: const EdgeInsets.symmetric(vertical: 12), decoration: BoxDecoration(gradient: !_isYearly ? AppColors.primaryGradient : null, borderRadius: BorderRadius.circular(10)), child: Center(child: Text('Monthly', style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: !_isYearly ? Colors.white : Colors.grey.shade600)))))),
       Expanded(child: GestureDetector(onTap: () => setState(() => _isYearly = true), child: AnimatedContainer(duration: const Duration(milliseconds: 300), padding: const EdgeInsets.symmetric(vertical: 12), decoration: BoxDecoration(gradient: _isYearly ? AppColors.primaryGradient : null, borderRadius: BorderRadius.circular(10)), child: Center(child: Text('Yearly (Save 60%)', style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: _isYearly ? Colors.white : Colors.grey.shade600)))))),
     ]));
@@ -51,7 +51,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
     final isSel = (_isYearly && plan.id == 'yearly') || (!_isYearly && plan.id == 'monthly');
     return Container(
       margin: const EdgeInsets.only(bottom: 16), width: double.infinity, padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), border: Border.all(color: isSel ? AppColors.primary : Colors.grey.shade200, width: isSel ? 2 : 1), boxShadow: isSel ? [BoxShadow(color: AppColors.primary.withValues(alpha: 0.1), blurRadius: 10)] : null),
+      decoration: BoxDecoration(color: AppColors.surface, borderRadius: BorderRadius.circular(20), border: Border.all(color: isSel ? AppColors.primary : AppColors.border, width: isSel ? 2 : 1), boxShadow: isSel ? [BoxShadow(color: AppColors.primary.withValues(alpha: 0.1), blurRadius: 10)] : null),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         if (plan.isPopular) Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4), decoration: BoxDecoration(gradient: AppColors.primaryGradient, borderRadius: BorderRadius.circular(8)), child: Text('Most Popular', style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white))),
         if (plan.isPopular) const SizedBox(height: 12),

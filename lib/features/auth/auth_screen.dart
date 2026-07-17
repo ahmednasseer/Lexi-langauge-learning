@@ -91,7 +91,7 @@ class _AuthScreenState extends State<AuthScreen> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFFF5F5F9), Color(0xFFE8EAF6)],
+            colors: [Color(0xFF0A0E21), Color(0xFF1A1E36)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -114,14 +114,14 @@ class _AuthScreenState extends State<AuthScreen> {
                 Center(
                   child: Text(
                     _isLogin ? 'Welcome Back!' : 'Create Account',
-                    style: GoogleFonts.poppins(fontSize: 28, fontWeight: FontWeight.bold),
+                    style: GoogleFonts.poppins(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                 ).animate().fadeIn(delay: 100.ms),
                 const SizedBox(height: 8),
                 Center(
                   child: Text(
                     _isLogin ? 'Sign in to continue learning' : 'Start your language journey',
-                    style: GoogleFonts.poppins(fontSize: 16, color: Colors.grey.shade600),
+                    style: GoogleFonts.poppins(fontSize: 16, color: Colors.white70),
                   ),
                 ).animate().fadeIn(delay: 200.ms),
 
@@ -177,7 +177,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 ).animate().fadeIn(delay: 400.ms),
 
                 const SizedBox(height: 24),
-                Center(child: Text('OR', style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey.shade500))),
+                Center(child: Text('OR', style: GoogleFonts.poppins(fontSize: 14, color: Colors.white54))),
                 const SizedBox(height: 24),
 
                 SizedBox(
@@ -187,10 +187,10 @@ class _AuthScreenState extends State<AuthScreen> {
                     icon: const Icon(Icons.g_mobiledata, size: 28),
                     label: Text('Continue with Google', style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500)),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black87,
+                      backgroundColor: const Color(0xFF1A1E36),
+                      foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                      side: BorderSide(color: Colors.grey.shade300),
+                      side: BorderSide(color: Colors.white24),
                     ),
                   ),
                 ).animate().fadeIn(delay: 500.ms),
@@ -216,7 +216,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 Center(
                   child: Text(
                     'Guest users can access all German lessons',
-                    style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey.shade500),
+                    style: GoogleFonts.poppins(fontSize: 12, color: Colors.white54),
                   ),
                 ),
 
@@ -227,7 +227,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     child: RichText(
                       text: TextSpan(
                         text: _isLogin ? "Don't have an account? " : 'Already have an account? ',
-                        style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey.shade600),
+                        style: GoogleFonts.poppins(fontSize: 14, color: Colors.white70),
                         children: [
                           TextSpan(
                             text: _isLogin ? 'Sign Up' : 'Sign In',
@@ -257,21 +257,23 @@ class _AuthScreenState extends State<AuthScreen> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFF1A1E36),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 2))],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 2))],
       ),
       child: TextFormField(
         controller: c,
         obscureText: obscure,
         keyboardType: keyboardType,
         validator: validator,
+        style: GoogleFonts.poppins(color: Colors.white),
         decoration: InputDecoration(
           labelText: label,
+          labelStyle: GoogleFonts.poppins(color: Colors.white54),
           prefixIcon: Icon(icon, color: AppColors.primary),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
           filled: true,
-          fillColor: Colors.white,
+          fillColor: const Color(0xFF1A1E36),
           errorStyle: GoogleFonts.poppins(fontSize: 12),
         ),
       ),
