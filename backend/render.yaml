@@ -1,0 +1,27 @@
+# Render Blueprint (render.yaml)
+# Deploy command: render blueprint deploy
+# Uses Supabase for PostgreSQL (Render free tier has no free PostgreSQL)
+
+services:
+  - type: web
+    name: lexi-backend
+    runtime: docker
+    plan: free
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/docs
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: REDIS_ENABLED
+        value: "false"
+      - key: QUEUE_ENABLED
+        value: "false"
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: CORS_ORIGIN
+        value: "*"

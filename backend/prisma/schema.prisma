@@ -35,19 +35,42 @@ model User {
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
-  progress          UserProgress[]
-  chatHistory       ChatHistory[]
-  achievements      UserAchievement[]
-  learningPlan      LearningPlan[]
-  aiUsage           AiUsage[]
-  audioFiles        AudioFile[]
-  subscriptions     Subscription[]
-  blockedUsers      BlockedUser[] @relation("Blocker")
-  blockedBy         BlockedUser[] @relation("Blocked")
-  reportsGiven      UserReport[] @relation("Reporter")
-  reportsReceived   UserReport[] @relation("Reported")
-  userProfile       UserProfile?
-  learningProfile   LearningProfile?
+  progress              UserProgress[]
+  chatHistory           ChatHistory[]
+  achievements          UserAchievement[]
+  learningPlan          LearningPlan[]
+  aiUsage               AiUsage[]
+  audioFiles            AudioFile[]
+  subscriptions         Subscription[]
+  blockedUsers          BlockedUser[] @relation("UserBlocker")
+  blockedBy             BlockedUser[] @relation("UserBlocked")
+  reportsGiven          UserReport[] @relation("ReporterUser")
+  reportsReceived       UserReport[] @relation("ReportedUser")
+  sentMessages          Message[] @relation("MessageSender")
+  receivedMessages      Message[] @relation("MessageReceiver")
+  sentRequests          MessageRequest[] @relation("RequestSender")
+  receivedRequests      MessageRequest[] @relation("RequestReceiver")
+  pronunciationAttempts PronunciationAttempt[]
+  listeningProgress     ListeningProgress[]
+  dailyMissions         DailyMission[]
+  certificates          Certificate[]
+  badges                UserBadge[]
+  passport              Passport?
+  gemsWallet            GemsWallet?
+  transactions          Transaction[]
+  inventory             UserInventory[]
+  groupMemberships      GroupMember[]
+  posts                 Post[]
+  likes                 Like[]
+  comments              Comment[]
+  challenges            UserChallenge[]
+  userAvatar            UserAvatar?
+  aiConversations       AiConversation[]
+  aiLearningMemories    AiLearningMemory[]
+  mockExams             MockExam[]
+  writingSubmissions    WritingSubmission[]
+  userProfile           UserProfile?
+  learningProfile       LearningProfile?
 
   @@index([email])
   @@index([provider, providerId])
@@ -444,6 +467,8 @@ model StoreItem {
   isActive      Boolean  @default(true)
   createdAt     DateTime @default(now())
 
+  inventory     UserInventory[]
+
   @@index([category])
   @@index([isActive])
 }
@@ -582,9 +607,9 @@ model UserChallenge {
 model Message {
   id            String   @id @default(cuid())
   senderId      String
-  sender        User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  sender        User     @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
   receiverId    String
-  receiver      User     @relation(fields: [receiverId], references: [id], onDelete: Cascade)
+  receiver      User     @relation("MessageReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
   content       String
   isRead        Boolean  @default(false)
   createdAt     DateTime @default(now())
@@ -592,15 +617,14 @@ model Message {
 
   @@index([senderId])
   @@index([receiverId])
-  @@index([createdAt])
 }
 
 model MessageRequest {
   id            String   @id @default(cuid())
   senderId      String
-  sender        User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  sender        User     @relation("RequestSender", fields: [senderId], references: [id], onDelete: Cascade)
   receiverId    String
-  receiver      User     @relation(fields: [receiverId], references: [id], onDelete: Cascade)
+  receiver      User     @relation("RequestReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
   status        String   @default("PENDING") // PENDING, ACCEPTED, REJECTED, BLOCKED
   createdAt     DateTime @default(now())
 
@@ -612,9 +636,9 @@ model MessageRequest {
 model BlockedUser {
   id            String   @id @default(cuid())
   blockerId     String
-  blocker       User     @relation(fields: [blockerId], references: [id], onDelete: Cascade)
+  blocker       User     @relation("UserBlocker", fields: [blockerId], references: [id], onDelete: Cascade)
   blockedId     String
-  blocked       User     @relation(fields: [blockedId], references: [id], onDelete: Cascade)
+  blocked       User     @relation("UserBlocked", fields: [blockedId], references: [id], onDelete: Cascade)
   createdAt     DateTime @default(now())
 
   @@unique([blockerId, blockedId])
@@ -625,9 +649,9 @@ model BlockedUser {
 model UserReport {
   id              String   @id @default(cuid())
   reporterId      String
-  reporter        User     @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  reporter        User     @relation("ReporterUser", fields: [reporterId], references: [id], onDelete: Cascade)
   reportedUserId  String
-  reported        User     @relation(fields: [reportedUserId], references: [id], onDelete: Cascade)
+  reported        User     @relation("ReportedUser", fields: [reportedUserId], references: [id], onDelete: Cascade)
   messageId       String?
   message         Message? @relation(fields: [messageId], references: [id], onDelete: SetNull)
   reason          String   // spam, harassment, inappropriateContent, other
@@ -723,6 +747,69 @@ model StudentMemory {
   preferences           Json     @default("{\"preferredDifficulty\":\"intermediate\",\"favoriteTopics\":[],\"feedbackStyle\":\"gentle\",\"showTranslations\":true,\"audioEnabled\":true}")
   lastUpdated           DateTime @default(now())
   createdAt             DateTime @default(now())
+
+  @@index([userId])
+}
+
+// ==================== AI COACH ====================
+model AiConversation {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message         String
+  response        String
+  category        String   @default("free")
+  level           String   @default("A1")
+  hasCorrection   Boolean  @default(false)
+  xpEarned        Int      @default(0)
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+}
+
+model AiLearningMemory {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mistakeType     String   // grammar, vocabulary, pronunciation
+  wrongSentence   String
+  correctSentence String
+  explanation     String
+  languageLevel   String   @default("A1")
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+}
+
+// ==================== GOETHE EXAMS ====================
+model MockExam {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  level             String   // A1, A2, B1, B2, C1, C2
+  score             Int      @default(0)
+  totalPoints       Int      @default(0)
+  timeSpentSeconds  Int      @default(0)
+  completedSections Json     @default("[]")
+  result            Json     @default("{}")
+  startedAt         DateTime @default(now())
+  completedAt       DateTime?
+  createdAt         DateTime @default(now())
+
+  @@index([userId])
+  @@index([level])
+}
+
+model WritingSubmission {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  level           String   @default("A1")
+  prompt          String
+  submissionText  String
+  feedback        Json     @default("{}")
+  score           Int      @default(0)
+  submittedAt     DateTime @default(now())
 
   @@index([userId])
 }

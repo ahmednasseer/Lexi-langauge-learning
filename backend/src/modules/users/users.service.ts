@@ -1,9 +1,13 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
+import { WalletService } from '../payments/wallet/wallet.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private walletService: WalletService,
+  ) {}
 
   async getProfile(userId: string) {
     const user = await this.prisma.user.findUnique({
@@ -98,19 +102,19 @@ export class UsersService {
   }
 
   async getWallet(userId: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: { gems: true, id: true },
-    });
-    if (!user) throw new NotFoundException('User not found');
-    const recentTransactions = await this.prisma.transaction.findMany({
-      where: { userId: user.id },
-      orderBy: { createdAt: 'desc' },
-      take: 20,
-    });
+    const wallet = await this.walletService.getWallet(userId);
+    const transactions = await this.walletService.getTransactions(userId);
     return {
-      gems: user.gems,
-      transactions: recentTransactions,
+      gems: wallet.gems,
+      totalPurchased: wallet.totalPurchased,
+      totalSpent: wallet.totalSpent,
+      transactions: transactions.map(t => ({
+        id: t.id,
+        type: t.type,
+        amount: t.amount,
+        description: t.description,
+        createdAt: t.createdAt,
+      })),
     };
   }
 
@@ -118,41 +122,7 @@ export class UsersService {
     if (!amount || amount <= 0) {
       throw new BadRequestException('Amount must be greater than zero');
     }
-
-    return this.prisma.$transaction(async (tx) => {
-      const user = await tx.user.findUnique({
-        where: { id: userId },
-        select: { gems: true },
-      });
-      if (!user) throw new NotFoundException('User not found');
-      if (user.gems < amount) {
-        throw new BadRequestException('Insufficient gems');
-      }
-
-      await tx.user.update({
-        where: { id: userId },
-        data: { gems: { decrement: amount } },
-      });
-
-      const transaction = await tx.transaction.create({
-        data: {
-          userId,
-          type: 'spending',
-          amount,
-          description: description || 'Gem purchase',
-        },
-      });
-
-      const updated = await tx.user.findUnique({
-        where: { id: userId },
-        select: { gems: true },
-      });
-
-      return {
-        gems: updated?.gems ?? user.gems - amount,
-        transaction,
-      };
-    });
+    return this.walletService.spendGems(userId, amount, description || 'Gem purchase');
   }
 
   async getGrowth(userId: string) {

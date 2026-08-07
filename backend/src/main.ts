@@ -15,7 +15,6 @@ async function bootstrap() {
   // ==================== SECURITY ====================
   app.use(helmet());
   app.setGlobalPrefix('api/v1');
-  app.set('trust proxy', 1);
 
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
@@ -36,8 +35,11 @@ async function bootstrap() {
   });
 
   // ==================== EXCEPTION FILTERS ====================
-  const monitoring = app.get(MonitoringService);
-  app.useGlobalFilters(new SentryExceptionFilter(monitoring));
+  // Sentry is optional - only initialize if DSN is provided
+  if (process.env.SENTRY_DSN) {
+    const monitoring = app.get(MonitoringService);
+    app.useGlobalFilters(new SentryExceptionFilter(monitoring));
+  }
 
   // ==================== SWAGGER ====================
   const config = new DocumentBuilder()
@@ -57,11 +59,11 @@ async function bootstrap() {
   SwaggerModule.setup('api/docs', app, document);
 
   // ==================== START ====================
-  const port = process.env.PORT || 3000;
-  await app.listen(port);
+  const port = process.env.PORT || 8080;
+  await app.listen(port, '0.0.0.0');
 
   console.log('=================================');
-  console.log(`Lexi API v1 running on http://localhost:${port}`);
+  console.log(`Lexi API v1 running on port ${port}`);
   console.log(`Swagger docs: http://localhost:${port}/api/docs`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log('=================================');
