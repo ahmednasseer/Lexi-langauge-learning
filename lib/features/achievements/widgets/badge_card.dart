@@ -32,25 +32,36 @@ class BadgeCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Badge icon
-          Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: badge.isUnlocked
-                  ? Colors.amber.withValues(alpha: 0.2)
-                  : AppColors.border,
-            ),
-            child: Center(
-              child: Text(
-                badge.icon,
-                style: TextStyle(
-                  fontSize: 30,
-                  color: badge.isUnlocked ? Colors.amber.shade300 : AppColors.textHint,
+          if (badge.assetPath != null)
+            ClipOval(
+              child: Image.asset(
+                badge.assetPath!,
+                width: 60,
+                height: 60,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Icon(Icons.broken_image, size: 60),
+              ),
+            )
+          else
+            Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: badge.isUnlocked
+                    ? Colors.amber.withValues(alpha: 0.2)
+                    : AppColors.border,
+              ),
+              child: Center(
+                child: Text(
+                  badge.icon,
+                  style: TextStyle(
+                    fontSize: 30,
+                    color: badge.isUnlocked ? Colors.amber.shade300 : AppColors.textHint,
+                  ),
                 ),
               ),
             ),
-          ),
 
           const SizedBox(height: 12),
 

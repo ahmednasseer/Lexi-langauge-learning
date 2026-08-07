@@ -23,7 +23,7 @@ export class AiCoachService {
     });
 
     const dailyLimit = 20;
-    if (todayUsage && todayUsage.messagesUsed >= dailyLimit) {
+    if (todayUsage && todayUsage.messagesCount >= dailyLimit) {
       throw new BadRequestException('Daily limit reached. Upgrade to Premium for unlimited.');
     }
 
@@ -77,13 +77,13 @@ export class AiCoachService {
         },
       },
       update: {
-        messagesUsed: { increment: 1 },
+        messagesCount: { increment: 1 },
         tokensUsed: { increment: message.length + aiResponse.response.length },
       },
       create: {
         userId,
         date: new Date(new Date().setHours(0, 0, 0, 0)),
-        messagesUsed: 1,
+        messagesCount: 1,
         tokensUsed: message.length + aiResponse.response.length,
       },
     });
@@ -102,7 +102,7 @@ export class AiCoachService {
       explanation: aiResponse.explanation,
       betterAlternative: aiResponse.betterAlternative,
       xpEarned: aiResponse.xpEarned,
-      remaining: dailyLimit - (todayUsage?.messagesUsed || 0) - 1,
+      remaining: dailyLimit - (todayUsage?.messagesCount || 0) - 1,
     };
   }
 
@@ -136,7 +136,7 @@ export class AiCoachService {
     });
 
     return {
-      todayMessages: todayUsage?.messagesUsed || 0,
+      todayMessages: todayUsage?.messagesCount || 0,
       dailyLimit: 20,
       totalMistakes,
       totalConversations: await this.prisma.aiConversation.count({ where: { userId } }),

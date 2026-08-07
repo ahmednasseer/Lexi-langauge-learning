@@ -259,7 +259,7 @@ class _GemStoreScreenState extends State<GemStoreScreen> {
             ),
           ),
           GestureDetector(
-            onTap: () {},
+            onTap: () => Navigator.pushNamed(context, '/payment-methods'),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               decoration: BoxDecoration(

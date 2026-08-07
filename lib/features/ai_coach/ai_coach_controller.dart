@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'models/coach_message.dart';
 import 'models/conversation_category.dart';
 import 'ai_coach_repository.dart';
-import '../../services/auth_service.dart';
+import '../../core/services/auth_service.dart';
 
 class AiCoachController extends ChangeNotifier {
   final AiCoachRepository _repository = AiCoachRepository();

@@ -1,4 +1,4 @@
-import '../../services/api_service.dart';
+import '../../core/services/api_service.dart';
 import '../community/models/community_user.dart';
 import '../community/models/message.dart';
 

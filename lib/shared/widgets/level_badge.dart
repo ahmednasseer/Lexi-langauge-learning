@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/constants/app_assets.dart';
 
 class LevelBadge extends StatelessWidget {
   final String level;
@@ -20,44 +21,52 @@ class LevelBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final asset = _badgeAsset(level);
     final levelColor = AppColors.getLevelColor(level);
-    final levelGradient = AppColors.getLevelGradient(level);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         // Badge
-        Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: levelGradient,
-            boxShadow: showGlow
-                ? [
-                    BoxShadow(
-                      color: levelColor.withValues(alpha: 0.4),
-                      blurRadius: isActive ? 20 : 10,
-                      spreadRadius: isActive ? 2 : 0,
-                    ),
-                  ]
+        if (asset != null)
+          Container(
+            width: size,
+            height: size,
+            decoration: showGlow
+                ? BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: levelColor.withValues(alpha: 0.4),
+                        blurRadius: isActive ? 20 : 10,
+                        spreadRadius: isActive ? 2 : 0,
+                      ),
+                    ],
+                  )
                 : null,
-            border: Border.all(
-              color: isActive ? Colors.white : Colors.transparent,
-              width: isActive ? 3 : 0,
+            child: ClipOval(
+              child: Image.asset(asset, width: size, height: size, fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) => Icon(Icons.broken_image, size: size)),
             ),
-          ),
-          child: Center(
-            child: Text(
-              level,
-              style: GoogleFonts.poppins(
-                fontSize: size * 0.3,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+          )
+        else
+          Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: AppColors.getLevelGradient(level),
+            ),
+            child: Center(
+              child: Text(
+                level,
+                style: GoogleFonts.poppins(
+                  fontSize: size * 0.3,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
-        ),
         // Label
         if (showLabel) ...[
           const SizedBox(height: 8),
@@ -83,6 +92,18 @@ class LevelBadge extends StatelessWidget {
       case 'C1': return 'Advanced';
       case 'C2': return 'Mastery';
       default: return level;
+    }
+  }
+
+  static String? _badgeAsset(String level) {
+    switch (level.toUpperCase()) {
+      case 'A1': return AppAssets.badgeA1;
+      case 'A2': return AppAssets.badgeA2;
+      case 'B1': return AppAssets.badgeB1;
+      case 'B2': return AppAssets.badgeB2;
+      case 'C1': return AppAssets.badgeC1;
+      case 'C2': return AppAssets.badgeC1;
+      default: return null;
     }
   }
 }

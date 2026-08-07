@@ -73,18 +73,23 @@ class _SearchScreenState extends State<SearchScreen> {
       return;
     }
     if (mounted) setState(() => _isSearching = true);
-    final results = await _searchRepo.search(query);
-    if (mounted) {
-      setState(() {
-        _remoteResults = results
-            .map((r) => {
-                  'german': r.title,
-                  'arabic': r.subtitle ?? '',
-                  'example': '',
-                })
-            .toList();
-        _isSearching = false;
-      });
+    try {
+      final results = await _searchRepo.search(query);
+      if (mounted) {
+        setState(() {
+          _remoteResults = results
+              .map((r) => {
+                    'german': r.title,
+                    'arabic': r.subtitle ?? '',
+                    'example': '',
+                  })
+              .toList();
+          _isSearching = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error searching: $e');
+      if (mounted) setState(() => _isSearching = false);
     }
   }
 
@@ -313,7 +318,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildShowAllButton() {
     return GestureDetector(
-      onTap: () {},
+      onTap: () => Navigator.pushNamed(context, '/lessons'),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(

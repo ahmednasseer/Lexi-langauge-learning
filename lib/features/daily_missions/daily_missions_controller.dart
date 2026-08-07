@@ -29,8 +29,14 @@ class DailyMissionsController extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    _missions = await _repository.getTodayMissions();
-    _allCompleted = await _repository.allMissionsCompleted();
+    try {
+      _missions = await _repository.getTodayMissions();
+      _allCompleted = await _repository.allMissionsCompleted();
+    } catch (e) {
+      debugPrint('Error loading missions: $e');
+      _missions = [];
+      _allCompleted = false;
+    }
 
     _isLoading = false;
     notifyListeners();

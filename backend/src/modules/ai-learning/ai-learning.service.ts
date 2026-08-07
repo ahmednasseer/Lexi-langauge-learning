@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '../../config/prisma.service';
 
 @Injectable()
 export class AILearningService {
@@ -213,7 +213,7 @@ export class AILearningService {
     recommendations.push({
       id: `rec_daily_${Date.now()}`,
       type: 'daily',
-      title: this.getDailyTitle(profile),
+      title: this.getDailyTitle(profile.learningGoal),
       description: this.getDailyDescription(profile),
       category: 'Daily',
       estimatedMinutes: profile.dailyMinutes as number,

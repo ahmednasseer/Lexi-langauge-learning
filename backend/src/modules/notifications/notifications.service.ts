@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
 
-interface AppNotification {
+export interface AppNotification {
   id: string;
   title: string;
   body: string;

@@ -1,5 +1,5 @@
-import 'api_service.dart';
-import 'analytics_service.dart';
+import '../core/services/api_service.dart';
+import '../core/services/analytics_service.dart';
 import '../features/ai_tutor/chat_model.dart';
 
 class AiService {

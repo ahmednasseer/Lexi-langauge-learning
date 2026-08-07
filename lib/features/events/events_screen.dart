@@ -22,7 +22,7 @@ class EventsScreen extends StatelessWidget {
               const SizedBox(height: 24),
               _buildLiveSectionTitle(),
               const SizedBox(height: 12),
-              _buildLiveSessionCard(
+              _buildLiveSessionCard(context,
                 title: 'Conversation Class',
                 arabicTitle: 'حصص المحادثة',
                 time: '18:00',
@@ -31,7 +31,7 @@ class EventsScreen extends StatelessWidget {
                 index: 0,
               ),
               const SizedBox(height: 12),
-              _buildLiveSessionCard(
+              _buildLiveSessionCard(context,
                 title: 'Grammar Deep Dive',
                 arabicTitle: 'تعمق في القواعد',
                 time: '19:00',
@@ -163,7 +163,8 @@ class EventsScreen extends StatelessWidget {
     ).animate().fadeIn(delay: 100.ms);
   }
 
-  Widget _buildLiveSessionCard({
+  Widget _buildLiveSessionCard(
+    BuildContext context, {
     required String title,
     required String arabicTitle,
     required String time,
@@ -235,7 +236,9 @@ class EventsScreen extends StatelessWidget {
             ),
           ),
           GestureDetector(
-            onTap: () {},
+            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('تمت الإضافة للمفضلة')),
+            ),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(

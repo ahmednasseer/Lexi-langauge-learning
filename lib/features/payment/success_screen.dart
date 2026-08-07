@@ -1,8 +1,9 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:lottie/lottie.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/constants/app_assets.dart';
 
 class SuccessScreen extends StatefulWidget {
   const SuccessScreen({super.key});
@@ -11,41 +12,14 @@ class SuccessScreen extends StatefulWidget {
   State<SuccessScreen> createState() => _SuccessScreenState();
 }
 
-class _SuccessScreenState extends State<SuccessScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _confettiController;
-  late List<_ConfettiParticle> _particles;
-
+class _SuccessScreenState extends State<SuccessScreen> {
   @override
   void initState() {
     super.initState();
-    _confettiController = AnimationController(
-      duration: const Duration(seconds: 3),
-      vsync: this,
-    )..repeat();
-
-    final random = Random();
-    _particles = List.generate(40, (index) {
-      return _ConfettiParticle(
-        x: random.nextDouble(),
-        speed: 0.5 + random.nextDouble() * 1.5,
-        color: [
-          AppColors.primary,
-          AppColors.accent,
-          AppColors.success,
-          AppColors.gold,
-          AppColors.secondary,
-        ][random.nextInt(5)],
-        size: 4 + random.nextDouble() * 8,
-        angle: random.nextDouble() * pi * 2,
-        angularSpeed: (random.nextDouble() - 0.5) * 4,
-      );
-    });
   }
 
   @override
   void dispose() {
-    _confettiController.dispose();
     super.dispose();
   }
 
@@ -83,17 +57,11 @@ class _SuccessScreenState extends State<SuccessScreen>
   }
 
   Widget _buildConfetti() {
-    return AnimatedBuilder(
-      animation: _confettiController,
-      builder: (context, _) {
-        return CustomPaint(
-          size: Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height),
-          painter: _ConfettiPainter(
-            particles: _particles,
-            progress: _confettiController.value,
-          ),
-        );
-      },
+    return Lottie.asset(
+      AppAssets.lottieConfetti,
+      fit: BoxFit.cover,
+      repeat: true,
+      errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
     );
   }
 
@@ -190,57 +158,4 @@ class _SuccessScreenState extends State<SuccessScreen>
   }
 }
 
-class _ConfettiParticle {
-  final double x;
-  final double speed;
-  final Color color;
-  final double size;
-  final double angle;
-  final double angularSpeed;
 
-  const _ConfettiParticle({
-    required this.x,
-    required this.speed,
-    required this.color,
-    required this.size,
-    required this.angle,
-    required this.angularSpeed,
-  });
-}
-
-class _ConfettiPainter extends CustomPainter {
-  final List<_ConfettiParticle> particles;
-  final double progress;
-
-  _ConfettiPainter({required this.particles, required this.progress});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    for (final particle in particles) {
-      final paint = Paint()
-        ..color = particle.color
-        ..style = PaintingStyle.fill;
-
-      final yOffset = (progress * particle.speed * size.height) % (size.height + 100);
-      final xOffset = particle.x * size.width + sin(progress * pi * 2 + particle.angle) * 30;
-      final rotation = progress * pi * particle.angularSpeed;
-
-      canvas.save();
-      canvas.translate(xOffset, yOffset - 50);
-      canvas.rotate(rotation);
-
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromCenter(center: Offset.zero, width: particle.size, height: particle.size * 0.6),
-          const Radius.circular(2),
-        ),
-        paint,
-      );
-
-      canvas.restore();
-    }
-  }
-
-  @override
-  bool shouldRepaint(_ConfettiPainter oldDelegate) => oldDelegate.progress != progress;
-}

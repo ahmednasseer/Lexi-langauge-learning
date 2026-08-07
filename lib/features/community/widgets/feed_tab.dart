@@ -96,6 +96,7 @@ class FeedTab extends StatelessWidget {
 
   Widget _buildLeaderboardPreview() {
     final top3 = controller.leaderboard.take(3).toList();
+    if (top3.isEmpty) return const SizedBox.shrink();
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -130,9 +131,9 @@ class FeedTab extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildTopUser(top3[1], '🥈', 2),
+              if (top3.length > 1) _buildTopUser(top3[1], '🥈', 2),
               _buildTopUser(top3[0], '🥇', 1),
-              _buildTopUser(top3[2], '🥉', 3),
+              if (top3.length > 2) _buildTopUser(top3[2], '🥉', 3),
             ],
           ),
         ],

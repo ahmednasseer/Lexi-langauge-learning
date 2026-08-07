@@ -1,0 +1,516 @@
+{
+  "version": "2.0",
+  "language": "german",
+  "level": "A1",
+  "title": "Deutsch A1 - Kompletter Kurs",
+  "description": "Vollständiger A1-Kurs mit Grammatik, Vokabeln und Übungen",
+  "units": [
+    {
+      "id": "unit_1",
+      "title": "Sich vorstellen",
+      "titleArabic": "التعريف بالنفس",
+      "description": "Begrüßung, Vorstellung, Herkunft, Beruf",
+      "order": 1,
+      "lessons": [
+        {
+          "id": "L1_1",
+          "title": "Hallo! Wie heißt du?",
+          "titleArabic": "مرحباً! ما اسمك؟",
+          "order": 1,
+          "type": "vocabulary",
+          "content": {
+            "greetings": [
+              {"german": "Hallo!", "arabic": "مرحباً!", "example": "Hallo, wie geht's?"},
+              {"german": "Guten Morgen", "arabic": "صباح الخير", "example": "Guten Morgen, Frau Schmidt."},
+              {"german": "Guten Tag", "arabic": "مساء الخير (رسمي)", "example": "Guten Tag, Herr Müller."},
+              {"german": "Guten Abend", "arabic": "مساء الخير", "example": "Guten Abend, meine Damen und Herren."},
+              {"german": "Gute Nacht", "arabic": "تصبح على خير", "example": "Gute Nacht, Kinder."},
+              {"german": "Tschüss!", "arabic": "مع السلامة!", "example": "Tschüss, bis morgen!"},
+              {"german": "Auf Wiedersehen", "arabic": "إلى اللقاء (رسمي)", "example": "Auf Wiedersehen, Herr Doktor."},
+              {"german": "Bis bald", "arabic": "أراك قريباً", "example": "Bis bald, Peter!"},
+              {"german": "Bis später", "arabic": "أراك لاحقاً", "example": "Bis später, Anna!"},
+              {"german": "Ciao!", "arabic": "مع سلامة (غير رسمي)", "example": "Ciao, bis morgen!"}
+            ],
+            "responses": [
+              {"german": "Danke, gut", "arabic": "شكراً، بخير", "example": "Wie geht's? - Danke, gut."},
+              {"german": "Sehr gut", "arabic": "ممتاز", "example": "Wie geht es Ihnen? - Sehr gut."},
+              {"german": "Nicht schlecht", "arabic": "لا بأس", "example": "Wie geht's? - Nicht schlecht."},
+              {"german": "So lala", "arabic": "عادي", "example": "Wie geht's? - So lala."}
+            ]
+          }
+        },
+        {
+          "id": "L1_2",
+          "title": "Personalpronomen & sein",
+          "titleArabic": "الضمائر الشخصية و sein",
+          "order": 2,
+          "type": "grammar",
+          "content": {
+            "pronouns": [
+              {"pronoun": "ich", "verbForm": "bin", "example": "ich bin Student"},
+              {"pronoun": "du", "verbForm": "bist", "example": "du bist nett"},
+              {"pronoun": "er", "verbForm": "ist", "example": "er ist Lehrer"},
+              {"pronoun": "sie", "verbForm": "ist", "example": "sie ist Ärztin"},
+              {"pronoun": "es", "verbForm": "ist", "example": "es ist kalt"},
+              {"pronoun": "wir", "verbForm": "sind", "example": "wir sind Studenten"},
+              {"pronoun": "ihr", "verbForm": "seid", "example": "ihr seid hier"},
+              {"pronoun": "sie", "verbForm": "sind", "example": "sie sind meine Freunde"},
+              {"pronoun": "Sie", "verbForm": "sind", "example": "Sie sind willkommen"}
+            ],
+            "questionWords": [
+              {"german": "Wer", "arabic": "من", "example": "Wer bist du?"},
+              {"german": "Was", "arabic": "ماذا", "example": "Was ist das?"},
+              {"german": "Wo", "arabic": "أين", "example": "Wo wohnst du?"},
+              {"german": "Woher", "arabic": "من أين", "example": "Woher kommst du?"},
+              {"german": "Wie", "arabic": "كيف", "example": "Wie heißt du?"},
+              {"german": "Wie alt", "arabic": "كم عمر", "example": "Wie alt bist du?"}
+            ]
+          }
+        },
+        {
+          "id": "L1_3",
+          "title": "Berufe",
+          "titleArabic": "المهن",
+          "order": 3,
+          "type": "vocabulary",
+          "content": {
+            "professions": [
+              {"german": "der Lehrer", "arabic": "المعلم", "article": "der", "female": "die Lehrerin"},
+              {"german": "der Arzt", "arabic": "الطبيب", "article": "der", "female": "die Ärztin"},
+              {"german": "der Ingenieur", "arabic": "المهندس", "article": "der", "female": "die Ingenieurin"},
+              {"german": "der Student", "arabic": "الطالب", "article": "der", "female": "die Studentin"},
+              {"german": "der Verkäufer", "arabic": "البائع", "article": "der", "female": "die Verkäuferin"},
+              {"german": "der Koch", "arabic": "الطاهي", "article": "der", "female": "die Köchin"},
+              {"german": "der Polizist", "arabic": "الشرطي", "article": "der", "female": "die Polizistin"},
+              {"german": "der Fahrer", "arabic": "السائق", "article": "der", "female": "die Fahrerin"},
+              {"german": "der Bauer", "arabic": "المزارع", "article": "der", "female": "die Bäuerin"},
+              {"german": "der Schriftsteller", "arabic": "الكاتب", "article": "der", "female": "die Schriftstellerin"}
+            ],
+            "questions": [
+              {"german": "Was sind Sie von Beruf?", "arabic": "ما مهنتك؟ (رسمي)"},
+              {"german": "Ich bin Lehrer.", "arabic": "أنا معلم."},
+              {"german": "Was machst du beruflich?", "arabic": "ما عملك؟ (غير رسمي)"}
+            ]
+          }
+        },
+        {
+          "id": "L1_4",
+          "title": "Länder & Sprachen",
+          "titleArabic": "الدول واللغات",
+          "order": 4,
+          "type": "vocabulary",
+          "content": {
+            "countries": [
+              {"german": "Deutschland", "arabic": "ألمانيا", "adjective": "deutsch"},
+              {"german": "Österreich", "arabic": "النمسا", "adjective": "österreichisch"},
+              {"german": "die Schweiz", "arabic": "سويسرا", "adjective": "schweizerisch"},
+              {"german": "Frankreich", "arabic": "فرنسا", "adjective": "französisch"},
+              {"german": "Italien", "arabic": "إيطاليا", "adjective": "italienisch"},
+              {"german": "Spanien", "arabic": "إسبانيا", "adjective": "spanisch"},
+              {"german": "England", "arabic": "إنجلترا", "adjective": "englisch"},
+              {"german": "die Türkei", "arabic": "تركيا", "adjective": "türkisch"},
+              {"german": "Ägypten", "arabic": "مصر", "adjective": "ägyptisch"},
+              {"german": "Arabien", "arabic": "العربية السعودية", "adjective": "arabisch"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "unit_2",
+      "title": "Familie & Freunde",
+      "titleArabic": "العائلة والأصدقاء",
+      "description": "Familienmitglieder, Beschreibung von Personen, Possessivpronomen",
+      "order": 2,
+      "lessons": [
+        {
+          "id": "L2_1",
+          "title": "Die Familie",
+          "titleArabic": "العائلة",
+          "order": 1,
+          "type": "vocabulary",
+          "content": {
+            "family": [
+              {"german": "die Familie", "arabic": "العائلة"},
+              {"german": "die Eltern", "arabic": "الوالدان"},
+              {"german": "der Vater / der Papa", "arabic": "الأب"},
+              {"german": "die Mutter / die Mama", "arabic": "الأم"},
+              {"german": "die Geschwister", "arabic": "الإخوة"},
+              {"german": "der Bruder", "arabic": "الأخ"},
+              {"german": "die Schwester", "arabic": "الأخت"},
+              {"german": "der Sohn", "arabic": "الابن"},
+              {"german": "die Tochter", "arabic": "الابنة"},
+              {"german": "der Ehemann / der Mann", "arabic": "الزوج"},
+              {"german": "die Ehefrau / die Frau", "arabic": "الزوجة"},
+              {"german": "der Großvater / der Opa", "arabic": "الجد"},
+              {"german": "die Großmutter / die Oma", "arabic": "الجدة"},
+              {"german": "die Großeltern", "arabic": "الأجداد"},
+              {"german": "der Enkel", "arabic": "الحفيد"},
+              {"german": "die Enkelin", "arabic": "الحفيدة"},
+              {"german": "der Onkel", "arabic": "العم/الخال"},
+              {"german": "die Tante", "arabic": "العمة/الخالة"},
+              {"german": "der Cousin", "arabic": "ابن العم"},
+              {"german": "die Cousine", "arabic": "بنت العم"},
+              {"german": "der Neffe", "arabic": "ابن الأخ"},
+              {"german": "die Nichte", "arabic": "بنت الأخ"}
+            ]
+          }
+        },
+        {
+          "id": "L2_2",
+          "title": "Possessivpronomen",
+          "titleArabic": "ضمائر الملكية",
+          "order": 2,
+          "type": "grammar",
+          "content": {
+            "possessive": [
+              {"pronoun": "ich", "possessiv": "mein", "example": "mein Vater"},
+              {"pronoun": "du", "possessiv": "dein", "example": "deine Mutter"},
+              {"pronoun": "er", "possessiv": "sein", "example": "sein Bruder"},
+              {"pronoun": "sie", "possessiv": "ihr", "example": "ihre Schwester"},
+              {"pronoun": "es", "possessiv": "sein", "example": "sein Kind"},
+              {"pronoun": "wir", "possessiv": "unser", "example": "unsere Eltern"},
+              {"pronoun": "ihr", "possessiv": "euer", "example": "eure Familie"},
+              {"pronoun": "sie", "possessiv": "ihr", "example": "ihre Kinder"},
+              {"pronoun": "Sie", "possessiv": "Ihr", "example": "Ihre Familie"}
+            ]
+          }
+        },
+        {
+          "id": "L2_3",
+          "title": "Adjektive zur Beschreibung",
+          "titleArabic": "صفات الوصف",
+          "order": 3,
+          "type": "vocabulary",
+          "content": {
+            "adjectives": [
+              {"german": "groß", "arabic": "طويل/كبير"},
+              {"german": "klein", "arabic": "قصير/صغير"},
+              {"german": "jung", "arabic": "شاب/صغير السن"},
+              {"german": "alt", "arabic": "عجوز/كبير السن"},
+              {"german": "schön", "arabic": "جميل"},
+              {"german": "hässlich", "arabic": "قبيح"},
+              {"german": "dick", "arabic": "سمين"},
+              {"german": "dünn", "arabic": "نحيف"},
+              {"german": "blond", "arabic": "أشقر"},
+              {"german": "braun", "arabic": "بني/أسمر"},
+              {"german": "schwarz", "arabic": "أسود"},
+              {"german": "intelligent", "arabic": "ذكي"},
+              {"german": "fleißig", "arabic": "مجتهد"},
+              {"german": "faul", "arabic": "كسول"},
+              {"german": "nett", "arabic": "لطيف"},
+              {"german": "stark", "arabic": "قوي"},
+              {"german": "schwach", "arabic": "ضعيف"},
+              {"german": "laut", "arabic": "صاخب/عالي"},
+              {"german": "leise", "arabic": "هادئ/منخفض"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "unit_3",
+      "title": "Zahlen & Alltag",
+      "titleArabic": "الأرقام والحياة اليومية",
+      "description": "Zahlen, Uhrzeit, Wochentage, Alltag",
+      "order": 3,
+      "lessons": [
+        {
+          "id": "L3_1",
+          "title": "Zahlen 1-100",
+          "titleArabic": "الأرقام 1-100",
+          "order": 1,
+          "type": "vocabulary",
+          "content": {
+            "numbers_1_20": [
+              {"num": 1, "german": "eins"},
+              {"num": 2, "german": "zwei"},
+              {"num": 3, "german": "drei"},
+              {"num": 4, "german": "vier"},
+              {"num": 5, "german": "fünf"},
+              {"num": 6, "german": "sechs"},
+              {"num": 7, "german": "sieben"},
+              {"num": 8, "german": "acht"},
+              {"num": 9, "german": "neun"},
+              {"num": 10, "german": "zehn"},
+              {"num": 11, "german": "elf"},
+              {"num": 12, "german": "zwölf"},
+              {"num": 13, "german": "dreizehn"},
+              {"num": 14, "german": "vierzehn"},
+              {"num": 15, "german": "fünfzehn"},
+              {"num": 16, "german": "sechzehn"},
+              {"num": 17, "german": "siebzehn"},
+              {"num": 18, "german": "achtzehn"},
+              {"num": 19, "german": "neunzehn"},
+              {"num": 20, "german": "zwanzig"}
+            ],
+            "tens": [
+              {"num": 20, "german": "zwanzig"},
+              {"num": 30, "german": "dreißig"},
+              {"num": 40, "german": "vierzig"},
+              {"num": 50, "german": "fünfzig"},
+              {"num": 60, "german": "sechzig"},
+              {"num": 70, "german": "siebzig"},
+              {"num": 80, "german": "achtzig"},
+              {"num": 90, "german": "neunzig"},
+              {"num": 100, "german": "hundert"}
+            ]
+          }
+        },
+        {
+          "id": "L3_2",
+          "title": "Uhrzeit",
+          "titleArabic": "الوقت",
+          "order": 2,
+          "type": "vocabulary",
+          "content": {
+            "telling_time": [
+              {"german": "Wie spät ist es?", "arabic": "كم الساعة؟"},
+              {"german": "Wie viel Uhr ist es?", "arabic": "كم الوقت؟"},
+              {"german": "Es ist ... Uhr", "arabic": "الساعة ..."},
+              {"german": "Viertel nach", "arabic": "وربع"},
+              {"german": "Viertel vor", "arabic": "إلا ربع"},
+              {"german": "halb", "arabic": "ونص"},
+              {"german": "nach", "arabic": "بعد"},
+              {"german": "vor", "arabic": "قبل"}
+            ],
+            "examples": [
+              {"time": "13:00", "german": "Es ist ein Uhr / dreizehn Uhr"},
+              {"time": "13:15", "german": "Es ist Viertel nach eins"},
+              {"time": "13:30", "german": "Es ist halb zwei"},
+              {"time": "13:45", "german": "Es ist Viertel vor zwei"}
+            ]
+          }
+        },
+        {
+          "id": "L3_3",
+          "title": "Wochentage & Monate",
+          "titleArabic": "أيام الأسبوع والشهور",
+          "order": 3,
+          "type": "vocabulary",
+          "content": {
+            "weekdays": [
+              {"german": "Montag", "arabic": "الإثنين"},
+              {"german": "Dienstag", "arabic": "الثلاثاء"},
+              {"german": "Mittwoch", "arabic": "الأربعاء"},
+              {"german": "Donnerstag", "arabic": "الخميس"},
+              {"german": "Freitag", "arabic": "الجمعة"},
+              {"german": "Samstag / Sonnabend", "arabic": "السبت"},
+              {"german": "Sonntag", "arabic": "الأحد"}
+            ],
+            "months": [
+              {"german": "Januar", "arabic": "يناير"},
+              {"german": "Februar", "arabic": "فبراير"},
+              {"german": "März", "arabic": "مارس"},
+              {"german": "April", "arabic": "أبريل"},
+              {"german": "Mai", "arabic": "مايو"},
+              {"german": "Juni", "arabic": "يونيو"},
+              {"german": "Juli", "arabic": "يوليو"},
+              {"german": "August", "arabic": "أغسطس"},
+              {"german": "September", "arabic": "سبتمبر"},
+              {"german": "Oktober", "arabic": "أكتوبر"},
+              {"german": "November", "arabic": "نوفمبر"},
+              {"german": "Dezember", "arabic": "ديسمبر"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "unit_4",
+      "title": "Einkaufen & Essen",
+      "titleArabic": "التسوق والأكل",
+      "description": "Lebensmittel, Preise, im Restaurant",
+      "order": 4,
+      "lessons": [
+        {
+          "id": "L4_1",
+          "title": "Lebensmittel",
+          "titleArabic": "المواد الغذائية",
+          "order": 1,
+          "type": "vocabulary",
+          "content": {
+            "food": [
+              {"german": "das Brot", "arabic": "الخبز"},
+              {"german": "die Butter", "arabic": "الزبدة"},
+              {"german": "die Milch", "arabic": "الحليب"},
+              {"german": "der Käse", "arabic": "الجبن"},
+              {"german": "das Ei", "arabic": "البيض"},
+              {"german": "das Fleisch", "arabic": "اللحم"},
+              {"german": "der Fisch", "arabic": "السمك"},
+              {"german": "das Gemüse", "arabic": "الخضار"},
+              {"german": "der Salat", "arabic": "السلطة"},
+              {"german": "die Kartoffel", "arabic": "البطاطس"},
+              {"german": "die Tomate", "arabic": "الطماطم"},
+              {"german": "die Zwiebel", "arabic": "البصل"},
+              {"german": "das Obst", "arabic": "الفواكه"},
+              {"german": "der Apfel", "arabic": "التفاحة"},
+              {"german": "die Banane", "arabic": "الموز"},
+              {"german": "die Orange", "arabic": "البرتقالة"},
+              {"german": "der Reis", "arabic": "الأرز"},
+              {"german": "die Nudeln", "arabic": "المعكرونة"},
+              {"german": "das Wasser", "arabic": "الماء"},
+              {"german": "der Saft", "arabic": "العصير"},
+              {"german": "der Kaffee", "arabic": "القهوة"},
+              {"german": "der Tee", "arabic": "الشاي"},
+              {"german": "die Schokolade", "arabic": "الشوكولاتة"},
+              {"german": "der Kuchen", "arabic": "الكيك"}
+            ]
+          }
+        },
+        {
+          "id": "L4_2",
+          "title": "Im Restaurant",
+          "titleArabic": "في المطعم",
+          "order": 2,
+          "type": "vocabulary",
+          "content": {
+            "phrases": [
+              {"german": "Ich hätte gern...", "arabic": "أريد..."},
+              {"german": "Die Speisekarte, bitte.", "arabic": "قائمة الطعام من فضلك."},
+              {"german": "Ich möchte bestellen.", "arabic": "أريد أن أطلب."},
+              {"german": "Was empfehlen Sie?", "arabic": "ماذا توصي؟"},
+              {"german": "Zahlen, bitte!", "arabic": "الحساب من فضلك!"},
+              {"german": "Ich bezahle bar.", "arabic": "أدفع نقداً."},
+              {"german": "Stimmt so!", "arabic": "لا يقلب (الباقي بقشيش)."},
+              {"german": "Guten Appetit!", "arabic": "بالهناء!"}
+            ]
+          }
+        },
+        {
+          "id": "L4_3",
+          "title": "Preise & Einkaufen",
+          "titleArabic": "الأسعار والتسوق",
+          "order": 3,
+          "type": "vocabulary",
+          "content": {
+            "shopping": [
+              {"german": "Wie viel kostet das?", "arabic": "كم سعر هذا؟"},
+              {"german": "Das ist zu teuer.", "arabic": "هذا غالي جداً."},
+              {"german": "Haben Sie etwas Billigeres?", "arabic": "هل عندكم شيء أرخص؟"},
+              {"german": "Ich suche...", "arabic": "أبحث عن..."},
+              {"german": "Ich nehme das.", "arabic": "آخذ هذا."},
+              {"german": "Die Kasse, bitte.", "arabic": "المحاسبة من فضلك."},
+              {"german": "Kann ich mit Karte zahlen?", "arabic": "هل يمكنني الدفع بالبطاقة؟"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "unit_5",
+      "title": "Wohnen & Wohnort",
+      "titleArabic": "السكن ومكان الإقامة",
+      "description": "Zimmer, Möbel, Wohnung, Adresse",
+      "order": 5,
+      "lessons": [
+        {
+          "id": "L5_1",
+          "title": "Die Wohnung",
+          "titleArabic": "الشقة",
+          "order": 1,
+          "type": "vocabulary",
+          "content": {
+            "rooms": [
+              {"german": "das Wohnzimmer", "arabic": "غرفة المعيشة"},
+              {"german": "das Schlafzimmer", "arabic": "غرفة النوم"},
+              {"german": "die Küche", "arabic": "المطبخ"},
+              {"german": "das Bad", "arabic": "الحمام"},
+              {"german": "die Toilette", "arabic": "المرحاض"},
+              {"german": "der Flur", "arabic": "المدخل/الممر"},
+              {"german": "der Balkon", "arabic": "الشرفة"},
+              {"german": "der Keller", "arabic": "القبو"},
+              {"german": "die Garage", "arabic": "المرآب"}
+            ],
+            "furniture": [
+              {"german": "der Tisch", "arabic": "الطاولة"},
+              {"german": "der Stuhl", "arabic": "الكرسي"},
+              {"german": "das Sofa", "arabic": "الكنبة"},
+              {"german": "das Bett", "arabic": "السرير"},
+              {"german": "der Schrank", "arabic": "الخزانة"},
+              {"german": "der Spiegel", "arabic": "المرآة"},
+              {"german": "die Lampe", "arabic": "المصباح"},
+              {"german": "der Teppich", "arabic": "السجادة"},
+              {"german": "das Regal", "arabic": "الرف"}
+            ]
+          }
+        },
+        {
+          "id": "L5_2",
+          "title": "Wo? Präpositionen",
+          "titleArabic": "أين؟ حروف الجر",
+          "order": 2,
+          "type": "grammar",
+          "content": {
+            "prepositions": [
+              {"german": "in", "arabic": "في", "example": "in der Küche"},
+              {"german": "auf", "arabic": "على", "example": "auf dem Tisch"},
+              {"german": "unter", "arabic": "تحت", "example": "unter dem Bett"},
+              {"german": "neben", "arabic": "بجانب", "example": "neben dem Schrank"},
+              {"german": "zwischen", "arabic": "بين", "example": "zwischen den Stühlen"},
+              {"german": "hinter", "arabic": "خلف", "example": "hinter der Tür"},
+              {"german": "vor", "arabic": "أمام", "example": "vor dem Haus"},
+              {"german": "über", "arabic": "فوق", "example": "über dem Tisch"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "unit_6",
+      "title": "Körper & Gesundheit",
+      "titleArabic": "الجسم والصحة",
+      "description": "Körperteile, beim Arzt, Gefühle",
+      "order": 6,
+      "lessons": [
+        {
+          "id": "L6_1",
+          "title": "Der Körper",
+          "titleArabic": "الجسم",
+          "order": 1,
+          "type": "vocabulary",
+          "content": {
+            "body": [
+              {"german": "der Kopf", "arabic": "الرأس"},
+              {"german": "das Gesicht", "arabic": "الوجه"},
+              {"german": "das Auge", "arabic": "العين"},
+              {"german": "die Nase", "arabic": "الأنف"},
+              {"german": "der Mund", "arabic": "الفم"},
+              {"german": "das Ohr", "arabic": "الأذن"},
+              {"german": "das Haar", "arabic": "الشعر"},
+              {"german": "der Hals", "arabic": "الرقبة"},
+              {"german": "die Schulter", "arabic": "الكتف"},
+              {"german": "der Arm", "arabic": "الذراع"},
+              {"german": "die Hand", "arabic": "اليد"},
+              {"german": "der Finger", "arabic": "الإصبع"},
+              {"german": "der Bauch", "arabic": "البطن"},
+              {"german": "das Bein", "arabic": "الساق"},
+              {"german": "das Knie", "arabic": "الركبة"},
+              {"german": "der Fuß", "arabic": "القدم"}
+            ]
+          }
+        },
+        {
+          "id": "L6_2",
+          "title": "Beim Arzt",
+          "titleArabic": "عند الطبيب",
+          "order": 2,
+          "type": "vocabulary",
+          "content": {
+            "doctor": [
+              {"german": "Ich bin krank.", "arabic": "أنا مريض."},
+              {"german": "Ich habe Kopfschmerzen.", "arabic": "عندي صداع."},
+              {"german": "Ich habe Halsschmerzen.", "arabic": "عندي ألم في الحلق."},
+              {"german": "Ich habe Bauchschmerzen.", "arabic": "عندي ألم في البطن."},
+              {"german": "Ich habe Fieber.", "arabic": "عندي حرارة."},
+              {"german": "Ich huste.", "arabic": "أنا أحس بكحة."},
+              {"german": "Ich bin erkältet.", "arabic": "أنا مصاب بالبرد."},
+              {"german": "Wie lange sind Sie schon krank?", "arabic": "من متى وأنت مريض؟"},
+              {"german": "Das ist nichts Schlimmes.", "arabic": "هذا ليس خطيراً."}
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

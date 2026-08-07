@@ -1,10 +1,11 @@
-import 'dart:math';
-import 'dart:ui';
+import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:lottie/lottie.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../shared/widgets/state_widgets.dart';
+import '../../core/constants/app_assets.dart';
 import '../../shared/widgets/widgets.dart';
 import 'certificates_repository.dart';
 import 'models/certificate.dart';
@@ -21,7 +22,6 @@ enum _CertStatus { initial, loading, success, empty, error }
 
 class _CertificatesScreenState extends State<CertificatesScreen>
     with TickerProviderStateMixin {
-  late AnimationController _confettiController;
   late AnimationController _glowController;
 
   final CertificatesRepository _repository = CertificatesRepository();
@@ -33,10 +33,6 @@ class _CertificatesScreenState extends State<CertificatesScreen>
   @override
   void initState() {
     super.initState();
-    _confettiController = AnimationController(
-      duration: const Duration(seconds: 4),
-      vsync: this,
-    )..repeat();
     _glowController = AnimationController(
       duration: const Duration(milliseconds: 2000),
       vsync: this,
@@ -71,7 +67,6 @@ class _CertificatesScreenState extends State<CertificatesScreen>
 
   @override
   void dispose() {
-    _confettiController.dispose();
     _glowController.dispose();
     super.dispose();
   }
@@ -97,17 +92,11 @@ class _CertificatesScreenState extends State<CertificatesScreen>
           ),
 
           // Confetti effect
-          AnimatedBuilder(
-            animation: _confettiController,
-            builder: (context, _) => CustomPaint(
-              painter: ConfettiPainter(
-                progress: _confettiController.value,
-              ),
-              size: Size(
-                MediaQuery.of(context).size.width,
-                MediaQuery.of(context).size.height,
-              ),
-            ),
+          Lottie.asset(
+            AppAssets.lottieConfetti,
+            fit: BoxFit.cover,
+            repeat: true,
+            errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
           ),
 
           // Content
@@ -375,14 +364,23 @@ class _CertificatesScreenState extends State<CertificatesScreen>
           ),
         ],
       ),
-      child: Text(
-        'B1',
-        style: GoogleFonts.poppins(
-          fontSize: 28,
-          fontWeight: FontWeight.w900,
-          color: Colors.white,
-          letterSpacing: 4,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ClipOval(
+            child: Image.asset(AppAssets.badgeB1, width: 40, height: 40, fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) => Icon(Icons.broken_image, size: 40)),
+          ),
+          const SizedBox(width: 12),
+          Text(
+            'B1',
+            style: GoogleFonts.poppins(
+              fontSize: 28,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+              letterSpacing: 4,
+            ),
+          ),
+        ],
       ),
     )
         .animate()
@@ -532,7 +530,11 @@ class _CertificatesScreenState extends State<CertificatesScreen>
   Widget _buildShareButton() {
     return GradientButton(
       text: 'مشاركة الشهادة',
-      onPressed: () {},
+      onPressed: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('تم نسخ الرابط. يمكنك مشاركة الشهادة الآن.')),
+        );
+      },
       gradient: AppColors.primaryGradient,
       icon: Icons.share,
       width: double.infinity,
@@ -596,91 +598,4 @@ class _CertificatesScreenState extends State<CertificatesScreen>
   }
 }
 
-class ConfettiPainter extends CustomPainter {
-  final double progress;
-  final List<ConfettiParticle> _particles = [];
 
-  ConfettiPainter({required this.progress}) {
-    final random = Random(42);
-    for (int i = 0; i < 50; i++) {
-      _particles.add(
-        ConfettiParticle(
-          x: random.nextDouble(),
-          y: random.nextDouble() * 1.5 - 0.5,
-          speed: 0.3 + random.nextDouble() * 0.7,
-          rotation: random.nextDouble() * 2 * pi,
-          rotationSpeed: (random.nextDouble() - 0.5) * 4,
-          color: [
-            AppColors.gold,
-            AppColors.primary,
-            AppColors.success,
-            AppColors.accent,
-            const Color(0xFF3B82F6),
-          ][random.nextInt(5)],
-          size: 4 + random.nextDouble() * 6,
-          wobble: random.nextDouble() * 2 * pi,
-          wobbleSpeed: 2 + random.nextDouble() * 3,
-        ),
-      );
-    }
-  }
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    for (final particle in _particles) {
-      final paint = Paint()..color = particle.color;
-
-      final y =
-          ((particle.y + progress * particle.speed) % 1.5) * size.height;
-      final x = particle.x * size.width +
-          sin(progress * 2 * pi + particle.wobble) * 30;
-      final rotation = particle.rotation + progress * particle.rotationSpeed;
-
-      canvas.save();
-      canvas.translate(x, y);
-      canvas.rotate(rotation);
-
-      // Draw confetti rectangle
-      final rect = Rect.fromCenter(
-        center: Offset.zero,
-        width: particle.size,
-        height: particle.size * 0.6,
-      );
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(rect, const Radius.circular(1)),
-        paint,
-      );
-
-      canvas.restore();
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant ConfettiPainter oldDelegate) {
-    return oldDelegate.progress != progress;
-  }
-}
-
-class ConfettiParticle {
-  final double x;
-  final double y;
-  final double speed;
-  final double rotation;
-  final double rotationSpeed;
-  final Color color;
-  final double size;
-  final double wobble;
-  final double wobbleSpeed;
-
-  ConfettiParticle({
-    required this.x,
-    required this.y,
-    required this.speed,
-    required this.rotation,
-    required this.rotationSpeed,
-    required this.color,
-    required this.size,
-    required this.wobble,
-    required this.wobbleSpeed,
-  });
-}

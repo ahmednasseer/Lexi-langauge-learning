@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../features/splash/splash_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
-import '../../features/auth/auth_screen.dart';
+import '../../features/auth/presentation/pages/auth_screen.dart';
 import '../../features/home/home_screen.dart';
 import '../../features/lessons/screens/lessons_screen.dart';
 import '../../features/lessons/screens/lesson_detail_screen.dart';
@@ -10,8 +10,9 @@ import '../../features/ai_coach/ai_coach_screen.dart';
 import '../../features/pronunciation/pronunciation_screen.dart';
 import '../../features/gamification/gamification_screen.dart';
 import '../../features/subscription/premium_screen.dart';
-import '../../features/profile/profile_screen.dart';
-import '../../features/profile/settings.dart';
+import '../../features/profile/presentation/pages/profile_screen.dart';
+import '../../features/profile/presentation/pages/edit_profile_screen.dart';
+import '../../features/profile/presentation/pages/settings_screen.dart';
 import '../../features/roadmap/roadmap_screen.dart';
 import '../../features/flashcards/flashcard_screen.dart';
 import '../../features/speaking/speaking_screen.dart';
@@ -66,6 +67,7 @@ class AppRouter {
   static const String gamification = '/gamification';
   static const String premium = '/premium';
   static const String profile = '/profile';
+  static const String profileEdit = '/profile-edit';
   static const String roadmap = '/roadmap';
   static const String flashcards = '/flashcards';
   static const String speaking = '/speaking';
@@ -132,6 +134,8 @@ class AppRouter {
         return _buildRoute(const PremiumScreen(), settings);
       case profile:
         return _buildRoute(const ProfileScreen(), settings);
+      case profileEdit:
+        return _buildRoute(const EditProfileScreen(), settings);
       case roadmap:
         return _buildRoute(const RoadmapScreen(), settings);
       case flashcards:

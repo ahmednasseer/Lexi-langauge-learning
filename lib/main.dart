@@ -5,10 +5,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'firebase_options.dart';
 import 'core/theme/app_theme.dart';
 import 'core/router/app_router.dart';
-import 'services/auth_service.dart';
-import 'services/analytics_service.dart';
-import 'services/notification_service.dart';
-import 'services/connectivity_service.dart';
+import 'core/di/injection_container.dart';
+import 'core/services/connectivity_service.dart';
+import 'core/services/auth_service.dart';
+import 'core/services/analytics_service.dart';
+import 'core/services/notification_service.dart';
+import 'core/services/curriculum_service.dart';
+import 'core/services/user_progress_service.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -17,23 +20,35 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.dark,
-  ));
-
+  
+  // Initialize Firebase
   try {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   } catch (e) {
-    debugPrint('Firebase init failed (running in offline mode): $e');
+    debugPrint('Firebase init failed: $e');
   }
-
+  
+  // Setup Dependency Injection
+  await setupDependencies();
+  
+  // Initialize Services
   await ConnectivityService().init();
   await AuthService.instance.init();
   await AnalyticsService.instance.init();
   await NotificationService.instance.init();
+  await CurriculumService().initialize();
+  await UserProgressService().initialize();
+  
+  // App UI Settings
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
+  ));
 
   runApp(const LexiApp());
 }

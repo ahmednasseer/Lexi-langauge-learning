@@ -3,8 +3,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../services/auth_service.dart';
-import '../../../services/analytics_service.dart';
+import '../../../core/services/auth_service.dart';
+import '../../../core/services/analytics_service.dart';
 import '../models/lesson_model.dart';
 import '../lesson_repository.dart';
 

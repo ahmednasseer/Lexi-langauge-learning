@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../services/auth_service.dart';
-import '../../services/storage_service.dart';
+import '../../core/services/auth_service.dart';
+import '../../core/services/storage_service.dart';
 import '../../shared/models/user_model.dart';
 
 class AppProvider extends ChangeNotifier {
@@ -21,12 +21,16 @@ class AppProvider extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    await _authService.init();
-    _isOnboarded = await _authService.getOnboarded();
-    _isDarkMode = await StorageService.read<bool>('dark_mode') ?? false;
+    try {
+      await _authService.init();
+      _isOnboarded = await _authService.getOnboarded();
+      _isDarkMode = await StorageService.read<bool>('dark_mode') ?? false;
 
-    if (_authService.currentUser != null) {
-      _user = _authService.currentUser!;
+      if (_authService.currentUser != null) {
+        _user = _authService.currentUser!;
+      }
+    } catch (e) {
+      debugPrint('Error initializing app: $e');
     }
 
     _isLoading = false;

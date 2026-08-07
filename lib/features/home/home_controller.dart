@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../shared/models/user_model.dart';
-import '../../services/storage_service.dart';
+import '../../core/services/storage_service.dart';
 
 class HomeController extends ChangeNotifier {
   UserModel _user = UserModel.empty();
@@ -14,7 +14,12 @@ class HomeController extends ChangeNotifier {
   Future<void> loadUser() async {
     _isLoading = true;
     notifyListeners();
-    _user = await StorageService.read<UserModel>('current_user') ?? UserModel.empty();
+    try {
+      _user = await StorageService.read<UserModel>('current_user') ?? UserModel.empty();
+    } catch (e) {
+      debugPrint('Error loading user: $e');
+      _user = UserModel.empty();
+    }
     _isLoading = false;
     notifyListeners();
   }

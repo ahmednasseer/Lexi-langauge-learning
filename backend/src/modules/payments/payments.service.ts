@@ -11,7 +11,7 @@ export class PaymentsService {
     private config: ConfigService,
     private prisma: PrismaService,
   ) {
-    this.stripe = new Stripe(this.config.get('STRIPE_SECRET_KEY'), { apiVersion: '2024-06-20' });
+    this.stripe = new Stripe(this.config.get('STRIPE_SECRET_KEY') || 'sk_test_placeholder', { apiVersion: '2023-10-16' });
   }
 
   async createCheckoutSession(userId: string, planId: string) {
@@ -38,8 +38,12 @@ export class PaymentsService {
   async handleWebhook(event: Stripe.Event) {
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
-      const userId = session.metadata.userId;
-      const planId = session.metadata.planId;
+      const userId = session.metadata?.userId;
+      const planId = session.metadata?.planId;
+
+      if (!userId || !planId) {
+        throw new Error('Missing metadata in session');
+      }
 
       const endDate = new Date();
       endDate.setMonth(endDate.getMonth() + (planId === 'yearly' ? 12 : 1));

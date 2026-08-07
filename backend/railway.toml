@@ -1,0 +1,12 @@
+# Render Configuration for Lexi Backend
+# Render Free Tier: spins down after 15 min inactivity, wakes on request
+
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "npm run start:prod"
+healthcheckPath = "/api/docs"
+healthcheckTimeout = 100
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10

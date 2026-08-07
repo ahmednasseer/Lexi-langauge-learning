@@ -55,10 +55,12 @@ class _StoreScreenState extends State<StoreScreen> {
     setState(() => _error = false);
     try {
       final items = await _storeRepo.getItems(category: _selectedCategory);
-      if (mounted) setState(() {
-        _items = items;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _items = items;
+          _isLoading = false;
+        });
+      }
     } catch (e) {
       if (mounted) setState(() => _error = true);
     }

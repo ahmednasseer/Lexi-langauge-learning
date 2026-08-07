@@ -69,15 +69,19 @@ class GrowthController extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    final referral = await _service.applyReferralCode(code, userId, userName);
-    if (referral != null) {
-      _referralStats = ReferralStats(
-        totalReferrals: _referralStats.totalReferrals + 1,
-        successfulReferrals: _referralStats.successfulReferrals + 1,
-        totalGemsEarned: _referralStats.totalGemsEarned + 500,
-        totalPremiumDaysEarned: _referralStats.totalPremiumDaysEarned + 7,
-        referrals: [..._referralStats.referrals, referral],
-      );
+    try {
+      final referral = await _service.applyReferralCode(code, userId, userName);
+      if (referral != null) {
+        _referralStats = ReferralStats(
+          totalReferrals: _referralStats.totalReferrals + 1,
+          successfulReferrals: _referralStats.successfulReferrals + 1,
+          totalGemsEarned: _referralStats.totalGemsEarned + 500,
+          totalPremiumDaysEarned: _referralStats.totalPremiumDaysEarned + 7,
+          referrals: [..._referralStats.referrals, referral],
+        );
+      }
+    } catch (e) {
+      debugPrint('Error applying referral code: $e');
     }
 
     _isLoading = false;
@@ -115,7 +119,11 @@ class GrowthController extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    _freeTrial = await _service.startFreeTrial(userId);
+    try {
+      _freeTrial = await _service.startFreeTrial(userId);
+    } catch (e) {
+      debugPrint('Error starting free trial: $e');
+    }
 
     _isLoading = false;
     notifyListeners();

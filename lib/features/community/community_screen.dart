@@ -16,7 +16,6 @@ class CommunityScreen extends StatefulWidget {
 
 class _CommunityScreenState extends State<CommunityScreen> {
   _CommunityTab _selectedTab = _CommunityTab.conversations;
-  int _bottomNavIndex = 3;
   final CommunityRepository _repository = CommunityRepository();
   bool _feedError = false;
 
@@ -77,7 +76,6 @@ class _CommunityScreenState extends State<CommunityScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: _buildBottomNav(),
     );
   }
 
@@ -935,77 +933,4 @@ class _CommunityScreenState extends State<CommunityScreen> {
     );
   }
 
-  Widget _buildBottomNav() {
-    final items = [
-      (_bottomNavIndex == 0 ? Icons.home : Icons.home_outlined, 'الرئيسية', 0),
-      (_bottomNavIndex == 1 ? Icons.explore : Icons.explore_outlined, 'الاكتشاف', 1),
-      (_bottomNavIndex == 2 ? Icons.school : Icons.school_outlined, 'التعلم', 2),
-      (_bottomNavIndex == 3 ? Icons.people : Icons.people_outlined, 'المجتمع', 3),
-      (_bottomNavIndex == 4 ? Icons.person : Icons.person_outlined, 'الملف الشخصي', 4),
-    ];
-
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF161B22),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.4),
-            blurRadius: 24,
-            offset: const Offset(0, -8),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: items.map((item) {
-              final isSelected = _bottomNavIndex == item.$3;
-              return GestureDetector(
-                onTap: () {
-                  if (item.$3 != 3) {
-                    setState(() => _bottomNavIndex = item.$3);
-                  }
-                },
-                behavior: HitTestBehavior.opaque,
-                child: SizedBox(
-                  width: 64,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                        decoration: BoxDecoration(
-                          gradient: isSelected ? AppColors.primaryGradient : null,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(
-                          item.$1,
-                          size: 22,
-                          color: isSelected ? Colors.white : AppColors.textHint,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        item.$2,
-                        style: GoogleFonts.poppins(
-                          fontSize: 10,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                          color: isSelected ? AppColors.textPrimary : AppColors.textHint,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-      ),
-    );
-  }
 }

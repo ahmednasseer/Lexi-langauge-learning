@@ -1,4 +1,4 @@
-import '../../services/api_service.dart';
+import '../../core/services/api_service.dart';
 
 class AppNotification {
   final String id;

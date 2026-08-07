@@ -225,7 +225,7 @@ class _InboxScreenState extends State<InboxScreen> with SingleTickerProviderStat
       child: SizedBox(
         width: double.infinity,
         child: GestureDetector(
-          onTap: () {},
+          onTap: () => Navigator.pushReplacementNamed(context, '/inbox'),
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 14),
             decoration: BoxDecoration(

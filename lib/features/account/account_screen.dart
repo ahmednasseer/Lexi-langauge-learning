@@ -27,9 +27,9 @@ class AccountScreen extends StatelessWidget {
               const SizedBox(height: 28),
               _buildCurrentPlan(),
               const SizedBox(height: 20),
-              _buildManageSubscriptionsButton(),
+              _buildManageSubscriptionsButton(context),
               const SizedBox(height: 20),
-              _buildHelpCenter(),
+              _buildHelpCenter(context),
               const SizedBox(height: 32),
             ],
           ),
@@ -240,11 +240,11 @@ class AccountScreen extends StatelessWidget {
     ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.1);
   }
 
-  Widget _buildManageSubscriptionsButton() {
+  Widget _buildManageSubscriptionsButton(BuildContext context) {
     return GlowCard(
       glowColor: AppColors.primary,
       padding: const EdgeInsets.all(16),
-      onTap: () {},
+      onTap: () => Navigator.pushNamed(context, '/premium'),
       child: Row(
         children: [
           Container(
@@ -273,11 +273,11 @@ class AccountScreen extends StatelessWidget {
     ).animate().fadeIn(delay: 500.ms).slideX(begin: 0.05);
   }
 
-  Widget _buildHelpCenter() {
+  Widget _buildHelpCenter(BuildContext context) {
     return GlowCard(
       glowColor: AppColors.secondary,
       padding: const EdgeInsets.all(16),
-      onTap: () {},
+      onTap: () => Navigator.pushNamed(context, '/support'),
       child: Row(
         children: [
           Container(

@@ -238,7 +238,7 @@ export class AdvancedSpeakingService {
   }
 
   private calculatePronunciationScore(spoken: string, target: string): number {
-    if (spoken.isEmpty) return 0;
+    if (spoken.length === 0) return 0;
     if (spoken === target) return 100;
 
     const similarity = this.calculateSimilarity(spoken, target);
@@ -294,7 +294,7 @@ export class AdvancedSpeakingService {
   }
 
   private calculateWordAccuracy(spoken: string, target: string): number {
-    if (spoken.isEmpty || target.isEmpty) return 0;
+    if (spoken.length === 0 || target.length === 0) return 0;
 
     const spokenWords = spoken.split(' ');
     const targetWords = target.split(' ');

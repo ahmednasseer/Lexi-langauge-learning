@@ -31,11 +31,15 @@ class AiTutorController extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    await _repository.sendMessage(
-      message: text,
-      learningLanguage: learningLanguage,
-      nativeLanguage: nativeLanguage,
-    );
+    try {
+      await _repository.sendMessage(
+        message: text,
+        learningLanguage: learningLanguage,
+        nativeLanguage: nativeLanguage,
+      );
+    } catch (e) {
+      debugPrint('Error sending message: $e');
+    }
 
     _isLoading = false;
     notifyListeners();

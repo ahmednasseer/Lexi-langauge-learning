@@ -1,5 +1,5 @@
-import '../../services/api_service.dart';
-import '../../services/auth_service.dart';
+import '../../core/services/api_service.dart';
+import '../../core/services/auth_service.dart';
 import 'models/passport.dart';
 
 class PassportRepository {

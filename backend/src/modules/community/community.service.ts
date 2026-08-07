@@ -1,5 +1,5 @@
 import { Injectable, ForbiddenException, BadRequestException } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '../../config/prisma.service';
 
 @Injectable()
 export class CommunityService {
@@ -12,13 +12,14 @@ export class CommunityService {
 
   async getFeed(userId: string) {
     const blockedUserIds = await this.getBlockedUserIds(userId);
-    
+
     const posts = await this.prisma.post.findMany({
       where: {
         userId: { notIn: blockedUserIds },
       },
       include: {
         user: { select: { name: true, level: true, totalXp: true } },
+        likes: { select: { userId: true } },
         _count: { select: { likes: true, comments: true } },
       },
       orderBy: { createdAt: 'desc' },
@@ -27,14 +28,14 @@ export class CommunityService {
 
     return posts.map(post => ({
       ...post,
-      likes: post._count.likes,
+      likesCount: post._count.likes,
       commentsCount: post._count.comments,
       isLiked: post.likes.some(like => like.userId === userId),
     }));
   }
 
   async createPost(userId: string, data: { content: string; type: string; groupId?: string }) {
-    if (!data.content || data.content.trim().isEmpty) {
+    if (!data.content || data.content.trim().length === 0) {
       throw new BadRequestException('Post content cannot be empty');
     }
     if (data.content.length > 1000) {
@@ -70,7 +71,7 @@ export class CommunityService {
   }
 
   async addComment(userId: string, postId: string, text: string) {
-    if (!text || text.trim().isEmpty) {
+    if (!text || text.trim().length === 0) {
       throw new BadRequestException('Comment cannot be empty');
     }
     if (text.length > 500) {
@@ -282,7 +283,7 @@ export class CommunityService {
       throw new BadRequestException('Cannot send message to yourself');
     }
 
-    if (!content || content.trim().isEmpty) {
+    if (!content || content.trim().length === 0) {
       throw new BadRequestException('Message content cannot be empty');
     }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/constants/app_assets.dart';
 import '../../services/ai_service.dart';
 import '../../features/ai_tutor/chat_model.dart';
 
@@ -147,10 +148,9 @@ class _AiTutorScreenState extends State<AiTutorScreen> {
         boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 2))],
       ),
       child: Row(children: [
-        Container(
-          width: 48, height: 48,
-          decoration: BoxDecoration(gradient: AppColors.primaryGradient, borderRadius: BorderRadius.circular(16)),
-          child: const Center(child: Text('🤖', style: TextStyle(fontSize: 24))),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Image.asset(AppAssets.lexiTeacherHappy, width: 48, height: 48, fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) => Icon(Icons.broken_image, size: 48)),
         ),
         const SizedBox(width: 16),
         Expanded(

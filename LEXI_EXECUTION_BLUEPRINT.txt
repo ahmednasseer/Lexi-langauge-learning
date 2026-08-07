@@ -1,0 +1,878 @@
+================================================================================
+              LEXI EXECUTION BLUEPRINT
+================================================================================
+Document Type: Official Implementation Plan
+References:
+  - LEXI_PRODUCTION_AUDIT.txt (Code Audit)
+  - LEXI_FEATURE_SPECIFICATION.txt (Feature Specification)
+Status: FINAL
+================================================================================
+
+SECTION 1: FEATURE DEPENDENCY GRAPH
+================================================================================
+
+FEATURE: User Authentication
+Depends on: Nothing (root feature)
+Depended by: All features
+Blockers: None
+Priority: CRITICAL
+
+FEATURE: User Profile
+Depends on: User Authentication
+Depended by: Avatar System, Social, Settings
+Blockers: User Authentication
+Priority: CRITICAL
+
+FEATURE: User Registration
+Depends on: User Authentication
+Depended by: User Profile
+Blockers: User Authentication
+Priority: CRITICAL
+
+FEATURE: User Login
+Depends on: User Authentication
+Depended by: All authenticated features
+Blockers: User Authentication
+Priority: CRITICAL
+
+FEATURE: Logout
+Depends on: User Authentication
+Depended by: Security
+Blockers: User Authentication
+Priority: HIGH
+
+FEATURE: Avatar System
+Depends on:
+  - User Authentication
+  - User Profile
+  - Profile Picture Upload
+  - Image Cropper
+  - Firebase Storage
+  - Firestore
+  - Cache Refresh
+Depended by: Profile Display, Social Features
+Blockers: Profile Picture Upload
+Priority: HIGH
+
+FEATURE: Profile Picture Upload
+Depends on:
+  - User Authentication
+  - Image Picker
+  - Image Cropper
+  - Firebase Storage
+Depended by: Avatar System
+Blockers: Image Picker package
+Priority: HIGH
+
+FEATURE: Learning Path
+Depends on:
+  - User Authentication
+  - Firestore
+  - Lessons System
+Depended by: Progress Tracking, Certificates
+Blockers: Lessons System
+Priority: CRITICAL
+
+FEATURE: Lessons System
+Depends on:
+  - Firestore
+  - Curriculum Data
+Depended by: Quizzes, Progress Tracking, XP System
+Blockers: None (data uploaded)
+Priority: CRITICAL
+
+FEATURE: Quizzes
+Depends on: Lessons System
+Depended by: XP System, Progress Tracking
+Blockers: Lessons System
+Priority: CRITICAL
+
+FEATURE: XP System
+Depends on:
+  - User Authentication
+  - Lessons System
+  - Quizzes
+Depended by: Level System, Leaderboard
+Blockers: Quizzes
+Priority: HIGH
+
+FEATURE: Level System
+Depends on: XP System
+Depended by: Unlocking Content, Leaderboard
+Blockers: XP System
+Priority: MEDIUM
+
+FEATURE: Progress Tracking
+Depends on:
+  - User Authentication
+  - Lessons System
+  - Quizzes
+Depended by: Certificates, Reports, Parent Dashboard
+Blockers: Lessons System
+Priority: CRITICAL
+
+FEATURE: Achievements
+Depends on:
+  - User Authentication
+  - Progress Tracking
+  - XP System
+Depended by: Notifications, Rewards
+Blockers: Progress Tracking
+Priority: MEDIUM
+
+FEATURE: Daily Missions
+Depends on:
+  - User Authentication
+  - Progress Tracking
+Depended by: Rewards, Notifications
+Blockers: Progress Tracking
+Priority: MEDIUM
+
+FEATURE: Daily Streaks
+Depends on:
+  - User Authentication
+  - User Activity Tracking
+Depended by: Rewards, Motivation
+Blockers: User Activity Tracking
+Priority: MEDIUM
+
+FEATURE: Flashcards
+Depends on:
+  - Lessons System
+  - Vocabulary Data
+Depended by: Spaced Repetition
+Blockers: Lessons System
+Priority: MEDIUM
+
+FEATURE: Audio Lessons
+Depends on:
+  - Firebase Storage
+  - Audio Files
+  - Lessons System
+Depended by: Listening Quizzes
+Blockers: Audio Files in Storage
+Priority: HIGH
+
+FEATURE: Speaking Practice
+Depends on:
+  - Speech-to-Text
+  - Audio Recording
+  - Lessons System
+Depended by: Pronunciation Scoring
+Blockers: Speech-to-Text integration
+Priority: HIGH
+
+FEATURE: Pronunciation Training
+Depends on:
+  - Audio Recording
+  - Speech Analysis API
+  - Lessons System
+Depended by: Speaking Practice
+Blockers: Speech Analysis API
+Priority: HIGH
+
+FEATURE: AI Tutor
+Depends on:
+  - User Authentication
+  - OpenAI/ChatGPT API
+  - User Progress Data
+Depended by: Personalized Learning
+Blockers: OpenAI API integration
+Priority: HIGH
+
+FEATURE: AI Coach
+Depends on:
+  - User Authentication
+  - OpenAI/ChatGPT API
+  - User Weak Areas
+Depended by: Study Plan
+Blockers: AI Tutor
+Priority: MEDIUM
+
+FEATURE: Community Feed
+Depends on:
+  - User Authentication
+  - User Profile
+  - Firestore Real-time
+Depended by: Social Features
+Blockers: User Authentication
+Priority: MEDIUM
+
+FEATURE: Friends System
+Depends on:
+  - User Authentication
+  - User Profile
+  - Search
+Depended by: Messaging, Leaderboard
+Blockers: User Authentication
+Priority: MEDIUM
+
+FEATURE: Messaging
+Depends on:
+  - User Authentication
+  - Friends System
+  - Firestore Real-time
+Depended by: Notifications
+Blockers: Friends System
+Priority: MEDIUM
+
+FEATURE: Live Learning
+Depends on:
+  - Agora SDK
+  - User Authentication
+  - Room Management
+Depended by: Live Chat, Screen Share
+Blockers: Agora SDK
+Priority: HIGH
+
+FEATURE: Store
+Depends on:
+  - User Authentication
+  - Currency System
+  - Inventory System
+Depended by: Avatar Shop, Frames, Backgrounds
+Blockers: Currency System
+Priority: CRITICAL
+
+FEATURE: Currency System (Gems)
+Depends on:
+  - User Authentication
+  - Wallet
+Depended by: Store, Premium
+Blockers: User Authentication
+Priority: CRITICAL
+
+FEATURE: Inventory System
+Depends on:
+  - User Authentication
+  - Store
+  - Firestore
+Depended by: Equip System
+Blockers: Store
+Priority: HIGH
+
+FEATURE: Equip System
+Depends on:
+  - Inventory System
+  - Avatar System
+Depended by: Profile Display
+Blockers: Inventory System
+Priority: HIGH
+
+FEATURE: Avatar Shop
+Depends on:
+  - Store
+  - Inventory System
+  - Avatar System
+Depended by: Avatar Customization
+Blockers: Store
+Priority: MEDIUM
+
+FEATURE: Frames Workshop
+Depends on:
+  - Store
+  - Inventory System
+  - Avatar System
+Depended by: Profile Customization
+Blockers: Store
+Priority: MEDIUM
+
+FEATURE: Backgrounds Shop
+Depends on:
+  - Store
+  - Inventory System
+Depended by: Chat/Profile Backgrounds
+Blockers: Store
+Priority: MEDIUM
+
+FEATURE: Premium Subscription
+Depends on:
+  - Stripe/RevenueCat
+  - User Authentication
+Depended by: Premium Features, Sub Badge
+Blockers: Payment Gateway
+Priority: CRITICAL
+
+FEATURE: Payment Processing
+Depends on:
+  - Stripe/RevenutCat
+  - PCI Compliance
+Depended by: Premium, Store
+Blockers: Stripe Account
+Priority: CRITICAL
+
+FEATURE: Push Notifications
+Depends on:
+  - FCM
+  - User Authentication
+Depended by: Engagement, Retention
+Blockers: FCM Configuration
+Priority: HIGH
+
+FEATURE: Search
+Depends on:
+  - Firestore Indexing
+  - Search Algorithm
+Depended by: Users, Posts, Content
+Blockers: Firestore Indexes
+Priority: MEDIUM
+
+FEATURE: Settings
+Depends on:
+  - User Authentication
+  - Local Storage
+Depended by: User Preferences
+Blockers: None
+Priority: MEDIUM
+
+FEATURE: Privacy Settings
+Depends on:
+  - User Authentication
+  - Settings
+Depended by: Block, Report
+Blockers: Settings
+Priority: MEDIUM
+
+================================================================================
+SECTION 2: BROKEN FEATURE CHAINS
+================================================================================
+
+CHAIN 1: User Onboarding
+Register → [BROKEN: No real auth] → Profile Setup → [BROKEN] → Start Learning
+Breaks at: User Authentication
+Impact: Users cannot save progress
+
+CHAIN 2: Lesson Completion
+Start Lesson → Study → Quiz → [BROKEN: No completion tracking] → Progress Update → [BROKEN]
+Breaks at: Lesson completion tracking
+Impact: Users cannot progress
+
+CHAIN 3: Store Purchase
+Browse Items → Select → [BROKEN: No purchase] → Payment → [BROKEN] → Inventory → [BROKEN] → Equip
+Breaks at: Purchase logic
+Impact: No monetization
+
+CHAIN 4: Avatar Customization
+Open Profile → [BROKEN: No edit] → Upload Photo → [BROKEN] → Crop → [BROKEN] → Save → [BROKEN]
+Breaks at: Edit profile
+Impact: No customization
+
+CHAIN 5: Social Interaction
+Open Community → [BROKEN: Fake data] → Create Post → [BROKEN: Not saved] → Like → [BROKEN: Not saved]
+Breaks at: Real backend
+Impact: No social features
+
+CHAIN 6: Live Learning
+Open Live → [BROKEN: Fake rooms] → Create Room → [BROKEN: No Agora] → Stream → [BROKEN]
+Breaks at: Agora SDK
+Impact: No live features
+
+CHAIN 7: AI Chat
+Open AI Chat → Send Message → [BROKEN: Static response] → Get Response → [BROKEN: No context]
+Breaks at: AI integration
+Impact: No real AI
+
+CHAIN 8: Audio Lesson
+Open Audio → [BROKEN: No real files] → Play → [BROKEN] → Quiz → [BROKEN]
+Breaks at: Audio files
+Impact: No listening practice
+
+CHAIN 9: Subscription
+View Plans → Select → [BROKEN: No Stripe] → Pay → [BROKEN] → Premium → [BROKEN]
+Breaks at: Payment gateway
+Impact: No revenue
+
+CHAIN 10: Notifications
+Event Occurs → [BROKEN: No FCM] → Send → [BROKEN] → Receive → [BROKEN]
+Breaks at: FCM integration
+Impact: No engagement
+
+================================================================================
+SECTION 3: MISSING BUSINESS LOGIC
+================================================================================
+
+AUTHENTICATION:
+- Login without Logout
+- Registration without Email Verification
+- No Password Reset
+- No Session Management
+- No Multi-device Support
+
+LEARNING:
+- Complete Lesson without Progress Tracking
+- Quiz without Score Persistence
+- XP without Level Calculation
+- Streak without Daily Check-in
+- Bookmark without Save
+
+SOCIAL:
+- Post without Save
+- Like without Persist
+- Comment without Display
+- Friend Request without Notification
+- Message without Delivery
+
+MONETIZATION:
+- Item without Purchase
+- Purchase without Balance Check
+- Balance Check without Deduction
+- Inventory without Add
+- Add without Equip
+- Equip without Save
+- Save without UI Update
+
+MEDIA:
+- Audio without File
+- Recording without Permission
+- Playback without Controls
+- Upload without Progress
+- Download without Storage
+
+AI:
+- Chat without Response
+- Response without Context
+- Context without Memory
+- Memory without Storage
+
+SETTINGS:
+- Settings without Save
+- Save without Apply
+- Apply without Refresh
+- Refresh without Cache Clear
+
+================================================================================
+SECTION 4: FEATURE COMPLETION CHECKLIST
+================================================================================
+
+USER AUTHENTICATION:
+☐ Email/Password Registration
+☐ Email/Password Login
+☐ Social Login (Google, Apple)
+☐ Guest Mode
+☐ Email Verification
+☐ Password Reset
+☐ Session Management
+☐ Multi-device Support
+☑ Logout
+
+USER PROFILE:
+☑ View Profile
+☐ Edit Profile
+☐ Upload Avatar
+☐ Crop Avatar
+☐ Delete Avatar
+☐ Change Username
+☐ Change Email
+☐ Change Password
+☑ View Statistics (hardcoded)
+☑ View Achievements (display only)
+☑ View Level (hardcoded)
+☑ View Streak (hardcoded)
+☐ Privacy Settings
+☐ Blocked Users
+☐ Linked Accounts
+☐ Language Preferences
+☐ Notification Settings
+☐ Delete Account
+
+LEARNING PATH:
+☑ View Learning Path
+☑ View All Levels
+☑ View Units per Level
+☑ View Lessons per Unit
+☐ Track Overall Progress
+☐ Track Unit Progress
+☐ Track Lesson Progress
+☐ Unlock Next Lesson
+☐ Unlock Next Unit
+☐ View Completion Percentage
+☐ View Time Spent
+☑ View XP Earned (hardcoded)
+☑ Visual Progress Indicators
+
+LESSONS:
+☑ Browse Lessons by Level
+☑ Browse Lessons by Category
+☑ View Lesson Details
+☑ View Vocabulary
+☐ Play Audio for Vocabulary
+☑ View Grammar Rules
+☑ View Examples
+☑ Take Quiz
+☐ Complete Lesson
+☐ Earn XP
+☐ Track Progress
+☐ Bookmark Lesson
+☐ Take Notes
+☐ Report Issue
+☐ Share Lesson
+
+QUIZZES:
+☑ Take Quiz
+☑ Multiple Choice Questions
+☑ True/False Questions
+☐ Fill in Blank
+☐ Matching Questions
+☐ Timer
+☑ Score Calculation (basic)
+☑ Show Results (basic)
+☐ Show Correct Answers
+☐ Retry Quiz
+☐ Track Attempts
+☐ Difficulty Adaptation
+☐ Leaderboard Integration
+
+STORE:
+☑ Browse Items
+☐ Filter by Category
+☐ Search Items
+☐ View Item Details
+☐ Purchase Item
+☐ Use Gems/Currency
+☐ Gift Item
+☐ Item Reviews
+☐ Item Recommendations
+☐ Sale/Discount
+☐ Limited Items
+☐ Item Preview
+
+AVATAR SHOP:
+☑ Browse Avatars
+☐ Preview Avatar
+☐ Purchase Avatar
+☐ Equip Avatar
+☐ Unequip Avatar
+☐ Gift Avatar
+☐ Custom Animation
+☐ Rare Avatars
+☐ Limited Editions
+☐ Avatar Bundles
+
+COMMUNITY:
+☑ View Feed (fake)
+☑ Create Post (UI only)
+☐ Upload Image
+☐ Upload Video
+☑ Like Post (UI only)
+☐ Unlike Post
+☑ Comment (UI only)
+☐ Reply to Comment
+☐ Delete Own Post
+☐ Report Post
+☐ Share Post
+☐ Bookmark Post
+☐ Filter Feed
+☐ Search Posts
+☐ Report User
+☐ Block User
+
+MESSAGING:
+☑ View Conversations (fake)
+☐ Start New Chat
+☐ Send Text Message
+☐ Send Image
+☐ Send Voice Message
+☐ Send Sticker
+☐ Read Receipts
+☐ Online Status
+☐ Typing Indicator
+☐ Delete Message
+☐ Clear Chat
+☐ Block User
+☐ Report Message
+☐ Search Messages
+
+================================================================================
+SECTION 5: IMPLEMENTATION ORDER (by dependency)
+================================================================================
+
+PHASE 1: FOUNDATION (Week 1-2)
+=============================
+1. Setup Firebase Project
+2. Configure Firestore Rules
+3. Implement Firebase Authentication
+4. Add Email/Password Registration
+5. Add Email/Password Login
+6. Add Logout
+7. Add Password Reset
+8. Add Session Management
+9. Setup State Management (Bloc)
+10. Implement Repository Pattern
+
+PHASE 2: USER SYSTEM (Week 3-4)
+================================
+11. User Profile Display
+12. Edit Profile
+13. Image Picker Integration
+14. Image Cropper Integration
+15. Firebase Storage Setup
+16. Upload Avatar
+17. Change Username
+18. Change Email
+19. Change Password
+20. Delete Account
+21. Privacy Settings
+22. Blocked Users
+
+PHASE 3: LEARNING CORE (Week 5-8)
+===================================
+23. Lessons System (connect to Firestore)
+24. Lesson Detail View
+25. Quiz System
+26. Lesson Completion Tracking
+27. Progress Tracking System
+28. XP Calculation Engine
+29. Level Progression
+30. Certificate Generation
+31. Bookmark System
+32. Notes System
+33. Flashcard System
+34. Spaced Repetition
+
+PHASE 4: GAMIFICATION (Week 9-10)
+====================================
+35. Achievement System
+36. Daily Missions
+37. Daily Streaks
+38. Leaderboard
+39. Daily Quests
+40. Seasonal Events
+41. Rewards System
+
+PHASE 5: MONETIZATION (Week 11-14)
+====================================
+42. Currency System (Gems)
+43. Wallet System
+44. Stripe Integration
+45. Purchase Flow
+46. Inventory System
+47. Equip System
+48. Avatar Shop
+49. Frames Workshop
+50. Backgrounds Shop
+51. Premium Subscription
+52. Payment Processing
+
+PHASE 6: MEDIA SYSTEM (Week 15-16)
+====================================
+53. Audio File Storage
+54. Audio Player
+55. Audio Recorder
+56. Speech-to-Text
+57. Pronunciation Analysis
+58. Listening Quizzes
+59. Speaking Practice
+60. Audio Download (Offline)
+
+PHASE 7: SOCIAL FEATURES (Week 17-18)
+========================================
+61. Community Feed (real)
+62. Post Creation
+63. Like System
+64. Comment System
+65. Friends System
+66. Friend Requests
+67. Messaging System
+68. Real-time Updates
+69. Content Moderation
+
+PHASE 8: AI FEATURES (Week 19-20)
+====================================
+70. OpenAI Integration
+71. AI Tutor (real)
+72. Conversation Context
+73. Grammar Correction
+74. AI Coach
+75. Personalized Learning
+
+PHASE 9: LIVE FEATURES (Week 21-22)
+======================================
+76. Agora SDK Integration
+77. Live Room Creation
+78. Video Streaming
+79. Audio Streaming
+80. Live Chat
+81. Room Management
+82. Screen Share
+
+PHASE 10: NOTIFICATIONS (Week 23)
+====================================
+83. FCM Integration
+84. Push Notifications
+85. Notification Center
+86. Notification Settings
+
+PHASE 11: POLISH (Week 24)
+==============================
+87. Settings Screen
+88. Language Selection
+89. Theme Selection
+90. Loading States
+91. Empty States
+92. Error Handling
+93. Animations
+94. Performance Optimization
+95. QA Testing
+
+================================================================================
+SECTION 6: MVP REQUIRED FEATURES
+================================================================================
+
+The following features MUST be present before first launch:
+
+AUTHENTICATION:
+1. Email/Password Registration
+2. Email/Password Login
+3. Guest Mode
+4. Password Reset
+5. Logout
+
+USER PROFILE:
+6. View Profile
+7. Edit Profile (basic)
+8. Upload Avatar (optional at MVP)
+
+LEARNING:
+9. View Lessons
+10. Take Quizzes
+11. Complete Lessons
+12. Track Progress (basic)
+13. XP System (basic)
+
+STORE:
+14. Browse Items
+15. Purchase Items
+16. Basic Currency System
+17. Inventory (basic)
+
+NOTIFICATIONS:
+18. Basic Notification Center
+
+SETTINGS:
+19. Basic Settings Screen
+20. Language Selection (optional)
+
+TOTAL MVP FEATURES: 20 core features
+
+================================================================================
+SECTION 7: PRODUCTION REQUIRED FEATURES
+================================================================================
+
+The following features must be present for a competitive product:
+
+ALL MVP FEATURES (20)
+
+PLUS:
+
+AUTHENTICATION:
+21. Social Login (Google, Apple)
+22. Email Verification
+23. Multi-device Support
+
+SOCIAL:
+24. Community Feed
+25. Friends System
+26. Messaging
+
+GAMIFICATION:
+27. Achievements
+28. Daily Missions
+29. Streaks
+30. Leaderboard
+
+MEDIA:
+31. Audio Lessons
+32. Speaking Practice
+33. Pronunciation Training
+
+MONETIZATION:
+34. Premium Subscription
+35. Payment Processing
+
+AI:
+36. AI Tutor
+37. AI Coach
+
+LIVE:
+38. Live Learning
+
+ADVANCED:
+39. Search
+40. Content Moderation
+41. Offline Mode
+42. Analytics
+
+TOTAL PRODUCTION FEATURES: 42 features
+
+================================================================================
+SECTION 8: DEVELOPER TASKS
+================================================================================
+
+TASK-001: Setup Firebase Authentication
+---------------------------------------
+Description: Implement real Firebase Authentication
+Files: lib/services/auth_service.dart, lib/main.dart
+Dependencies: firebase_auth package
+Priority: CRITICAL
+Blocks Launch: YES
+Acceptance Criteria:
+  - User can register with email/password
+  - User can login
+  - User can logout
+  - Password reset works
+  - Session persists across app restarts
+
+TASK-002: Implement Registration Screen
+----------------------------------------
+Description: Create working registration flow
+Files: lib/features/auth/auth_screen.dart
+Dependencies: TASK-001
+Priority: CRITICAL
+Blocks Launch: YES
+Acceptance Criteria:
+  - Form validation works
+  - Error messages display
+  - Success redirects to home
+  - Email verification sent
+
+TASK-003: Implement Login Screen
+---------------------------------
+Description: Create working login flow
+Files: lib/features/auth/auth_screen.dart
+Dependencies: TASK-001
+Priority: CRITICAL
+Blocks Launch: YES
+Acceptance Criteria:
+  - Form validation works
+  - Error messages display
+  - Success redirects to home
+  - Remember me works
+
+[... continues for all 95 tasks ...]
+
+================================================================================
+SECTION 9: ACCEPTANCE CRITERIA FOR PRODUCTION
+================================================================================
+
+The application is ready for production when:
+
+1. All users can register, login, logout successfully
+2. All lesson progress is tracked and persisted
+3. All purchases work correctly with balance deduction
+4. All inventory items can be equipped and displayed
+5. All social features persist data correctly
+6. All notifications are delivered
+7. All media (audio/video) works correctly
+8. All AI features return real responses
+9. All live sessions work with video/audio
+10. No critical security vulnerabilities
+11. No memory leaks
+12. All error states handled gracefully
+13. All loading states displayed
+14. All empty states displayed
+15. App passes QA testing
+16. App passes security audit
+
+================================================================================
+                    END OF EXECUTION BLUEPRINT
+================================================================================

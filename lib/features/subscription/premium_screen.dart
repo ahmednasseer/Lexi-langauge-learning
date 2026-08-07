@@ -64,7 +64,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
         const SizedBox(height: 16),
         ...plan.features.map((f) => Padding(padding: const EdgeInsets.only(bottom: 8), child: Row(children: [const Icon(Icons.check_circle, color: AppColors.success, size: 18), const SizedBox(width: 8), Text(f, style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey.shade700))]))),
         const SizedBox(height: 16),
-        SizedBox(width: double.infinity, height: 56, child: ElevatedButton(onPressed: () {}, style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))), child: Text('Subscribe Now', style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white)))),
+        SizedBox(width: double.infinity, height: 56, child: ElevatedButton(onPressed: () => Navigator.pushNamed(context, '/payment-methods'), style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))), child: Text('Subscribe Now', style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white)))),
       ]),
     ).animate().fadeIn(delay: Duration(milliseconds: SubscriptionModel.plans.indexOf(plan) * 100)).slideY(begin: 0.1);
   }

@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { CertificatesController } from './certificates.controller';
 import { CertificatesService } from './certificates.service';
-import { PrismaModule } from '../../prisma/prisma.module';
+import { PrismaService } from '../../config/prisma.service';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule],
+  imports: [AuthModule],
   controllers: [CertificatesController],
-  providers: [CertificatesService],
+  providers: [CertificatesService, PrismaService],
   exports: [CertificatesService],
 })
 export class CertificatesModule {}

@@ -23,10 +23,16 @@ class _DailyMissionsScreenState extends State<DailyMissionsScreen> {
   }
 
   Future<void> _initController() async {
-    final prefs = await SharedPreferences.getInstance();
-    _controller = DailyMissionsController(DailyMissionsRepository(prefs));
-    await _controller.loadMissions();
-    setState(() {});
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      _controller = DailyMissionsController(DailyMissionsRepository(prefs));
+      await _controller.loadMissions();
+    } catch (e) {
+      debugPrint('Error initializing missions: $e');
+      final prefs = await SharedPreferences.getInstance();
+      _controller = DailyMissionsController(DailyMissionsRepository(prefs));
+    }
+    if (mounted) setState(() {});
   }
 
   @override

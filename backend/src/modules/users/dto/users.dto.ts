@@ -4,6 +4,8 @@ import {
   IsInt,
   Min,
   Max,
+  MinLength,
+  MaxLength,
 } from 'class-validator';
 
 export class UpdateProfileDto {

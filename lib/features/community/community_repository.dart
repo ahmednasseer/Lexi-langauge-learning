@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../services/api_service.dart';
+import '../../core/services/api_service.dart';
 import 'models/community_post.dart';
 import 'models/community_group.dart';
 import 'models/community_comment.dart';
@@ -19,7 +19,7 @@ class CommunityRepository {
         return posts;
       }
     } catch (_) {}
-    return (await _cachedPosts()) ?? CommunityPost.getSamplePosts();
+    return (await _cachedPosts()) ?? [];
   }
 
   Future<List<CommunityGroup>> getGroups() async {
@@ -31,7 +31,7 @@ class CommunityRepository {
         return groups;
       }
     } catch (_) {}
-    return (await _cachedGroups()) ?? CommunityGroup.getDefaultGroups();
+    return (await _cachedGroups()) ?? [];
   }
 
   Future<List<Challenge>> getChallenges() async {
@@ -43,7 +43,7 @@ class CommunityRepository {
         return challenges;
       }
     } catch (_) {}
-    return (await _cachedChallenges()) ?? Challenge.getActiveChallenges();
+    return (await _cachedChallenges()) ?? [];
   }
 
   Future<List<CommunityComment>> getComments(String postId) async {
@@ -53,7 +53,7 @@ class CommunityRepository {
         return result.data!.map((e) => CommunityComment.fromJson(e as Map<String, dynamic>)).toList();
       }
     } catch (_) {}
-    return CommunityComment.getSampleComments(postId);
+    return [];
   }
 
   Future<void> createPost(String content, String type, {String? groupId}) async {

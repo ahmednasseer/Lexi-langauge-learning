@@ -6,3 +6,7 @@ export 'animated_avatar.dart';
 export 'level_badge.dart';
 export 'premium_card.dart';
 export 'section_header.dart';
+export 'lexi_icon.dart';
+export '../customization/asset_resolver.dart';
+export '../customization/frame_artwork_resolver.dart';
+export '../customization/background_artwork_resolver.dart';

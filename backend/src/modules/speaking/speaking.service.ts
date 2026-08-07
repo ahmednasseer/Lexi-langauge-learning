@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '../../config/prisma.service';
 
-interface PronunciationResult {
+export interface PronunciationResult {
   accuracy: number;
   fluency: number;
   grammar: number;
@@ -11,7 +11,7 @@ interface PronunciationResult {
   grade: string;
 }
 
-interface SpeakingExercise {
+export interface SpeakingExercise {
   id: string;
   level: string;
   sentence: string;
@@ -20,7 +20,7 @@ interface SpeakingExercise {
   difficulty: number;
 }
 
-interface ListeningQuestion {
+export interface ListeningQuestion {
   id: string;
   audioText: string;
   question: string;

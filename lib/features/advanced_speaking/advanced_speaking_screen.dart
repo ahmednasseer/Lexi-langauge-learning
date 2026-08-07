@@ -24,8 +24,12 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
   }
 
   Future<void> _initializeController() async {
-    await _controller.initialize();
-    setState(() => _initialized = true);
+    try {
+      await _controller.initialize();
+    } catch (e) {
+      debugPrint('Error initializing speaking controller: $e');
+    }
+    if (mounted) setState(() => _initialized = true);
   }
 
   @override

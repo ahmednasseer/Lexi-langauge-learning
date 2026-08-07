@@ -3,7 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/widgets.dart';
-import '../../../services/connectivity_service.dart';
+import '../../../core/services/connectivity_service.dart';
 import '../lesson_repository.dart';
 import '../models/lesson_model.dart';
 import 'lesson_detail_screen.dart';

@@ -59,35 +59,46 @@ class LiveLearningController extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    final room = await _service.createRoom(
-      hostId: hostId,
-      hostName: hostName,
-      title: title,
-      topic: topic,
-      description: description,
-      level: level,
-      maxParticipants: maxParticipants,
-      durationMinutes: durationMinutes,
-      tags: tags,
-    );
-
-    _rooms.insert(0, room);
-    _isLoading = false;
-    notifyListeners();
-    return room;
+    try {
+      final room = await _service.createRoom(
+        hostId: hostId,
+        hostName: hostName,
+        title: title,
+        topic: topic,
+        description: description,
+        level: level,
+        maxParticipants: maxParticipants,
+        durationMinutes: durationMinutes,
+        tags: tags,
+      );
+      _rooms.insert(0, room);
+      _isLoading = false;
+      notifyListeners();
+      return room;
+    } catch (e) {
+      debugPrint('Error creating room: $e');
+      _isLoading = false;
+      notifyListeners();
+      rethrow;
+    }
   }
 
   Future<void> joinRoom(String roomId, String userId, String userName) async {
     _isLoading = true;
     notifyListeners();
 
-    final room = await _service.joinRoom(roomId, userId, userName);
-    if (room != null) {
-      final index = _rooms.indexWhere((r) => r.id == roomId);
-      if (index != -1) {
-        _rooms[index] = room;
+    try {
+      final room = await _service.joinRoom(roomId, userId, userName);
+      if (room != null) {
+        final index = _rooms.indexWhere((r) => r.id == roomId);
+        if (index != -1) {
+          _rooms[index] = room;
+        }
+        _currentRoom = room;
       }
-      _currentRoom = room;
+    } catch (e) {
+      debugPrint('Error joining room: $e');
+      _error = e.toString();
     }
 
     _isLoading = false;
@@ -98,15 +109,19 @@ class LiveLearningController extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    final room = await _service.leaveRoom(roomId, userId);
-    if (room != null) {
-      final index = _rooms.indexWhere((r) => r.id == roomId);
-      if (index != -1) {
-        _rooms[index] = room;
+    try {
+      final room = await _service.leaveRoom(roomId, userId);
+      if (room != null) {
+        final index = _rooms.indexWhere((r) => r.id == roomId);
+        if (index != -1) {
+          _rooms[index] = room;
+        }
+        if (_currentRoom?.id == roomId) {
+          _currentRoom = null;
+        }
       }
-      if (_currentRoom?.id == roomId) {
-        _currentRoom = null;
-      }
+    } catch (e) {
+      debugPrint('Error leaving room: $e');
     }
 
     _isLoading = false;
@@ -123,29 +138,39 @@ class LiveLearningController extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    final match = await _service.findMatch(
-      userId: userId,
-      nativeLanguage: nativeLanguage,
-      learningLanguage: learningLanguage,
-      level: level,
-      goal: goal,
-    );
-
-    _isLoading = false;
-    notifyListeners();
-    return match;
+    try {
+      final match = await _service.findMatch(
+        userId: userId,
+        nativeLanguage: nativeLanguage,
+        learningLanguage: learningLanguage,
+        level: level,
+        goal: goal,
+      );
+      _isLoading = false;
+      notifyListeners();
+      return match;
+    } catch (e) {
+      debugPrint('Error finding partner match: $e');
+      _isLoading = false;
+      notifyListeners();
+      return null;
+    }
   }
 
   Future<void> joinGroup(String groupId, String userId, String userName) async {
     _isLoading = true;
     notifyListeners();
 
-    final group = await _service.joinGroup(groupId, userId, userName);
-    if (group != null) {
-      final index = _groups.indexWhere((g) => g.id == groupId);
-      if (index != -1) {
-        _groups[index] = group;
+    try {
+      final group = await _service.joinGroup(groupId, userId, userName);
+      if (group != null) {
+        final index = _groups.indexWhere((g) => g.id == groupId);
+        if (index != -1) {
+          _groups[index] = group;
+        }
       }
+    } catch (e) {
+      debugPrint('Error joining group: $e');
     }
 
     _isLoading = false;
@@ -156,12 +181,16 @@ class LiveLearningController extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    final event = await _service.joinEvent(eventId, userId, userName);
-    if (event != null) {
-      final index = _events.indexWhere((e) => e.id == eventId);
-      if (index != -1) {
-        _events[index] = event;
+    try {
+      final event = await _service.joinEvent(eventId, userId, userName);
+      if (event != null) {
+        final index = _events.indexWhere((e) => e.id == eventId);
+        if (index != -1) {
+          _events[index] = event;
+        }
       }
+    } catch (e) {
+      debugPrint('Error joining event: $e');
     }
 
     _isLoading = false;

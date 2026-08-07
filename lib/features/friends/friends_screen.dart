@@ -17,13 +17,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
   final FriendsRepository _repo = FriendsRepository();
   List<_FriendData> _friends = const [];
   bool _isLoading = true;
-
-  static const List<_FriendData> _localFriends = [
-    _FriendData(name: 'Lena', status: 'على الخط', isOnline: true, avatar: '👩'),
-    _FriendData(name: 'Paul', status: 'متصل', isOnline: true, avatar: '👦'),
-    _FriendData(name: 'Anna', status: 'غير متصل', isOnline: false, avatar: '👧'),
-    _FriendData(name: 'Max', status: 'متصل', isOnline: true, avatar: '🧑'),
-  ];
+  String? _error;
 
   @override
   void initState() {
@@ -32,12 +26,14 @@ class _FriendsScreenState extends State<FriendsScreen> {
   }
 
   Future<void> _load() async {
-    final users = await _repo.getFriends();
-    if (mounted) {
-      setState(() {
-        if (users.isEmpty) {
-          _friends = _localFriends;
-        } else {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+    try {
+      final users = await _repo.getFriends();
+      if (mounted) {
+        setState(() {
           _friends = users
               .map((u) => _FriendData(
                     name: u.name,
@@ -46,9 +42,17 @@ class _FriendsScreenState extends State<FriendsScreen> {
                     avatar: _avatarFor(u.name),
                   ))
               .toList();
-        }
-        _isLoading = false;
-      });
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading friends: $e');
+      if (mounted) {
+        setState(() {
+          _error = 'تعذر تحميل قائمة الأصدقاء. تأكد من اتصالك بالإنترنت.';
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -73,13 +77,18 @@ class _FriendsScreenState extends State<FriendsScreen> {
             Expanded(
               child: _isLoading
                   ? const LoadingState(message: 'Loading friends...')
-                  : _friends.isEmpty
-                      ? const EmptyState(
-                          icon: Icons.people_outline,
-                          title: 'No Friends Yet',
-                          subtitle: 'Add friends to practice together',
+                  : _error != null
+                      ? ErrorState(
+                          message: _error!,
+                          onRetry: _load,
                         )
-                      : ListView.builder(
+                      : _friends.isEmpty
+                          ? const EmptyState(
+                              icon: Icons.people_outline,
+                              title: 'No Friends Yet',
+                              subtitle: 'Add friends to practice together',
+                            )
+                          : ListView.builder(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           physics: const BouncingScrollPhysics(),
                           itemCount: _friends.length,

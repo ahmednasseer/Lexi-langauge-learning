@@ -1,3 +1,5 @@
+import '../../../core/constants/app_assets.dart';
+
 class AchievementBadge {
   final String id;
   final String name;
@@ -8,6 +10,7 @@ class AchievementBadge {
   final int rewardXp;
   final bool isUnlocked;
   final DateTime? unlockedAt;
+  final String? assetPath;
 
   const AchievementBadge({
     required this.id,
@@ -15,10 +18,11 @@ class AchievementBadge {
     required this.description,
     required this.icon,
     required this.category,
-    required this.requirement,
+    this.requirement = 0,
     this.rewardXp = 0,
     this.isUnlocked = false,
     this.unlockedAt,
+    this.assetPath,
   });
 
   Map<String, dynamic> toJson() => {
@@ -48,14 +52,14 @@ class AchievementBadge {
   static List<AchievementBadge> getAllBadges() {
     return [
       // Learning badges
-      const AchievementBadge(id: 'b1', name: 'First Lesson', description: 'Complete your first lesson', icon: '🎯', category: 'learning', requirement: 1, rewardXp: 50),
-      const AchievementBadge(id: 'b2', name: '100 Words', description: 'Learn 100 vocabulary words', icon: '📚', category: 'vocabulary', requirement: 100, rewardXp: 100),
+      AchievementBadge(id: 'b1', name: 'First Lesson', description: 'Complete your first lesson', icon: '🎯', category: 'learning', requirement: 1, rewardXp: 50, assetPath: AppAssets.achievementFirstWord),
+      AchievementBadge(id: 'b2', name: '100 Words', description: 'Learn 100 vocabulary words', icon: '📚', category: 'vocabulary', requirement: 100, rewardXp: 100, assetPath: AppAssets.achievement100Words),
       const AchievementBadge(id: 'b3', name: '500 Words', description: 'Learn 500 vocabulary words', icon: '📖', category: 'vocabulary', requirement: 500, rewardXp: 250),
       const AchievementBadge(id: 'b4', name: '1000 Words', description: 'Learn 1000 vocabulary words', icon: '🎓', category: 'vocabulary', requirement: 1000, rewardXp: 500),
 
       // Streak badges
-      const AchievementBadge(id: 'b5', name: '7 Day Streak', description: 'Maintain a 7-day streak', icon: '🔥', category: 'streak', requirement: 7, rewardXp: 100),
-      const AchievementBadge(id: 'b6', name: '30 Day Streak', description: 'Maintain a 30-day streak', icon: '💪', category: 'streak', requirement: 30, rewardXp: 300),
+      AchievementBadge(id: 'b5', name: '7 Day Streak', description: 'Maintain a 7-day streak', icon: '🔥', category: 'streak', requirement: 7, rewardXp: 100, assetPath: AppAssets.achievementStreak7),
+      AchievementBadge(id: 'b6', name: '30 Day Streak', description: 'Maintain a 30-day streak', icon: '💪', category: 'streak', requirement: 30, rewardXp: 300, assetPath: AppAssets.achievementStreak30),
       const AchievementBadge(id: 'b7', name: '100 Day Streak', description: 'Maintain a 100-day streak', icon: '👑', category: 'streak', requirement: 100, rewardXp: 1000),
 
       // Speaking badges

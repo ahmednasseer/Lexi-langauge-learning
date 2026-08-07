@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
-import '../../services/auth_service.dart';
+import '../../core/constants/app_assets.dart';
+import '../../core/services/auth_service.dart';
 import '../../shared/widgets/widgets.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -259,65 +260,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ).animate().fadeIn(delay: 200.ms),
           ),
           const SizedBox(height: 24),
-          // Character illustration placeholder (gradient container)
-          Container(
-            width: 180,
-            height: 180,
-            decoration: BoxDecoration(
-              gradient: AppColors.primaryGradient,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.4),
-                  blurRadius: 40,
-                  spreadRadius: 8,
-                ),
-              ],
-            ),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                // Character body (simplified cartoon)
-                Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.15),
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                // Lexi text
-                Text(
-                  'Lexi',
-                  style: GoogleFonts.poppins(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                // German flag circle at bottom
-                Positioned(
-                  bottom: 10,
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 2),
-                    ),
-                    child: ClipOval(
-                      child: Column(
-                        children: [
-                          Expanded(flex: 1, child: Container(color: const Color(0xFF000000))),
-                          Expanded(flex: 1, child: Container(color: Color(0xFFDD0000))),
-                          Expanded(flex: 1, child: Container(color: Color(0xFFFFCC00))),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          // Lexi character
+          ClipOval(
+            child: Image.asset(AppAssets.lexiHappy, width: 180, height: 180, fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) => Icon(Icons.broken_image, size: 180)),
           ).animate().scale(begin: const Offset(0.5, 0.5), duration: 500.ms),
           const SizedBox(height: 32),
           // Speech bubble
@@ -800,19 +745,28 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 ),
               ],
             ),
-            child: Text(
-              'B1',
-              style: GoogleFonts.poppins(
-                fontSize: 36,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                shadows: [
-                  Shadow(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    blurRadius: 10,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ClipOval(
+                  child: Image.asset(AppAssets.badgeB1, width: 48, height: 48, fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) => Icon(Icons.broken_image, size: 48)),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'B1',
+                  style: GoogleFonts.poppins(
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black.withValues(alpha: 0.3),
+                        blurRadius: 10,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ).animate().fadeIn(delay: 300.ms).scale(begin: const Offset(0.5, 0.5)),
           const SizedBox(height: 16),

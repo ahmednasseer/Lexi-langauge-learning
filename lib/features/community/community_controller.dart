@@ -53,22 +53,34 @@ class CommunityController extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<CommunityTab> get tabs => [
+    CommunityTab.feed,
+    CommunityTab.groups,
+    CommunityTab.challenges,
+    CommunityTab.messages,
+  ];
+
   Future<void> _loadData() async {
     _isLoading = true;
     notifyListeners();
 
-    final repo = CommunityRepository();
-    final results = await Future.wait([
-      repo.getGroups(),
-      repo.getFeed(),
-      repo.getChallenges(),
-      LeaderboardRepository().getLeaderboard(),
-    ]);
+    try {
+      final repo = CommunityRepository();
+      final results = await Future.wait([
+        repo.getGroups(),
+        repo.getFeed(),
+        repo.getChallenges(),
+        LeaderboardRepository().getLeaderboard(),
+      ]);
 
-    _groups = results[0] as List<CommunityGroup>;
-    _posts = results[1] as List<CommunityPost>;
-    _challenges = results[2] as List<Challenge>;
-    _leaderboard = results[3] as List<CommunityUser>;
+      _groups = results[0] as List<CommunityGroup>;
+      _posts = results[1] as List<CommunityPost>;
+      _challenges = results[2] as List<Challenge>;
+      _leaderboard = results[3] as List<CommunityUser>;
+    } catch (e) {
+      debugPrint('Error loading community data: $e');
+      _leaderboard = [];
+    }
 
     _isLoading = false;
     notifyListeners();

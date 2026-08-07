@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '../../config/prisma.service';
 
 @Injectable()
 export class GoetheService {
@@ -173,8 +173,8 @@ export class GoetheService {
         userId,
         level: data.level,
         prompt: data.prompt,
-        userText: data.text,
-        evaluation,
+        submissionText: data.text,
+        feedback: evaluation,
       },
     });
 

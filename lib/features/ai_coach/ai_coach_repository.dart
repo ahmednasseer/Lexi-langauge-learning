@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'models/coach_message.dart';
 import 'models/learning_memory.dart';
-import '../../services/api_service.dart';
-import '../../services/auth_service.dart';
+import '../../core/services/api_service.dart';
+import '../../core/services/auth_service.dart';
 
 class AiCoachRepository {
   final ApiService _api = ApiService();

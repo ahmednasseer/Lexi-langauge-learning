@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
-import '../../services/auth_service.dart';
+import '../../core/constants/app_assets.dart';
+import '../../core/services/auth_service.dart';
 import '../../shared/widgets/widgets.dart';
 import '../lessons/screens/lessons_screen.dart';
 import '../ai_coach/ai_coach_screen.dart';
-import '../profile/profile_screen.dart';
+import '../profile/presentation/pages/profile_screen.dart';
 import '../roadmap/roadmap_screen.dart';
 import '../flashcards/flashcard_screen.dart';
 import '../community/community_screen.dart';
 import '../wallet/transaction_history_screen.dart';
+import '../../core/services/curriculum_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -101,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class _Dashboard extends StatelessWidget {
+class _Dashboard extends StatefulWidget {
   final VoidCallback onNavigateToLessons;
   final VoidCallback onNavigateToAI;
 
@@ -109,6 +111,38 @@ class _Dashboard extends StatelessWidget {
     required this.onNavigateToLessons,
     required this.onNavigateToAI,
   });
+
+  @override
+  State<_Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<_Dashboard> {
+  List<Map<String, dynamic>> _wordsOfDay = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadWords();
+  }
+
+  Future<void> _loadWords() async {
+    final service = CurriculumService();
+    if (service.curriculum != null && service.curriculum!.units.isNotEmpty) {
+      final firstUnit = service.curriculum!.units.first;
+      if (firstUnit.lessons.isNotEmpty) {
+        final lesson = firstUnit.lessons.first;
+        final words = lesson.vocabulary.take(6).map((v) => {
+          'german': v.german,
+          'english': v.arabic,
+          'icon': Icons.menu_book_outlined,
+          'color': AppColors.primary,
+        }).toList();
+        if (mounted) {
+          setState(() => _wordsOfDay = words);
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,13 +159,13 @@ class _Dashboard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(userName, userLevel, streak),
+            _buildHeader(context, userName, userLevel, streak),
             const SizedBox(height: 16),
             _buildSubtitle(),
             const SizedBox(height: 20),
             _buildTodayGoalCard(),
             const SizedBox(height: 16),
-            _buildStartLearningButton(),
+            _buildStartLearningButton(context),
             const SizedBox(height: 20),
             _buildContinueLearningCard(context),
             const SizedBox(height: 20),
@@ -148,7 +182,7 @@ class _Dashboard extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(String name, String level, int streak) {
+  Widget _buildHeader(BuildContext context, String name, String level, int streak) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -156,30 +190,8 @@ class _Dashboard extends StatelessWidget {
         Column(
           children: [
             // Character
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                gradient: AppColors.primaryGradient,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.4),
-                    blurRadius: 20,
-                    spreadRadius: -4,
-                  ),
-                ],
-              ),
-              child: Center(
-                child: Text(
-                  'Lexi',
-                  style: GoogleFonts.poppins(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+            ClipOval(
+              child: Image.asset(AppAssets.lexiHappy, width: 80, height: 80, fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) => Icon(Icons.broken_image, size: 80)),
             ).animate().scale(begin: const Offset(0.5, 0.5)),
             const SizedBox(height: 6),
             // Speech bubble
@@ -245,20 +257,23 @@ class _Dashboard extends StatelessWidget {
         ).animate().fadeIn(delay: 200.ms),
         const SizedBox(width: 10),
         // Notification bell
-        Container(
-          width: 40,
-          height: 40,
-          margin: const EdgeInsets.only(top: 4),
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.border),
-          ),
-          child: const Center(
-            child: Icon(
-              Icons.notifications_outlined,
-              color: AppColors.textPrimary,
-              size: 22,
+        GestureDetector(
+          onTap: () => Navigator.pushNamed(context, '/notifications'),
+          child: Container(
+            width: 40,
+            height: 40,
+            margin: const EdgeInsets.only(top: 4),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: const Center(
+              child: Icon(
+                Icons.notifications_outlined,
+                color: AppColors.textPrimary,
+                size: 22,
+              ),
             ),
           ),
         ).animate().fadeIn(delay: 200.ms),
@@ -406,9 +421,9 @@ class _Dashboard extends StatelessWidget {
     );
   }
 
-  Widget _buildStartLearningButton() {
+  Widget _buildStartLearningButton(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () => Navigator.pushNamed(context, '/lessons'),
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -439,7 +454,7 @@ class _Dashboard extends StatelessWidget {
 
   Widget _buildContinueLearningCard(BuildContext context) {
     return GestureDetector(
-      onTap: onNavigateToLessons,
+        onTap: widget.onNavigateToLessons,
       child: GlowCard(
         glowColor: AppColors.primary,
         gradient: LinearGradient(
@@ -504,7 +519,7 @@ class _Dashboard extends StatelessWidget {
                   const SizedBox(height: 16),
                   GradientButton(
                     text: 'استمرار',
-                    onPressed: onNavigateToLessons,
+                    onPressed: widget.onNavigateToLessons,
                     isSmall: true,
                     width: 120,
                   ),
@@ -648,12 +663,6 @@ class _Dashboard extends StatelessWidget {
   }
 
   Widget _buildWordsOfDayCard(BuildContext context) {
-    final words = [
-      {'german': 'Haus', 'english': 'منزل', 'icon': Icons.home_outlined, 'color': AppColors.primary},
-      {'german': 'gehen', 'english': 'يذهب', 'icon': Icons.directions_walk, 'color': AppColors.secondary},
-      {'german': 'schön', 'english': 'جميل', 'icon': Icons.star_outline, 'color': AppColors.accent},
-      {'german': 'lernen', 'english': 'يتعلم', 'icon': Icons.school_outlined, 'color': AppColors.success},
-    ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -696,12 +705,14 @@ class _Dashboard extends StatelessWidget {
         const SizedBox(height: 16),
         SizedBox(
           height: 130,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            itemCount: words.length,
+          child: _wordsOfDay.isEmpty
+              ? const Center(child: CircularProgressIndicator())
+              : ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: _wordsOfDay.length,
             itemBuilder: (context, i) {
-              final w = words[i];
+              final w = _wordsOfDay[i];
               return Container(
                 width: 150,
                 margin: const EdgeInsets.only(right: 12),
@@ -749,10 +760,28 @@ class _Dashboard extends StatelessWidget {
   Widget _buildQuickActionsGrid(BuildContext context) {
     final actions = [
       {
-        'icon': Icons.store_outlined,
-        'label': 'المتجر',
-        'gradient': AppColors.purpleGradient,
-        'onTap': () => Navigator.pushNamed(context, '/store'),
+        'icon': Icons.school_outlined,
+        'label': 'الدروس',
+        'gradient': AppColors.primaryGradient,
+        'onTap': () => Navigator.pushNamed(context, '/lessons'),
+      },
+      {
+        'icon': Icons.smart_toy_outlined,
+        'label': 'المعلم الذكي',
+        'gradient': AppColors.cyanGradient,
+        'onTap': () => Navigator.pushNamed(context, '/ai-tutor'),
+      },
+      {
+        'icon': Icons.quiz_outlined,
+        'label': 'امتحان غوته',
+        'gradient': AppColors.accentGradient,
+        'onTap': () => Navigator.pushNamed(context, '/goethe'),
+      },
+      {
+        'icon': Icons.record_voice_over_outlined,
+        'label': 'المحادثة',
+        'gradient': AppColors.successGradient,
+        'onTap': () => Navigator.pushNamed(context, '/speaking'),
       },
       {
         'icon': Icons.headphones_outlined,
@@ -761,38 +790,14 @@ class _Dashboard extends StatelessWidget {
         'onTap': () => Navigator.pushNamed(context, '/audio-lessons'),
       },
       {
-        'icon': Icons.chat_bubble_outline,
-        'label': 'المحادثة',
-        'gradient': AppColors.successGradient,
-        'onTap': () => Navigator.pushNamed(context, '/speaking'),
-      },
-      {
-        'icon': Icons.edit_outlined,
-        'label': 'الكتابة',
-        'gradient': AppColors.orangeGradient,
-        'onTap': () => Navigator.pushNamed(context, '/advanced-speaking'),
-      },
-      {
-        'icon': Icons.quiz_outlined,
-        'label': 'بيت الاسئلة',
-        'gradient': AppColors.accentGradient,
-        'onTap': () => Navigator.pushNamed(context, '/goethe'),
-      },
-      {
-        'icon': Icons.smart_toy_outlined,
-        'label': 'AI Coach',
-        'gradient': AppColors.cyanGradient,
-        'onTap': () => Navigator.pushNamed(context, '/ai-coach'),
-      },
-      {
-        'icon': Icons.diamond_outlined,
-        'label': 'الماس',
-        'gradient': AppColors.blueGradient,
-        'onTap': () => Navigator.pushNamed(context, '/gem-store'),
+        'icon': Icons.menu_book_outlined,
+        'label': 'البطاقات',
+        'gradient': AppColors.purpleGradient,
+        'onTap': () => Navigator.pushNamed(context, '/flashcards'),
       },
       {
         'icon': Icons.flag_outlined,
-        'label': 'المهمات',
+        'label': 'المهام اليومية',
         'gradient': AppColors.orangeGradient,
         'onTap': () => Navigator.pushNamed(context, '/daily-missions'),
       },
@@ -807,6 +812,18 @@ class _Dashboard extends StatelessWidget {
         'label': 'الشهادات',
         'gradient': AppColors.successGradient,
         'onTap': () => Navigator.pushNamed(context, '/certificates'),
+      },
+      {
+        'icon': Icons.store_outlined,
+        'label': 'المتجر',
+        'gradient': AppColors.purpleGradient,
+        'onTap': () => Navigator.pushNamed(context, '/store'),
+      },
+      {
+        'icon': Icons.diamond_outlined,
+        'label': 'الماس',
+        'gradient': AppColors.blueGradient,
+        'onTap': () => Navigator.pushNamed(context, '/gem-store'),
       },
       {
         'icon': Icons.person_add_outlined,
@@ -893,12 +910,6 @@ class _Dashboard extends StatelessWidget {
         'onTap': () => Navigator.pushNamed(context, '/ai-learning'),
       },
       {
-        'icon': Icons.smart_toy_outlined,
-        'label': 'المعلم الذكي',
-        'gradient': AppColors.successGradient,
-        'onTap': () => Navigator.pushNamed(context, '/ai-tutor'),
-      },
-      {
         'icon': Icons.face_outlined,
         'label': 'متجر الشخصيات',
         'gradient': AppColors.purpleGradient,
@@ -969,7 +980,7 @@ class _Dashboard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'اجراءات سريعة',
+          'إجراءات سريعة',
           style: GoogleFonts.poppins(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -982,9 +993,9 @@ class _Dashboard extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            childAspectRatio: 1.6,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
+            childAspectRatio: 1.5,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
           ),
           itemCount: actions.length,
           itemBuilder: (context, i) {

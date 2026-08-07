@@ -1,4 +1,4 @@
-import '../../services/api_service.dart';
+import '../../core/services/api_service.dart';
 import '../../data/german_content.dart';
 import 'models/lesson_model.dart';
 

@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../services/api_service.dart';
+import '../../core/services/api_service.dart';
 import 'models/speaking_exercise.dart';
 import 'models/pronunciation_result.dart';
 import 'models/listening_question.dart';

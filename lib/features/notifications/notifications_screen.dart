@@ -24,12 +24,21 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 
   Future<void> _load() async {
-    final items = await _repo.getNotifications();
-    if (mounted) {
-      setState(() {
-        _notifications = items;
-        _isLoading = false;
-      });
+    try {
+      final items = await _repo.getNotifications();
+      if (mounted) {
+        setState(() {
+          _notifications = items;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading notifications: $e');
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 

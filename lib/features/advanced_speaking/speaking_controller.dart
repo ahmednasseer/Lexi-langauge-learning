@@ -38,14 +38,18 @@ class SpeakingController extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    await _voiceService.initialize();
-    _memory = await _memoryService.getMemory();
-    _progress = await _memoryService.getProgress();
-    _challenges = await _memoryService.getChallenges();
+    try {
+      await _voiceService.initialize();
+      _memory = await _memoryService.getMemory();
+      _progress = await _memoryService.getProgress();
+      _challenges = await _memoryService.getChallenges();
 
-    if (_challenges.isEmpty) {
-      _challenges = _memoryService.getAvailableChallenges();
-      await _memoryService.saveChallenges(_challenges);
+      if (_challenges.isEmpty) {
+        _challenges = _memoryService.getAvailableChallenges();
+        await _memoryService.saveChallenges(_challenges);
+      }
+    } catch (e) {
+      debugPrint('Error initializing speaking controller: $e');
     }
 
     _isLoading = false;
@@ -57,35 +61,42 @@ class SpeakingController extends ChangeNotifier {
     _state = ConversationState.processing;
     notifyListeners();
 
-    final character = AICharacter.lexi();
-    _currentContext = _memoryService.buildContext(
-      scenario: scenario,
-      character: character,
-      userLevel: _progress.currentLevel,
-    );
+    try {
+      final character = AICharacter.lexi();
+      _currentContext = _memoryService.buildContext(
+        scenario: scenario,
+        character: character,
+        userLevel: _progress.currentLevel,
+      );
 
-    final initialMessage = _aiService.getInitialMessage(scenario, character);
+      final initialMessage = _aiService.getInitialMessage(scenario, character);
 
-    _currentSession = ConversationSession(
-      id: 'session_${DateTime.now().millisecondsSinceEpoch}',
-      scenario: scenario,
-      messages: [
-        ConversationMessage(
-          id: 'msg_0',
-          role: 'ai',
-          content: initialMessage,
-          timestamp: DateTime.now(),
-        ),
-      ],
-      startedAt: DateTime.now(),
-      state: ConversationState.aiSpeaking,
-    );
+      _currentSession = ConversationSession(
+        id: 'session_${DateTime.now().millisecondsSinceEpoch}',
+        scenario: scenario,
+        messages: [
+          ConversationMessage(
+            id: 'msg_0',
+            role: 'ai',
+            content: initialMessage,
+            timestamp: DateTime.now(),
+          ),
+        ],
+        startedAt: DateTime.now(),
+        state: ConversationState.aiSpeaking,
+      );
 
-    _state = ConversationState.aiSpeaking;
-    _isLoading = false;
-    notifyListeners();
+      _state = ConversationState.aiSpeaking;
+      _isLoading = false;
+      notifyListeners();
 
-    await _voiceService.speak(initialMessage);
+      await _voiceService.speak(initialMessage);
+    } catch (e) {
+      debugPrint('Error starting conversation: $e');
+      _state = ConversationState.idle;
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   Future<void> startListening() async {
@@ -204,27 +215,31 @@ class SpeakingController extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    await _voiceService.stopSpeaking();
+    try {
+      await _voiceService.stopSpeaking();
 
-    _feedback = _aiService.generateFeedback(_currentSession!);
+      _feedback = _aiService.generateFeedback(_currentSession!);
 
-    _currentSession = _currentSession!.copyWith(
-      endedAt: DateTime.now(),
-      state: ConversationState.ended,
-      totalScore: _feedback!.overallScore.toInt(),
-      xpEarned: _feedback!.xpEarned,
-    );
+      _currentSession = _currentSession!.copyWith(
+        endedAt: DateTime.now(),
+        state: ConversationState.ended,
+        totalScore: _feedback!.overallScore.toInt(),
+        xpEarned: _feedback!.xpEarned,
+      );
 
-    await _memoryService.updateProgress(
-      current: _progress,
-      minutes: _currentSession!.durationSeconds ~/ 60,
-      words: _currentSession!.wordsSpoken,
-      pronunciationScore: _feedback!.overallScore,
-      fluencyScore: _lastAnalysis?.speakingSpeed ?? 0,
-      scenario: _currentSession!.scenario,
-    );
+      await _memoryService.updateProgress(
+        current: _progress,
+        minutes: _currentSession!.durationSeconds ~/ 60,
+        words: _currentSession!.wordsSpoken,
+        pronunciationScore: _feedback!.overallScore,
+        fluencyScore: _lastAnalysis?.speakingSpeed ?? 0,
+        scenario: _currentSession!.scenario,
+      );
 
-    _progress = await _memoryService.getProgress();
+      _progress = await _memoryService.getProgress();
+    } catch (e) {
+      debugPrint('Error ending conversation: $e');
+    }
 
     _state = ConversationState.ended;
     _isLoading = false;

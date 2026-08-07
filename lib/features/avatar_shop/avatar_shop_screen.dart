@@ -352,7 +352,9 @@ class _AvatarShopScreenState extends State<AvatarShopScreen>
           ),
           const SizedBox(height: 16),
           GestureDetector(
-            onTap: () {},
+            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('تم تطبيق الصورة')),
+            ),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               decoration: BoxDecoration(

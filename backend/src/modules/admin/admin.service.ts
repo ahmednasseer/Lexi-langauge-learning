@@ -128,11 +128,11 @@ export class AdminService {
       include: {
         language: true,
         vocabulary: true,
-        grammarRules: true,
-        quizQuestions: true,
+        grammar: true,
+        quiz: true,
         _count: { select: { progress: true } },
       },
-      orderBy: { order: 'asc' },
+      orderBy: { orderIndex: 'asc' },
     });
   }
 
@@ -163,7 +163,7 @@ export class AdminService {
   async getVocabulary(lessonId: string) {
     return this.prisma.vocabulary.findMany({
       where: { lessonId },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { orderIndex: 'asc' },
     });
   }
 
@@ -178,7 +178,7 @@ export class AdminService {
   // ==================== ACHIEVEMENTS ====================
   async getAchievements() {
     return this.prisma.achievement.findMany({
-      include: { _count: { select: { userAchievements: true } } },
+      include: { _count: { select: { users: true } } },
     });
   }
 

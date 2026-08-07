@@ -940,7 +940,7 @@ class _GrowthScreenState extends State<GrowthScreen> {
             ),
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () => Navigator.pushNamed(context, '/premium'),
             style: ElevatedButton.styleFrom(
               backgroundColor: isRecommended ? const Color(0xFF6C63FF) : Colors.white.withValues(alpha: 0.1),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

@@ -25,8 +25,12 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
 
   Future<void> _loadBadges() async {
     setState(() => _isLoading = true);
-    final repo = AchievementsRepository();
-    _badges = await repo.getAchievements();
+    try {
+      final repo = AchievementsRepository();
+      _badges = await repo.getAchievements();
+    } catch (e) {
+      debugPrint('Error loading achievements: $e');
+    }
     if (mounted) setState(() => _isLoading = false);
   }
 
