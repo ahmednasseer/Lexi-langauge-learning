@@ -1,20 +1,30 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, ServiceUnavailableException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 import { PrismaService } from '../../config/prisma.service';
 
 @Injectable()
 export class PaymentsService {
-  private stripe: Stripe;
+  private stripe: Stripe | null = null;
 
   constructor(
     private config: ConfigService,
     private prisma: PrismaService,
-  ) {
-    this.stripe = new Stripe(this.config.get('STRIPE_SECRET_KEY') || 'sk_test_placeholder', { apiVersion: '2023-10-16' });
+  ) {}
+
+  private getStripe(): Stripe {
+    if (!this.stripe) {
+      const apiKey = this.config.get('STRIPE_SECRET_KEY');
+      if (!apiKey || apiKey === 'sk_test_placeholder') {
+        throw new ServiceUnavailableException('Payment service is not configured. STRIPE_SECRET_KEY is missing.');
+      }
+      this.stripe = new Stripe(apiKey, { apiVersion: '2023-10-16' });
+    }
+    return this.stripe;
   }
 
   async createCheckoutSession(userId: string, planId: string) {
+    const stripe = this.getStripe();
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new BadRequestException('User not found');
 
@@ -22,7 +32,7 @@ export class PaymentsService {
       ? this.config.get('STRIPE_PRICE_YEARLY')
       : this.config.get('STRIPE_PRICE_MONTHLY');
 
-    const session = await this.stripe.checkout.sessions.create({
+    const session = await stripe.checkout.sessions.create({
       customer_email: user.email,
       payment_method_types: ['card'],
       line_items: [{ price: priceId, quantity: 1 }],

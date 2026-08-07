@@ -1,17 +1,26 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ServiceUnavailableException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { PrismaService } from '../../config/prisma.service';
 
 @Injectable()
 export class AiLearningPlanService {
-  private openai: OpenAI;
+  private openai: OpenAI | null = null;
 
   constructor(
     private config: ConfigService,
     private prisma: PrismaService,
-  ) {
-    this.openai = new OpenAI({ apiKey: this.config.get('OPENAI_API_KEY') });
+  ) {}
+
+  private getOpenAI(): OpenAI {
+    if (!this.openai) {
+      const apiKey = this.config.get('OPENAI_API_KEY');
+      if (!apiKey) {
+        throw new ServiceUnavailableException('AI service is not configured. OPENAI_API_KEY is missing.');
+      }
+      this.openai = new OpenAI({ apiKey });
+    }
+    return this.openai;
   }
 
   async generatePlan(userId: string, data: {
@@ -20,6 +29,7 @@ export class AiLearningPlanService {
     language: string;
     dailyMinutes: number;
   }) {
+    const openai = this.getOpenAI();
     const prompt = `Create a personalized 30-day learning plan for a ${data.level} level student learning ${data.language}.
 Goal: ${data.goal}
 Available time: ${data.dailyMinutes} minutes per day

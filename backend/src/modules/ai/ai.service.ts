@@ -1,23 +1,31 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, ServiceUnavailableException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { PrismaService } from '../../config/prisma.service';
 
 @Injectable()
 export class AiService {
-  private openai: OpenAI;
+  private openai: OpenAI | null = null;
   private readonly MAX_FREE_MESSAGES = 10;
 
   constructor(
     private config: ConfigService,
     private prisma: PrismaService,
-  ) {
-    this.openai = new OpenAI({
-      apiKey: this.config.get('OPENAI_API_KEY'),
-    });
+  ) {}
+
+  private getOpenAI(): OpenAI {
+    if (!this.openai) {
+      const apiKey = this.config.get('OPENAI_API_KEY');
+      if (!apiKey) {
+        throw new ServiceUnavailableException('AI service is not configured. OPENAI_API_KEY is missing.');
+      }
+      this.openai = new OpenAI({ apiKey });
+    }
+    return this.openai;
   }
 
   async chat(userId: string, message: string, learningLanguage: string, nativeLanguage: string) {
+    const openai = this.getOpenAI();
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
 
     if (!user.isPremium) {
