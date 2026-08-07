@@ -26,9 +26,6 @@ coverage/
 .DS_Store
 Thumbs.db
 
-# Prisma
-prisma/migrations/
-
 # Temporary files
 *.tmp
 *.swp
