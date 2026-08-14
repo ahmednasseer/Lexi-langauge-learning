@@ -43,7 +43,9 @@
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.0",
-    "stripe": "^14.0.0"
+    "stripe": "^14.0.0",
+    "ts-node": "^10.0.0",
+    "typescript": "^5.0.0"
   },
   "devDependencies": {
     "@nestjs/testing": "^10.0.0",
@@ -52,8 +54,6 @@
     "@types/node": "^20.0.0",
     "@types/passport-jwt": "^4.0.0",
     "prisma": "^5.0.0",
-    "source-map-support": "^0.5.21",
-    "ts-node": "^10.0.0",
-    "typescript": "^5.0.0"
+    "source-map-support": "^0.5.21"
   }
 }

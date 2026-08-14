@@ -78,8 +78,8 @@ function extractLessonId(question: Question): string {
 }
 
 async function main() {
-  const curriculumPath = path.resolve(__dirname, '../../assets/data/curriculum_a1.json');
-  const questionsPath = path.resolve(__dirname, '../../assets/data/questions_a1.json');
+  const curriculumPath = path.resolve(__dirname, '../assets/data/curriculum_a1.json');
+  const questionsPath = path.resolve(__dirname, '../assets/data/questions_a1.json');
 
   const curriculum: Curriculum = JSON.parse(
     fs.readFileSync(curriculumPath, 'utf-8'),
