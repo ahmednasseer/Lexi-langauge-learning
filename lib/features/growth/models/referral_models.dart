@@ -1,9 +1,4 @@
-enum ReferralStatus {
-  pending,
-  accepted,
-  rewarded,
-  expired,
-}
+enum ReferralStatus { pending, accepted, rewarded, expired }
 
 class ReferralCode {
   final String id;
@@ -69,8 +64,13 @@ class ReferralCode {
     code: json['code'] ?? '',
     maxUses: json['maxUses'] ?? 10,
     currentUses: json['currentUses'] ?? 0,
-    createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-    expiresAt: DateTime.parse(json['expiresAt'] ?? DateTime.now().add(const Duration(days: 30)).toIso8601String()),
+    createdAt: DateTime.parse(
+      json['createdAt'] ?? DateTime.now().toIso8601String(),
+    ),
+    expiresAt: DateTime.parse(
+      json['expiresAt'] ??
+          DateTime.now().add(const Duration(days: 30)).toIso8601String(),
+    ),
     isActive: json['isActive'] ?? true,
   );
 }
@@ -150,9 +150,15 @@ class Referral {
       (s) => s.name == json['status'],
       orElse: () => ReferralStatus.pending,
     ),
-    createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-    acceptedAt: json['acceptedAt'] != null ? DateTime.parse(json['acceptedAt']) : null,
-    reward: json['reward'] != null ? ReferralReward.fromJson(json['reward']) : null,
+    createdAt: DateTime.parse(
+      json['createdAt'] ?? DateTime.now().toIso8601String(),
+    ),
+    acceptedAt: json['acceptedAt'] != null
+        ? DateTime.parse(json['acceptedAt'])
+        : null,
+    reward: json['reward'] != null
+        ? ReferralReward.fromJson(json['reward'])
+        : null,
   );
 }
 
@@ -208,9 +214,11 @@ class ReferralStats {
     successfulReferrals: json['successfulReferrals'] ?? 0,
     totalGemsEarned: json['totalGemsEarned'] ?? 0,
     totalPremiumDaysEarned: json['totalPremiumDaysEarned'] ?? 0,
-    referrals: (json['referrals'] as List?)
-        ?.map((r) => Referral.fromJson(r))
-        .toList() ?? [],
+    referrals:
+        (json['referrals'] as List?)
+            ?.map((r) => Referral.fromJson(r))
+            .toList() ??
+        [],
   );
 
   factory ReferralStats.empty() => const ReferralStats(

@@ -1,3 +1,10 @@
+﻿===============================================================================
+                            HISTORICAL REFERENCE
+===============================================================================
+Status: SUPERSEDED — DO NOT USE AS CURRENT STATE REFERENCE
+Current State Audit: See LEXI_CURRENT_STATE_AUDIT.md
+===============================================================================
+
 ================================================================================
               LEXI EXECUTION BLUEPRINT
 ================================================================================
@@ -338,52 +345,52 @@ SECTION 2: BROKEN FEATURE CHAINS
 ================================================================================
 
 CHAIN 1: User Onboarding
-Register → [BROKEN: No real auth] → Profile Setup → [BROKEN] → Start Learning
+Register â†’ [BROKEN: No real auth] â†’ Profile Setup â†’ [BROKEN] â†’ Start Learning
 Breaks at: User Authentication
 Impact: Users cannot save progress
 
 CHAIN 2: Lesson Completion
-Start Lesson → Study → Quiz → [BROKEN: No completion tracking] → Progress Update → [BROKEN]
+Start Lesson â†’ Study â†’ Quiz â†’ [BROKEN: No completion tracking] â†’ Progress Update â†’ [BROKEN]
 Breaks at: Lesson completion tracking
 Impact: Users cannot progress
 
 CHAIN 3: Store Purchase
-Browse Items → Select → [BROKEN: No purchase] → Payment → [BROKEN] → Inventory → [BROKEN] → Equip
+Browse Items â†’ Select â†’ [BROKEN: No purchase] â†’ Payment â†’ [BROKEN] â†’ Inventory â†’ [BROKEN] â†’ Equip
 Breaks at: Purchase logic
 Impact: No monetization
 
 CHAIN 4: Avatar Customization
-Open Profile → [BROKEN: No edit] → Upload Photo → [BROKEN] → Crop → [BROKEN] → Save → [BROKEN]
+Open Profile â†’ [BROKEN: No edit] â†’ Upload Photo â†’ [BROKEN] â†’ Crop â†’ [BROKEN] â†’ Save â†’ [BROKEN]
 Breaks at: Edit profile
 Impact: No customization
 
 CHAIN 5: Social Interaction
-Open Community → [BROKEN: Fake data] → Create Post → [BROKEN: Not saved] → Like → [BROKEN: Not saved]
+Open Community â†’ [BROKEN: Fake data] â†’ Create Post â†’ [BROKEN: Not saved] â†’ Like â†’ [BROKEN: Not saved]
 Breaks at: Real backend
 Impact: No social features
 
 CHAIN 6: Live Learning
-Open Live → [BROKEN: Fake rooms] → Create Room → [BROKEN: No Agora] → Stream → [BROKEN]
+Open Live â†’ [BROKEN: Fake rooms] â†’ Create Room â†’ [BROKEN: No Agora] â†’ Stream â†’ [BROKEN]
 Breaks at: Agora SDK
 Impact: No live features
 
 CHAIN 7: AI Chat
-Open AI Chat → Send Message → [BROKEN: Static response] → Get Response → [BROKEN: No context]
+Open AI Chat â†’ Send Message â†’ [BROKEN: Static response] â†’ Get Response â†’ [BROKEN: No context]
 Breaks at: AI integration
 Impact: No real AI
 
 CHAIN 8: Audio Lesson
-Open Audio → [BROKEN: No real files] → Play → [BROKEN] → Quiz → [BROKEN]
+Open Audio â†’ [BROKEN: No real files] â†’ Play â†’ [BROKEN] â†’ Quiz â†’ [BROKEN]
 Breaks at: Audio files
 Impact: No listening practice
 
 CHAIN 9: Subscription
-View Plans → Select → [BROKEN: No Stripe] → Pay → [BROKEN] → Premium → [BROKEN]
+View Plans â†’ Select â†’ [BROKEN: No Stripe] â†’ Pay â†’ [BROKEN] â†’ Premium â†’ [BROKEN]
 Breaks at: Payment gateway
 Impact: No revenue
 
 CHAIN 10: Notifications
-Event Occurs → [BROKEN: No FCM] → Send → [BROKEN] → Receive → [BROKEN]
+Event Occurs â†’ [BROKEN: No FCM] â†’ Send â†’ [BROKEN] â†’ Receive â†’ [BROKEN]
 Breaks at: FCM integration
 Impact: No engagement
 
@@ -445,142 +452,142 @@ SECTION 4: FEATURE COMPLETION CHECKLIST
 ================================================================================
 
 USER AUTHENTICATION:
-☐ Email/Password Registration
-☐ Email/Password Login
-☐ Social Login (Google, Apple)
-☐ Guest Mode
-☐ Email Verification
-☐ Password Reset
-☐ Session Management
-☐ Multi-device Support
-☑ Logout
+âکگ Email/Password Registration
+âکگ Email/Password Login
+âکگ Social Login (Google, Apple)
+âکگ Guest Mode
+âکگ Email Verification
+âکگ Password Reset
+âکگ Session Management
+âکگ Multi-device Support
+âک‘ Logout
 
 USER PROFILE:
-☑ View Profile
-☐ Edit Profile
-☐ Upload Avatar
-☐ Crop Avatar
-☐ Delete Avatar
-☐ Change Username
-☐ Change Email
-☐ Change Password
-☑ View Statistics (hardcoded)
-☑ View Achievements (display only)
-☑ View Level (hardcoded)
-☑ View Streak (hardcoded)
-☐ Privacy Settings
-☐ Blocked Users
-☐ Linked Accounts
-☐ Language Preferences
-☐ Notification Settings
-☐ Delete Account
+âک‘ View Profile
+âکگ Edit Profile
+âکگ Upload Avatar
+âکگ Crop Avatar
+âکگ Delete Avatar
+âکگ Change Username
+âکگ Change Email
+âکگ Change Password
+âک‘ View Statistics (hardcoded)
+âک‘ View Achievements (display only)
+âک‘ View Level (hardcoded)
+âک‘ View Streak (hardcoded)
+âکگ Privacy Settings
+âکگ Blocked Users
+âکگ Linked Accounts
+âکگ Language Preferences
+âکگ Notification Settings
+âکگ Delete Account
 
 LEARNING PATH:
-☑ View Learning Path
-☑ View All Levels
-☑ View Units per Level
-☑ View Lessons per Unit
-☐ Track Overall Progress
-☐ Track Unit Progress
-☐ Track Lesson Progress
-☐ Unlock Next Lesson
-☐ Unlock Next Unit
-☐ View Completion Percentage
-☐ View Time Spent
-☑ View XP Earned (hardcoded)
-☑ Visual Progress Indicators
+âک‘ View Learning Path
+âک‘ View All Levels
+âک‘ View Units per Level
+âک‘ View Lessons per Unit
+âکگ Track Overall Progress
+âکگ Track Unit Progress
+âکگ Track Lesson Progress
+âکگ Unlock Next Lesson
+âکگ Unlock Next Unit
+âکگ View Completion Percentage
+âکگ View Time Spent
+âک‘ View XP Earned (hardcoded)
+âک‘ Visual Progress Indicators
 
 LESSONS:
-☑ Browse Lessons by Level
-☑ Browse Lessons by Category
-☑ View Lesson Details
-☑ View Vocabulary
-☐ Play Audio for Vocabulary
-☑ View Grammar Rules
-☑ View Examples
-☑ Take Quiz
-☐ Complete Lesson
-☐ Earn XP
-☐ Track Progress
-☐ Bookmark Lesson
-☐ Take Notes
-☐ Report Issue
-☐ Share Lesson
+âک‘ Browse Lessons by Level
+âک‘ Browse Lessons by Category
+âک‘ View Lesson Details
+âک‘ View Vocabulary
+âکگ Play Audio for Vocabulary
+âک‘ View Grammar Rules
+âک‘ View Examples
+âک‘ Take Quiz
+âکگ Complete Lesson
+âکگ Earn XP
+âکگ Track Progress
+âکگ Bookmark Lesson
+âکگ Take Notes
+âکگ Report Issue
+âکگ Share Lesson
 
 QUIZZES:
-☑ Take Quiz
-☑ Multiple Choice Questions
-☑ True/False Questions
-☐ Fill in Blank
-☐ Matching Questions
-☐ Timer
-☑ Score Calculation (basic)
-☑ Show Results (basic)
-☐ Show Correct Answers
-☐ Retry Quiz
-☐ Track Attempts
-☐ Difficulty Adaptation
-☐ Leaderboard Integration
+âک‘ Take Quiz
+âک‘ Multiple Choice Questions
+âک‘ True/False Questions
+âکگ Fill in Blank
+âکگ Matching Questions
+âکگ Timer
+âک‘ Score Calculation (basic)
+âک‘ Show Results (basic)
+âکگ Show Correct Answers
+âکگ Retry Quiz
+âکگ Track Attempts
+âکگ Difficulty Adaptation
+âکگ Leaderboard Integration
 
 STORE:
-☑ Browse Items
-☐ Filter by Category
-☐ Search Items
-☐ View Item Details
-☐ Purchase Item
-☐ Use Gems/Currency
-☐ Gift Item
-☐ Item Reviews
-☐ Item Recommendations
-☐ Sale/Discount
-☐ Limited Items
-☐ Item Preview
+âک‘ Browse Items
+âکگ Filter by Category
+âکگ Search Items
+âکگ View Item Details
+âکگ Purchase Item
+âکگ Use Gems/Currency
+âکگ Gift Item
+âکگ Item Reviews
+âکگ Item Recommendations
+âکگ Sale/Discount
+âکگ Limited Items
+âکگ Item Preview
 
 AVATAR SHOP:
-☑ Browse Avatars
-☐ Preview Avatar
-☐ Purchase Avatar
-☐ Equip Avatar
-☐ Unequip Avatar
-☐ Gift Avatar
-☐ Custom Animation
-☐ Rare Avatars
-☐ Limited Editions
-☐ Avatar Bundles
+âک‘ Browse Avatars
+âکگ Preview Avatar
+âکگ Purchase Avatar
+âکگ Equip Avatar
+âکگ Unequip Avatar
+âکگ Gift Avatar
+âکگ Custom Animation
+âکگ Rare Avatars
+âکگ Limited Editions
+âکگ Avatar Bundles
 
 COMMUNITY:
-☑ View Feed (fake)
-☑ Create Post (UI only)
-☐ Upload Image
-☐ Upload Video
-☑ Like Post (UI only)
-☐ Unlike Post
-☑ Comment (UI only)
-☐ Reply to Comment
-☐ Delete Own Post
-☐ Report Post
-☐ Share Post
-☐ Bookmark Post
-☐ Filter Feed
-☐ Search Posts
-☐ Report User
-☐ Block User
+âک‘ View Feed (fake)
+âک‘ Create Post (UI only)
+âکگ Upload Image
+âکگ Upload Video
+âک‘ Like Post (UI only)
+âکگ Unlike Post
+âک‘ Comment (UI only)
+âکگ Reply to Comment
+âکگ Delete Own Post
+âکگ Report Post
+âکگ Share Post
+âکگ Bookmark Post
+âکگ Filter Feed
+âکگ Search Posts
+âکگ Report User
+âکگ Block User
 
 MESSAGING:
-☑ View Conversations (fake)
-☐ Start New Chat
-☐ Send Text Message
-☐ Send Image
-☐ Send Voice Message
-☐ Send Sticker
-☐ Read Receipts
-☐ Online Status
-☐ Typing Indicator
-☐ Delete Message
-☐ Clear Chat
-☐ Block User
-☐ Report Message
-☐ Search Messages
+âک‘ View Conversations (fake)
+âکگ Start New Chat
+âکگ Send Text Message
+âکگ Send Image
+âکگ Send Voice Message
+âکگ Send Sticker
+âکگ Read Receipts
+âکگ Online Status
+âکگ Typing Indicator
+âکگ Delete Message
+âکگ Clear Chat
+âکگ Block User
+âکگ Report Message
+âکگ Search Messages
 
 ================================================================================
 SECTION 5: IMPLEMENTATION ORDER (by dependency)
@@ -876,3 +883,4 @@ The application is ready for production when:
 ================================================================================
                     END OF EXECUTION BLUEPRINT
 ================================================================================
+

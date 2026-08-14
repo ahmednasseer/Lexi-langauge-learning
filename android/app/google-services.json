@@ -1,32 +1,44 @@
 {
   "project_info": {
-    "project_number": "0",
-    "project_id": "placeholder",
-    "storage_bucket": "placeholder.appspot.com"
+    "project_number": "618826760391",
+    "project_id": "lexi-33b14",
+    "storage_bucket": "lexi-33b14.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:0:android:0000000000000000",
+        "mobilesdk_app_id": "1:618826760391:android:bf3bcd70fb9d69f9ca3ee2",
         "android_client_info": {
           "package_name": "com.lexi.learning"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "618826760391-9s2uh4op6bitti1al9o32cb9c3l7eerj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lexi.learning",
+            "certificate_hash": "bc480e41529f9bfd18ab29a54bd8a6a7db6324dc"
+          }
+        },
+        {
+          "client_id": "618826760391-6gd8tmjnqkubetjr1av48t0tpgslgafl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "placeholder_key"
+          "current_key": "AIzaSyAhEE1JVFmRRFHRqILNoV1tLy5L2ralNIc"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 1
-        },
-        "ads_service": {
-          "status": 1
+          "other_platform_oauth_client": [
+            {
+              "client_id": "618826760391-6gd8tmjnqkubetjr1av48t0tpgslgafl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

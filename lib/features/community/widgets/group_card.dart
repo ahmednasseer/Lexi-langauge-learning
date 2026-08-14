@@ -5,11 +5,7 @@ class GroupCard extends StatelessWidget {
   final CommunityGroup group;
   final VoidCallback? onJoin;
 
-  const GroupCard({
-    super.key,
-    required this.group,
-    this.onJoin,
-  });
+  const GroupCard({super.key, required this.group, this.onJoin});
 
   Color _getLevelColor() {
     switch (group.level) {
@@ -61,11 +57,7 @@ class GroupCard extends StatelessWidget {
                   color: _getLevelColor().withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(
-                  Icons.group,
-                  color: _getLevelColor(),
-                  size: 28,
-                ),
+                child: Icon(Icons.group, color: _getLevelColor(), size: 28),
               ),
 
               const SizedBox(width: 12),
@@ -86,7 +78,10 @@ class GroupCard extends StatelessWidget {
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: _getLevelColor().withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(4),
@@ -101,7 +96,11 @@ class GroupCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        Icon(Icons.people, size: 14, color: Colors.grey.shade500),
+                        Icon(
+                          Icons.people,
+                          size: 14,
+                          color: Colors.grey.shade500,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           '${group.memberCount}',
@@ -119,7 +118,10 @@ class GroupCard extends StatelessWidget {
               // Join button
               if (group.isJoined)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.green.shade100,
                     borderRadius: BorderRadius.circular(8),
@@ -139,7 +141,10 @@ class GroupCard extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -154,10 +159,7 @@ class GroupCard extends StatelessWidget {
           // Description
           Text(
             group.description,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey.shade600,
-            ),
+            style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -182,13 +184,7 @@ class GroupCard extends StatelessWidget {
       children: [
         Icon(icon, size: 14, color: Colors.grey.shade500),
         const SizedBox(width: 4),
-        Text(
-          text,
-          style: TextStyle(
-            fontSize: 11,
-            color: Colors.grey.shade500,
-          ),
-        ),
+        Text(text, style: TextStyle(fontSize: 11, color: Colors.grey.shade500)),
       ],
     );
   }

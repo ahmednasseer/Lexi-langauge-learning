@@ -185,6 +185,19 @@ export class AdvancedSpeakingService {
   private progress: Map<string, SpeakingProgress> = new Map();
   private challenges: Map<string, SpeakingChallenge[]> = new Map();
 
+  /**
+   * Returns a session only if it exists AND belongs to `ownerId`.
+   * Used to prevent cross-user access to in-memory conversation sessions.
+   */
+  private getOwnedSession(sessionId: string, ownerId?: string): ConversationSession {
+    const session = this.sessions.get(sessionId);
+    if (!session) throw new NotFoundException('Session not found');
+    if (ownerId && session.userId !== ownerId) {
+      throw new NotFoundException('Session not found');
+    }
+    return session;
+  }
+
   startSession(userId: string, scenario: ConversationScenario): ConversationSession {
     const data = scenarioData[scenario];
     const session: ConversationSession = {
@@ -357,9 +370,8 @@ export class AdvancedSpeakingService {
     return matches / bWords.length;
   }
 
-  getAIResponse(sessionId: string, userResponse: string): string {
-    const session = this.sessions.get(sessionId);
-    if (!session) throw new NotFoundException('Session not found');
+  getAIResponse(sessionId: string, userResponse: string, ownerId?: string): string {
+    const session = this.getOwnedSession(sessionId, ownerId);
 
     const data = scenarioData[session.scenario];
     const turnCount = session.messages.filter(m => m.role === 'user').length;
@@ -371,17 +383,15 @@ export class AdvancedSpeakingService {
     return data.responses[turnCount];
   }
 
-  addMessage(sessionId: string, message: ConversationMessage): void {
-    const session = this.sessions.get(sessionId);
-    if (!session) throw new NotFoundException('Session not found');
+  addMessage(sessionId: string, message: ConversationMessage, ownerId?: string): void {
+    const session = this.getOwnedSession(sessionId, ownerId);
 
     session.messages.push(message);
     session.wordsSpoken += message.content.split(' ').length;
   }
 
-  endSession(sessionId: string): ConversationSession {
-    const session = this.sessions.get(sessionId);
-    if (!session) throw new NotFoundException('Session not found');
+  endSession(sessionId: string, ownerId?: string): ConversationSession {
+    const session = this.getOwnedSession(sessionId, ownerId);
 
     session.endedAt = new Date();
     session.state = ConversationState.ended;
@@ -456,9 +466,8 @@ export class AdvancedSpeakingService {
     return this.challenges.get(userId) || [];
   }
 
-  generateFeedback(sessionId: string) {
-    const session = this.sessions.get(sessionId);
-    if (!session) throw new NotFoundException('Session not found');
+  generateFeedback(sessionId: string, ownerId?: string) {
+    const session = this.getOwnedSession(sessionId, ownerId);
 
     const userMessages = session.messages.filter(m => m.role === 'user');
     const whatYouDidWell: string[] = [];

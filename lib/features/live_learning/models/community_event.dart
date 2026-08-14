@@ -1,17 +1,6 @@
-enum EventStatus {
-  upcoming,
-  active,
-  ended,
-  cancelled,
-}
+enum EventStatus { upcoming, active, ended, cancelled }
 
-enum EventType {
-  challenge,
-  workshop,
-  meetup,
-  competition,
-  celebration,
-}
+enum EventType { challenge, workshop, meetup, competition, celebration }
 
 extension EventTypeExtension on EventType {
   String get displayName {
@@ -67,7 +56,8 @@ class CommunityEvent {
 
   int get currentParticipants => participants.length;
   bool get isFull => currentParticipants >= maxParticipants;
-  bool get canJoin => !isFull && status != EventStatus.ended && status != EventStatus.cancelled;
+  bool get canJoin =>
+      !isFull && status != EventStatus.ended && status != EventStatus.cancelled;
   bool get isOngoing => status == EventStatus.active;
 
   CommunityEvent copyWith({
@@ -136,24 +126,33 @@ class CommunityEvent {
       (s) => s.name == json['status'],
       orElse: () => EventStatus.upcoming,
     ),
-    startDate: DateTime.parse(json['startDate'] ?? DateTime.now().toIso8601String()),
-    endDate: DateTime.parse(json['endDate'] ?? DateTime.now().toIso8601String()),
+    startDate: DateTime.parse(
+      json['startDate'] ?? DateTime.now().toIso8601String(),
+    ),
+    endDate: DateTime.parse(
+      json['endDate'] ?? DateTime.now().toIso8601String(),
+    ),
     maxParticipants: json['maxParticipants'] ?? 10000,
-    participants: (json['participants'] as List?)
-        ?.map((p) => EventParticipant.fromJson(p))
-        .toList() ?? [],
+    participants:
+        (json['participants'] as List?)
+            ?.map((p) => EventParticipant.fromJson(p))
+            .toList() ??
+        [],
     reward: EventReward.fromJson(json['reward'] ?? {}),
     rules: List<String>.from(json['rules'] ?? []),
     tags: List<String>.from(json['tags'] ?? []),
     imageUrl: json['imageUrl'],
     totalXpAwarded: json['totalXpAwarded'] ?? 0,
-    createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
+    createdAt: DateTime.parse(
+      json['createdAt'] ?? DateTime.now().toIso8601String(),
+    ),
   );
 
   factory CommunityEvent.demo() => CommunityEvent(
     id: 'event_demo_${DateTime.now().millisecondsSinceEpoch}',
     title: '30 Days German Challenge',
-    description: 'Practice German every day for 30 days and earn exclusive rewards!',
+    description:
+        'Practice German every day for 30 days and earn exclusive rewards!',
     type: EventType.challenge,
     status: EventStatus.upcoming,
     startDate: DateTime.now().add(const Duration(days: 1)),
@@ -205,15 +204,20 @@ class EventParticipant {
     'completedAt': completedAt?.toIso8601String(),
   };
 
-  factory EventParticipant.fromJson(Map<String, dynamic> json) => EventParticipant(
-    userId: json['userId'] ?? '',
-    userName: json['userName'] ?? '',
-    avatarUrl: json['avatarUrl'],
-    joinedAt: DateTime.parse(json['joinedAt'] ?? DateTime.now().toIso8601String()),
-    progress: json['progress'] ?? 0,
-    completed: json['completed'] ?? false,
-    completedAt: json['completedAt'] != null ? DateTime.parse(json['completedAt']) : null,
-  );
+  factory EventParticipant.fromJson(Map<String, dynamic> json) =>
+      EventParticipant(
+        userId: json['userId'] ?? '',
+        userName: json['userName'] ?? '',
+        avatarUrl: json['avatarUrl'],
+        joinedAt: DateTime.parse(
+          json['joinedAt'] ?? DateTime.now().toIso8601String(),
+        ),
+        progress: json['progress'] ?? 0,
+        completed: json['completed'] ?? false,
+        completedAt: json['completedAt'] != null
+            ? DateTime.parse(json['completedAt'])
+            : null,
+      );
 }
 
 class EventReward {

@@ -1,9 +1,4 @@
-enum PartnerStatus {
-  pending,
-  matched,
-  active,
-  ended,
-}
+enum PartnerStatus { pending, matched, active, ended }
 
 enum MatchingGoal {
   conversation,
@@ -120,28 +115,33 @@ class LanguagePartner {
     'averageRating': averageRating,
   };
 
-  factory LanguagePartner.fromJson(Map<String, dynamic> json) => LanguagePartner(
-    id: json['id'] ?? '',
-    userId: json['userId'] ?? '',
-    userName: json['userName'] ?? '',
-    avatarUrl: json['avatarUrl'],
-    nativeLanguage: json['nativeLanguage'] ?? '',
-    learningLanguage: json['learningLanguage'] ?? '',
-    level: json['level'] ?? 'A1',
-    goal: MatchingGoal.values.firstWhere(
-      (g) => g.name == json['goal'],
-      orElse: () => MatchingGoal.conversation,
-    ),
-    status: PartnerStatus.values.firstWhere(
-      (s) => s.name == json['status'],
-      orElse: () => PartnerStatus.pending,
-    ),
-    createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-    matchedAt: json['matchedAt'] != null ? DateTime.parse(json['matchedAt']) : null,
-    totalSessions: json['totalSessions'] ?? 0,
-    totalMinutes: json['totalMinutes'] ?? 0,
-    averageRating: (json['averageRating'] ?? 0).toDouble(),
-  );
+  factory LanguagePartner.fromJson(Map<String, dynamic> json) =>
+      LanguagePartner(
+        id: json['id'] ?? '',
+        userId: json['userId'] ?? '',
+        userName: json['userName'] ?? '',
+        avatarUrl: json['avatarUrl'],
+        nativeLanguage: json['nativeLanguage'] ?? '',
+        learningLanguage: json['learningLanguage'] ?? '',
+        level: json['level'] ?? 'A1',
+        goal: MatchingGoal.values.firstWhere(
+          (g) => g.name == json['goal'],
+          orElse: () => MatchingGoal.conversation,
+        ),
+        status: PartnerStatus.values.firstWhere(
+          (s) => s.name == json['status'],
+          orElse: () => PartnerStatus.pending,
+        ),
+        createdAt: DateTime.parse(
+          json['createdAt'] ?? DateTime.now().toIso8601String(),
+        ),
+        matchedAt: json['matchedAt'] != null
+            ? DateTime.parse(json['matchedAt'])
+            : null,
+        totalSessions: json['totalSessions'] ?? 0,
+        totalMinutes: json['totalMinutes'] ?? 0,
+        averageRating: (json['averageRating'] ?? 0).toDouble(),
+      );
 }
 
 class PartnerMatch {
@@ -211,15 +211,20 @@ class ExchangeSession {
     'rating': rating,
   };
 
-  factory ExchangeSession.fromJson(Map<String, dynamic> json) => ExchangeSession(
-    id: json['id'] ?? '',
-    userId: json['userId'] ?? '',
-    partnerId: json['partnerId'] ?? '',
-    startedAt: DateTime.parse(json['startedAt'] ?? DateTime.now().toIso8601String()),
-    endedAt: json['endedAt'] != null ? DateTime.parse(json['endedAt']) : null,
-    durationMinutes: json['durationMinutes'] ?? 0,
-    languageUsed: json['languageUsed'] ?? '',
-    feedback: json['feedback'],
-    rating: json['rating']?.toDouble(),
-  );
+  factory ExchangeSession.fromJson(Map<String, dynamic> json) =>
+      ExchangeSession(
+        id: json['id'] ?? '',
+        userId: json['userId'] ?? '',
+        partnerId: json['partnerId'] ?? '',
+        startedAt: DateTime.parse(
+          json['startedAt'] ?? DateTime.now().toIso8601String(),
+        ),
+        endedAt: json['endedAt'] != null
+            ? DateTime.parse(json['endedAt'])
+            : null,
+        durationMinutes: json['durationMinutes'] ?? 0,
+        languageUsed: json['languageUsed'] ?? '',
+        feedback: json['feedback'],
+        rating: json['rating']?.toDouble(),
+      );
 }

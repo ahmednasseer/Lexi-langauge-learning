@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -9,9 +10,13 @@ class AuthRepositoryImpl implements AuthRepository {
   static const _userKey = 'user_data';
 
   final fb.FirebaseAuth _firebaseAuth;
+  final GoogleSignIn _googleSignIn;
 
-  AuthRepositoryImpl({fb.FirebaseAuth? firebaseAuth})
-      : _firebaseAuth = firebaseAuth ?? fb.FirebaseAuth.instance;
+  AuthRepositoryImpl({
+    fb.FirebaseAuth? firebaseAuth,
+    GoogleSignIn? googleSignIn,
+  }) : _firebaseAuth = firebaseAuth ?? fb.FirebaseAuth.instance,
+       _googleSignIn = googleSignIn ?? GoogleSignIn();
 
   @override
   Future<User?> getCurrentUser() async {
@@ -98,11 +103,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final firebaseUser = credential.user;
       if (firebaseUser == null) return null;
 
-      final user = UserModel(
-        id: firebaseUser.uid,
-        name: 'Guest',
-        email: '',
-      );
+      final user = UserModel(id: firebaseUser.uid, name: 'Guest', email: '');
       await saveUser(user);
       return user;
     } on fb.FirebaseAuthException catch (e) {
@@ -136,6 +137,69 @@ class AuthRepositoryImpl implements AuthRepository {
       email: firebaseUser.email ?? '',
       photoUrl: firebaseUser.photoURL,
     );
+  }
+
+  @override
+  User? getCurrentUserSync() {
+    final firebaseUser = _firebaseAuth.currentUser;
+    if (firebaseUser == null) return null;
+
+    return UserModel(
+      id: firebaseUser.uid,
+      name: firebaseUser.displayName ?? '',
+      email: firebaseUser.email ?? '',
+      photoUrl: firebaseUser.photoURL,
+    );
+  }
+
+  @override
+  Future<User?> signInWithGoogle() async {
+    try {
+      final googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) return null;
+
+      final googleAuth = await googleUser.authentication;
+      final credential = fb.GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential = await _firebaseAuth.signInWithCredential(
+        credential,
+      );
+      final firebaseUser = userCredential.user;
+      if (firebaseUser == null) return null;
+
+      final user = UserModel(
+        id: firebaseUser.uid,
+        name: firebaseUser.displayName ?? 'User',
+        email: firebaseUser.email ?? '',
+        photoUrl: firebaseUser.photoURL,
+      );
+      await saveUser(user);
+      return user;
+    } on fb.FirebaseAuthException catch (e) {
+      throw _mapFirebaseAuthError(e);
+    }
+  }
+
+  @override
+  Future<void> sendEmailVerification() async {
+    final user = _firebaseAuth.currentUser;
+    if (user != null && !user.emailVerified) {
+      await user.sendEmailVerification();
+    }
+  }
+
+  @override
+  Future<bool> isEmailVerified() async {
+    final user = _firebaseAuth.currentUser;
+    return user?.emailVerified ?? false;
+  }
+
+  @override
+  Future<void> reloadUser() async {
+    await _firebaseAuth.currentUser?.reload();
   }
 
   Exception _mapFirebaseAuthError(fb.FirebaseAuthException e) {

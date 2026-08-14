@@ -1,9 +1,19 @@
-import { Controller, Get, Post, Body, Param, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, HttpCode, HttpStatus, UseGuards, Req, ForbiddenException } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { LiveLearningService, RoomLevel } from './live-learning.service';
 
 @Controller('live')
+@UseGuards(JwtAuthGuard)
 export class LiveLearningController {
   constructor(private readonly liveService: LiveLearningService) {}
+
+  /** Resolve acting user from token, rejecting client-supplied userId mismatches. */
+  private self(sub: string, provided?: string): string {
+    if (provided && provided !== sub) {
+      throw new ForbiddenException('Cannot operate on another user');
+    }
+    return sub;
+  }
 
   // Rooms
   @Get('rooms')
@@ -20,8 +30,8 @@ export class LiveLearningController {
 
   @Post('rooms/create')
   @HttpCode(HttpStatus.CREATED)
-  createRoom(@Body() body: {
-    hostId: string;
+  createRoom(@Req() req, @Body() body: {
+    hostId?: string;
     hostName: string;
     title: string;
     topic: string;
@@ -31,21 +41,31 @@ export class LiveLearningController {
     durationMinutes?: number;
     tags?: string[];
   }) {
-    const room = this.liveService.createRoom(body);
+    const room = this.liveService.createRoom({
+      hostId: this.self(req.user.sub, body.hostId),
+      hostName: body.hostName,
+      title: body.title,
+      topic: body.topic,
+      description: body.description,
+      level: body.level,
+      maxParticipants: body.maxParticipants,
+      durationMinutes: body.durationMinutes,
+      tags: body.tags,
+    });
     return { success: true, data: room };
   }
 
   @Post('rooms/:id/join')
   @HttpCode(HttpStatus.OK)
-  joinRoom(@Param('id') id: string, @Body() body: { userId: string; userName: string }) {
-    const room = this.liveService.joinRoom(id, body.userId, body.userName);
+  joinRoom(@Req() req, @Param('id') id: string, @Body() body: { userId?: string; userName: string }) {
+    const room = this.liveService.joinRoom(id, this.self(req.user.sub, body.userId), body.userName);
     return { success: true, data: room };
   }
 
   @Post('rooms/:id/leave')
   @HttpCode(HttpStatus.OK)
-  leaveRoom(@Param('id') id: string, @Body() body: { userId: string }) {
-    const room = this.liveService.leaveRoom(id, body.userId);
+  leaveRoom(@Req() req, @Param('id') id: string, @Body() body: { userId?: string }) {
+    const room = this.liveService.leaveRoom(id, this.self(req.user.sub, body.userId));
     return { success: true, data: room };
   }
 
@@ -58,14 +78,20 @@ export class LiveLearningController {
 
   @Post('partners/match')
   @HttpCode(HttpStatus.OK)
-  findMatch(@Body() body: {
-    userId: string;
+  findMatch(@Req() req, @Body() body: {
+    userId?: string;
     nativeLanguage: string;
     learningLanguage: string;
     level: string;
     goal: string;
   }) {
-    const match = this.liveService.findMatch(body);
+    const match = this.liveService.findMatch({
+      userId: this.self(req.user.sub, body.userId),
+      nativeLanguage: body.nativeLanguage,
+      learningLanguage: body.learningLanguage,
+      level: body.level,
+      goal: body.goal,
+    });
     return {
       success: true,
       data: match,
@@ -82,8 +108,8 @@ export class LiveLearningController {
 
   @Post('groups/:id/join')
   @HttpCode(HttpStatus.OK)
-  joinGroup(@Param('id') id: string, @Body() body: { userId: string; userName: string }) {
-    const group = this.liveService.joinGroup(id, body.userId, body.userName);
+  joinGroup(@Req() req, @Param('id') id: string, @Body() body: { userId?: string; userName: string }) {
+    const group = this.liveService.joinGroup(id, this.self(req.user.sub, body.userId), body.userName);
     return { success: true, data: group };
   }
 
@@ -96,8 +122,8 @@ export class LiveLearningController {
 
   @Post('events/:id/join')
   @HttpCode(HttpStatus.OK)
-  joinEvent(@Param('id') id: string, @Body() body: { userId: string; userName: string }) {
-    const event = this.liveService.joinEvent(id, body.userId, body.userName);
+  joinEvent(@Req() req, @Param('id') id: string, @Body() body: { userId?: string; userName: string }) {
+    const event = this.liveService.joinEvent(id, this.self(req.user.sub, body.userId), body.userName);
     return { success: true, data: event };
   }
 

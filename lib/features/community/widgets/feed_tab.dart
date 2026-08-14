@@ -28,10 +28,7 @@ class FeedTab extends StatelessWidget {
           // Posts
           const Text(
             'Recent Posts',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
 
@@ -81,10 +78,7 @@ class FeedTab extends StatelessWidget {
             Expanded(
               child: Text(
                 'Share your progress...',
-                style: TextStyle(
-                  color: Colors.grey.shade500,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
               ),
             ),
             Icon(Icons.camera_alt, color: Colors.grey.shade400),
@@ -103,10 +97,7 @@ class FeedTab extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Colors.amber.shade400,
-            Colors.orange.shade400,
-          ],
+          colors: [Colors.amber.shade400, Colors.orange.shade400],
         ),
         borderRadius: BorderRadius.circular(16),
       ),
@@ -153,10 +144,7 @@ class FeedTab extends StatelessWidget {
             border: Border.all(color: Colors.white, width: 2),
           ),
           child: Center(
-            child: Text(
-              medal,
-              style: TextStyle(fontSize: rank == 1 ? 28 : 22),
-            ),
+            child: Text(medal, style: TextStyle(fontSize: rank == 1 ? 28 : 22)),
           ),
         ),
         const SizedBox(height: 4),

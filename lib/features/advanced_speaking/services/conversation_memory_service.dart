@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lexi/core/services/auth_service.dart';
 import '../models/conversation_models.dart';
 import '../models/ai_character.dart';
 import '../models/speaking_progress.dart';
@@ -44,7 +45,10 @@ class ConversationMemoryService {
     await saveMemory(updatedMemory);
   }
 
-  Future<void> recordVocabularyProblem(ConversationMemory memory, String word) async {
+  Future<void> recordVocabularyProblem(
+    ConversationMemory memory,
+    String word,
+  ) async {
     final updatedProblems = List<String>.from(memory.vocabularyProblems);
     if (!updatedProblems.contains(word)) {
       updatedProblems.insert(0, word);
@@ -61,7 +65,10 @@ class ConversationMemoryService {
     await saveMemory(updatedMemory);
   }
 
-  Future<void> recordGrammarProblem(ConversationMemory memory, String pattern) async {
+  Future<void> recordGrammarProblem(
+    ConversationMemory memory,
+    String pattern,
+  ) async {
     final updatedProblems = List<String>.from(memory.grammarProblems);
     if (!updatedProblems.contains(pattern)) {
       updatedProblems.insert(0, pattern);
@@ -101,7 +108,7 @@ class ConversationMemoryService {
   }) {
     return ConversationContext(
       sessionId: 'session_${DateTime.now().millisecondsSinceEpoch}',
-      userId: 'current_user',
+      userId: AuthService.instance.currentUser?.id ?? '',
       scenario: scenario,
       character: character,
       userLevel: userLevel,
@@ -142,15 +149,19 @@ class ConversationMemoryService {
     final totalWords = current.totalWordsSpoken + words;
     final totalSessions = current.totalSessions + 1;
 
-    final avgPronunciation = ((current.averagePronunciationScore * current.totalSessions) +
+    final avgPronunciation =
+        ((current.averagePronunciationScore * current.totalSessions) +
             pronunciationScore) /
         (current.totalSessions + 1);
-    final avgFluency = ((current.averageFluencyScore * current.totalSessions) +
-            fluencyScore) /
+    final avgFluency =
+        ((current.averageFluencyScore * current.totalSessions) + fluencyScore) /
         (current.totalSessions + 1);
 
-    final updatedScenarioCount = Map<String, int>.from(current.scenarioPracticeCount);
-    updatedScenarioCount[scenario.name] = (updatedScenarioCount[scenario.name] ?? 0) + 1;
+    final updatedScenarioCount = Map<String, int>.from(
+      current.scenarioPracticeCount,
+    );
+    updatedScenarioCount[scenario.name] =
+        (updatedScenarioCount[scenario.name] ?? 0) + 1;
 
     final updated = current.copyWith(
       totalSpeakingMinutes: totalMinutes,
@@ -180,7 +191,10 @@ class ConversationMemoryService {
 
   Future<void> saveChallenges(List<SpeakingChallenge> challenges) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_challengesKey, jsonEncode(challenges.map((c) => c.toJson()).toList()));
+    await prefs.setString(
+      _challengesKey,
+      jsonEncode(challenges.map((c) => c.toJson()).toList()),
+    );
   }
 
   List<SpeakingChallenge> getAvailableChallenges() {
@@ -223,12 +237,17 @@ class ConversationMemoryService {
             dayNumber: index + 1,
             title: 'Day ${index + 1}',
             description: 'Practice scenario ${index + 1} of 7',
-            scenario: ConversationScenario.values[index % ConversationScenario.values.length],
+            scenario: ConversationScenario
+                .values[index % ConversationScenario.values.length],
             targetMinutes: 5 + index,
             isCompleted: false,
           ),
         ),
-        reward: const ChallengeReward(xp: 200, gems: 50, badgeId: 'speaking_week'),
+        reward: const ChallengeReward(
+          xp: 200,
+          gems: 50,
+          badgeId: 'speaking_week',
+        ),
       ),
       SpeakingChallenge(
         id: 'monthly_${DateTime.now().millisecondsSinceEpoch}',
@@ -246,12 +265,17 @@ class ConversationMemoryService {
             dayNumber: index + 1,
             title: 'Day ${index + 1}',
             description: 'Complete daily speaking exercise',
-            scenario: ConversationScenario.values[index % ConversationScenario.values.length],
+            scenario: ConversationScenario
+                .values[index % ConversationScenario.values.length],
             targetMinutes: 5 + (index ~/ 5),
             isCompleted: false,
           ),
         ),
-        reward: const ChallengeReward(xp: 1000, gems: 200, badgeId: 'speaking_master'),
+        reward: const ChallengeReward(
+          xp: 1000,
+          gems: 200,
+          badgeId: 'speaking_master',
+        ),
       ),
     ];
   }

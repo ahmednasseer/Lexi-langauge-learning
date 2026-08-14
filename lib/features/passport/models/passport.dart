@@ -55,7 +55,9 @@ class PassportLevel {
     speakingScore: (json['speakingScore'] ?? 0).toDouble(),
     isUnlocked: json['isUnlocked'] ?? false,
     isCompleted: json['isCompleted'] ?? false,
-    completedAt: json['completedAt'] != null ? DateTime.parse(json['completedAt']) : null,
+    completedAt: json['completedAt'] != null
+        ? DateTime.parse(json['completedAt'])
+        : null,
     certificateId: json['certificateId'],
   );
 
@@ -163,8 +165,16 @@ class Passport {
     totalXp: json['totalXp'] ?? 0,
     currentStreak: json['currentStreak'] ?? 0,
     bestStreak: json['bestStreak'] ?? 0,
-    levels: (json['levels'] as List?)?.map((l) => PassportLevel.fromJson(l)).toList() ?? PassportLevel.getDefaultLevels(),
-    createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
-    lastActiveAt: json['lastActiveAt'] != null ? DateTime.parse(json['lastActiveAt']) : DateTime.now(),
+    levels:
+        (json['levels'] as List?)
+            ?.map((l) => PassportLevel.fromJson(l))
+            .toList() ??
+        PassportLevel.getDefaultLevels(),
+    createdAt: json['createdAt'] != null
+        ? DateTime.parse(json['createdAt'])
+        : DateTime.now(),
+    lastActiveAt: json['lastActiveAt'] != null
+        ? DateTime.parse(json['lastActiveAt'])
+        : DateTime.now(),
   );
 }

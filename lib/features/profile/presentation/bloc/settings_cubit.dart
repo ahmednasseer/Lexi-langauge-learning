@@ -26,7 +26,12 @@ class SettingsLoaded extends SettingsState {
   });
 
   @override
-  List<Object?> get props => [darkMode, notificationsEnabled, learningLanguage, dailyGoal];
+  List<Object?> get props => [
+    darkMode,
+    notificationsEnabled,
+    learningLanguage,
+    dailyGoal,
+  ];
 
   SettingsLoaded copyWith({
     bool? darkMode,
@@ -62,19 +67,23 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   Future<void> loadSettings() async {
     try {
-      emit(SettingsLoaded(
-        darkMode: _prefs.getBool('dark_mode') ?? false,
-        notificationsEnabled: _prefs.getBool('notifications_enabled') ?? true,
-        learningLanguage: _prefs.getString('learning_language') ?? 'German',
-        dailyGoal: _prefs.getInt('daily_goal') ?? 50,
-      ));
+      emit(
+        SettingsLoaded(
+          darkMode: _prefs.getBool('dark_mode') ?? false,
+          notificationsEnabled: _prefs.getBool('notifications_enabled') ?? true,
+          learningLanguage: _prefs.getString('learning_language') ?? 'German',
+          dailyGoal: _prefs.getInt('daily_goal') ?? 50,
+        ),
+      );
     } catch (e) {
       emit(SettingsError(e.toString()));
     }
   }
 
   Future<void> toggleDarkMode() async {
-    final current = state is SettingsLoaded ? (state as SettingsLoaded).darkMode : false;
+    final current = state is SettingsLoaded
+        ? (state as SettingsLoaded).darkMode
+        : false;
     final newValue = !current;
     await _prefs.setBool('dark_mode', newValue);
     if (state is SettingsLoaded) {
@@ -83,7 +92,9 @@ class SettingsCubit extends Cubit<SettingsState> {
   }
 
   Future<void> toggleNotifications() async {
-    final current = state is SettingsLoaded ? (state as SettingsLoaded).notificationsEnabled : true;
+    final current = state is SettingsLoaded
+        ? (state as SettingsLoaded).notificationsEnabled
+        : true;
     final newValue = !current;
     await _prefs.setBool('notifications_enabled', newValue);
     if (state is SettingsLoaded) {

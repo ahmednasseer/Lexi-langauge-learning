@@ -80,17 +80,13 @@ class _SuccessScreenState extends State<SuccessScreen> {
           ),
         ],
       ),
-      child: const Icon(
-        Icons.check_rounded,
-        color: Colors.white,
-        size: 64,
-      ),
+      child: const Icon(Icons.check_rounded, color: Colors.white, size: 64),
     ).animate().scale(
-          delay: 200.ms,
-          duration: 500.ms,
-          begin: const Offset(0.3, 0.3),
-          curve: Curves.elasticOut,
-        );
+      delay: 200.ms,
+      duration: 500.ms,
+      begin: const Offset(0.3, 0.3),
+      curve: Curves.elasticOut,
+    );
   }
 
   Widget _buildTitle() {
@@ -122,7 +118,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
       width: double.infinity,
       height: 56,
       child: ElevatedButton(
-        onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
+        onPressed: () =>
+            Navigator.of(context).popUntil((route) => route.isFirst),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           shape: RoundedRectangleBorder(
@@ -157,5 +154,3 @@ class _SuccessScreenState extends State<SuccessScreen> {
     ).animate().fadeIn(delay: 1100.ms);
   }
 }
-
-

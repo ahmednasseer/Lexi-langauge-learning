@@ -155,7 +155,9 @@ class _GemStoreScreenState extends State<GemStoreScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: isSelected ? Colors.white : AppColors.textSecondary,
+                      color: isSelected
+                          ? Colors.white
+                          : AppColors.textSecondary,
                     ),
                   ),
                 ),
@@ -183,9 +185,12 @@ class _GemStoreScreenState extends State<GemStoreScreen> {
         final index = entry.key;
         final pkg = entry.value;
         return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: _buildPackageCard(pkg),
-        ).animate().fadeIn(delay: Duration(milliseconds: 400 + index * 80)).slideY(begin: 0.05);
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _buildPackageCard(pkg),
+            )
+            .animate()
+            .fadeIn(delay: Duration(milliseconds: 400 + index * 80))
+            .slideY(begin: 0.05);
       }).toList(),
     );
   }
@@ -229,7 +234,10 @@ class _GemStoreScreenState extends State<GemStoreScreen> {
                     if (pkg.isPopular) ...[
                       const SizedBox(width: 8),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           gradient: AppColors.goldGradient,
                           borderRadius: BorderRadius.circular(6),
@@ -263,7 +271,9 @@ class _GemStoreScreenState extends State<GemStoreScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               decoration: BoxDecoration(
-                gradient: pkg.isPopular ? AppColors.goldGradient : AppColors.primaryGradient,
+                gradient: pkg.isPopular
+                    ? AppColors.goldGradient
+                    : AppColors.primaryGradient,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(

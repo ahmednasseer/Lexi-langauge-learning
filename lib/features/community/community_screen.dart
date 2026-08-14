@@ -58,8 +58,6 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       const SizedBox(height: 20),
                       _buildLearningTipsSection(),
                       const SizedBox(height: 24),
-                      _buildActiveUsersSection(),
-                      const SizedBox(height: 20),
                       if (_feedError)
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -92,9 +90,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
               decoration: BoxDecoration(
                 color: const Color(0xFF161B22),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: const Color(0xFF21262D),
-                ),
+                border: Border.all(color: const Color(0xFF21262D)),
               ),
               child: const Icon(
                 Icons.arrow_forward_ios,
@@ -119,9 +115,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
             decoration: BoxDecoration(
               color: const Color(0xFF161B22),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: const Color(0xFF21262D),
-              ),
+              border: Border.all(color: const Color(0xFF21262D)),
             ),
             child: const Icon(
               Icons.notifications_outlined,
@@ -149,9 +143,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
       decoration: BoxDecoration(
         color: const Color(0xFF161B22),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: const Color(0xFF21262D),
-        ),
+        border: Border.all(color: const Color(0xFF21262D)),
       ),
       child: Row(
         children: tabs.map((tab) {
@@ -180,7 +172,9 @@ class _CommunityScreenState extends State<CommunityScreen> {
                     tab.$2,
                     style: GoogleFonts.poppins(
                       fontSize: 12,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                      fontWeight: isSelected
+                          ? FontWeight.bold
+                          : FontWeight.w500,
                       color: isSelected ? Colors.white : AppColors.textHint,
                     ),
                   ),
@@ -202,17 +196,11 @@ class _CommunityScreenState extends State<CommunityScreen> {
         decoration: BoxDecoration(
           color: const Color(0xFF161B22),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: const Color(0xFF21262D),
-          ),
+          border: Border.all(color: const Color(0xFF21262D)),
         ),
         child: Row(
           children: [
-            const Icon(
-              Icons.search,
-              color: AppColors.textHint,
-              size: 20,
-            ),
+            const Icon(Icons.search, color: AppColors.textHint, size: 20),
             const SizedBox(width: 12),
             Text(
               'ابحث في المجتمع...',
@@ -296,11 +284,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                     ],
                   ),
                   child: const Center(
-                    child: Icon(
-                      Icons.groups,
-                      color: Colors.white,
-                      size: 28,
-                    ),
+                    child: Icon(Icons.groups, color: Colors.white, size: 28),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -344,7 +328,10 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     gradient: AppColors.primaryGradient,
                     borderRadius: BorderRadius.circular(10),
@@ -379,9 +366,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
             decoration: BoxDecoration(
               color: const Color(0xFF161B22),
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(
-                color: const Color(0xFF21262D),
-              ),
+              border: Border.all(color: const Color(0xFF21262D)),
             ),
             child: Column(
               children: [
@@ -395,10 +380,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                         borderRadius: BorderRadius.circular(14),
                       ),
                       child: const Center(
-                        child: Text(
-                          '🇩🇪',
-                          style: TextStyle(fontSize: 26),
-                        ),
+                        child: Text('🇩🇪', style: TextStyle(fontSize: 26)),
                       ),
                     ),
                     const SizedBox(width: 14),
@@ -426,7 +408,10 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.success.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(8),
@@ -467,7 +452,11 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.people_outline, size: 18, color: AppColors.textSecondary),
+                      const Icon(
+                        Icons.people_outline,
+                        size: 18,
+                        color: AppColors.textSecondary,
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         '312 عضو',
@@ -477,7 +466,11 @@ class _CommunityScreenState extends State<CommunityScreen> {
                         ),
                       ),
                       const SizedBox(width: 16),
-                      const Icon(Icons.chat_bubble_outline, size: 18, color: AppColors.textSecondary),
+                      const Icon(
+                        Icons.chat_bubble_outline,
+                        size: 18,
+                        color: AppColors.textSecondary,
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         '48 رسالة اليوم',
@@ -555,7 +548,9 @@ class _CommunityScreenState extends State<CommunityScreen> {
               final c = challenges[index];
               return Container(
                 width: 180,
-                margin: EdgeInsets.only(right: index < challenges.length - 1 ? 12 : 0),
+                margin: EdgeInsets.only(
+                  right: index < challenges.length - 1 ? 12 : 0,
+                ),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: const Color(0xFF161B22),
@@ -573,7 +568,9 @@ class _CommunityScreenState extends State<CommunityScreen> {
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: (c['color'] as Color).withValues(alpha: 0.15),
+                            color: (c['color'] as Color).withValues(
+                              alpha: 0.15,
+                            ),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Icon(
@@ -583,7 +580,10 @@ class _CommunityScreenState extends State<CommunityScreen> {
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: AppColors.gold.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(8),
@@ -629,8 +629,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   ],
                 ),
               ).animate().fadeIn(
-                    delay: Duration(milliseconds: 500 + index * 100),
-                  );
+                delay: Duration(milliseconds: 500 + index * 100),
+              );
             },
           ),
         ),
@@ -671,14 +671,14 @@ class _CommunityScreenState extends State<CommunityScreen> {
             children: List.generate(tips.length, (index) {
               final t = tips[index];
               return Container(
-                margin: EdgeInsets.only(bottom: index < tips.length - 1 ? 10 : 0),
+                margin: EdgeInsets.only(
+                  bottom: index < tips.length - 1 ? 10 : 0,
+                ),
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   color: const Color(0xFF161B22),
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: const Color(0xFF21262D),
-                  ),
+                  border: Border.all(color: const Color(0xFF21262D)),
                 ),
                 child: Row(
                   children: [
@@ -729,158 +729,13 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   ],
                 ),
               ).animate().fadeIn(
-                    delay: Duration(milliseconds: 600 + index * 100),
-                  );
+                delay: Duration(milliseconds: 600 + index * 100),
+              );
             }),
           ),
         ),
       ],
     );
-  }
-
-  Widget _buildActiveUsersSection() {
-    final activeUsers = [
-      {'name': 'Ahmed', 'color': Colors.deepPurple, 'initial': 'A', 'level': 'B1', 'active': true},
-      {'name': 'Fatima', 'color': Colors.pink, 'initial': 'F', 'level': 'A2', 'active': true},
-      {'name': 'Mohamed', 'color': Colors.teal, 'initial': 'M', 'level': 'B2', 'active': true},
-      {'name': 'Noor', 'color': Colors.orange, 'initial': 'N', 'level': 'A1', 'active': true},
-      {'name': 'Sara', 'color': Colors.blue, 'initial': 'S', 'level': 'C1', 'active': false},
-      {'name': 'Amr', 'color': Colors.cyan, 'initial': 'A', 'level': 'A2', 'active': true},
-      {'name': 'Layla', 'color': Colors.red, 'initial': 'L', 'level': 'B1', 'active': false},
-      {'name': 'Khaled', 'color': Colors.indigo, 'initial': 'K', 'level': 'A1', 'active': true},
-      {'name': 'Reem', 'color': Colors.green, 'initial': 'R', 'level': 'B2', 'active': true},
-      {'name': 'Yousef', 'color': Colors.amber, 'initial': 'Y', 'level': 'A2', 'active': false},
-    ];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildSectionTitle('المستخدمون النشطون', actionText: 'الكل'),
-        const SizedBox(height: 14),
-        SizedBox(
-          height: 110,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            itemCount: activeUsers.length,
-            itemBuilder: (context, index) {
-              final user = activeUsers[index];
-              return Container(
-                width: 72,
-                margin: EdgeInsets.only(right: index < activeUsers.length - 1 ? 12 : 0),
-                child: Column(
-                  children: [
-                    Stack(
-                      children: [
-                        Container(
-                          width: 56,
-                          height: 56,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                (user['color'] as Color),
-                                (user['color'] as Color).withValues(alpha: 0.6),
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: (user['color'] as Color).withValues(alpha: 0.3),
-                                blurRadius: 8,
-                                spreadRadius: -2,
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: Text(
-                              user['initial'] as String,
-                              style: GoogleFonts.poppins(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                        if (user['active'] as bool)
-                          Positioned(
-                            bottom: 2,
-                            right: 2,
-                            child: Container(
-                              width: 14,
-                              height: 14,
-                              decoration: BoxDecoration(
-                                color: AppColors.success,
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: const Color(0xFF0D1117),
-                                  width: 2.5,
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      user['name'] as String,
-                      style: GoogleFonts.poppins(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 2),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: _getLevelColor(user['level'] as String).withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        user['level'] as String,
-                        style: GoogleFonts.poppins(
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                          color: _getLevelColor(user['level'] as String),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ).animate().fadeIn(
-                    delay: Duration(milliseconds: 700 + index * 60),
-                  );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Color _getLevelColor(String level) {
-    switch (level) {
-      case 'A1':
-        return AppColors.levelA1;
-      case 'A2':
-        return AppColors.levelA2;
-      case 'B1':
-        return AppColors.levelB1;
-      case 'B2':
-        return AppColors.levelB2;
-      case 'C1':
-        return AppColors.levelC1;
-      case 'C2':
-        return AppColors.levelC2;
-      default:
-        return AppColors.primary;
-    }
   }
 
   Widget _miniAvatar(Color color, String letter) {
@@ -890,10 +745,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,
-        border: Border.all(
-          color: const Color(0xFF0D1117),
-          width: 2,
-        ),
+        border: Border.all(color: const Color(0xFF0D1117), width: 2),
       ),
       child: Center(
         child: Text(
@@ -915,10 +767,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,
-        border: Border.all(
-          color: const Color(0xFF161B22),
-          width: 1.5,
-        ),
+        border: Border.all(color: const Color(0xFF161B22), width: 1.5),
       ),
       child: Center(
         child: Text(
@@ -932,5 +781,4 @@ class _CommunityScreenState extends State<CommunityScreen> {
       ),
     );
   }
-
 }

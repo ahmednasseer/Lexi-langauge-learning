@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'models/exam_models.dart';
+import 'package:lexi/features/goethe/models/exam_models.dart';
 import 'goethe_exam_service.dart';
 import 'goethe_repository.dart';
 
 class GoetheExamController extends ChangeNotifier {
   final GoetheExamService _service = GoetheExamService();
   final GoetheRepository _repository = GoetheRepository();
+  final String? _userId;
   List<ExamLevelModel> _levels = [];
   ExamLevelModel? _selectedLevel;
   List<ExamSection> _currentSections = [];
@@ -17,9 +18,9 @@ class GoetheExamController extends ChangeNotifier {
   bool _levelsLoading = false;
   bool _levelsError = false;
   bool _examCompleted = false;
-  WritingSubmission? _writingSubmission;
+  bool _sectionsLoading = false;
+  bool _sectionsError = false;
   UserExamProgress? _userProgress;
-
   List<ExamLevelModel> get levels => _levels;
   ExamLevelModel? get selectedLevel => _selectedLevel;
   List<ExamSection> get currentSections => _currentSections;
@@ -31,22 +32,24 @@ class GoetheExamController extends ChangeNotifier {
   bool get levelsLoading => _levelsLoading;
   bool get levelsError => _levelsError;
   bool get examCompleted => _examCompleted;
-  WritingSubmission? get writingSubmission => _writingSubmission;
+  bool get sectionsLoading => _sectionsLoading;
+  bool get sectionsError => _sectionsError;
   UserExamProgress? get userProgress => _userProgress;
-
-  ExamSection? get currentSection => _currentSections.isNotEmpty ? _currentSections[_currentSectionIndex] : null;
-  ExamQuestion? get currentQuestion => currentSection != null && currentSection!.questions.isNotEmpty
+  ExamSection? get currentSection => _currentSections.isNotEmpty
+      ? _currentSections[_currentSectionIndex]
+      : null;
+  ExamQuestion? get currentQuestion =>
+      currentSection != null && currentSection!.questions.isNotEmpty
       ? currentSection!.questions[_currentQuestionIndex]
       : null;
-
-  int get totalQuestions => _currentSections.fold(0, (sum, s) => sum + s.questions.length);
+  int get totalQuestions =>
+      _currentSections.fold(0, (sum, s) => sum + s.questions.length);
   int get answeredQuestions => _answers.length;
-  double get progress => totalQuestions > 0 ? answeredQuestions / totalQuestions : 0;
-
-  GoetheExamController() {
+  double get progress =>
+      totalQuestions > 0 ? answeredQuestions / totalQuestions : 0;
+  GoetheExamController([this._userId]) {
     _loadLevels();
   }
-
   Future<void> _loadLevels() async {
     _levelsLoading = true;
     _levelsError = false;
@@ -64,17 +67,36 @@ class GoetheExamController extends ChangeNotifier {
   }
 
   Future<void> reloadLevels() => _loadLevels();
-
-  void selectLevel(ExamLevelModel level) {
+   Future<void> selectLevel(ExamLevelModel level) async {
     _selectedLevel = level;
-    _currentSections = _service.getSectionsForLevel(
-      ExamLevel.values.firstWhere((e) => e.name.toUpperCase() == level.cefrLevel, orElse: () => ExamLevel.a1),
-    );
+    _sectionsLoading = true;
+    _sectionsError = false;
+    notifyListeners();
+    try {
+      _currentSections = await _service.getSectionsForLevel(
+        ExamLevel.values.firstWhere(
+          (e) => e.name.toUpperCase() == level.cefrLevel,
+          orElse: () => ExamLevel.a1,
+        ),
+      );
+    } catch (e) {
+      _sectionsError = true;
+      _currentSections = [];
+    }
+    _sectionsLoading = false;
     notifyListeners();
   }
 
-  void startMockExam(ExamLevel level, String userId) {
+  Future<void> startMockExam(ExamLevel level, String userId) async {
+    if (_currentSections.isEmpty && _sectionsError) {
+      return;
+    }
+    if (_currentSections.isEmpty) {
+      return;
+    }
+    final totalPoints = _currentSections.fold<int>(0, (sum, s) => sum + s.totalPoints);
     _currentExam = _service.createMockExam(level, userId);
+    _currentExam = _currentExam!.copyWith(totalPoints: totalPoints);
     _currentSectionIndex = 0;
     _currentQuestionIndex = 0;
     _answers = {};
@@ -89,7 +111,6 @@ class GoetheExamController extends ChangeNotifier {
 
   void nextQuestion() {
     if (currentSection == null) return;
-
     if (_currentQuestionIndex < currentSection!.questions.length - 1) {
       _currentQuestionIndex++;
     } else if (_currentSectionIndex < _currentSections.length - 1) {
@@ -104,7 +125,8 @@ class GoetheExamController extends ChangeNotifier {
       _currentQuestionIndex--;
     } else if (_currentSectionIndex > 0) {
       _currentSectionIndex--;
-      _currentQuestionIndex = _currentSections[_currentSectionIndex].questions.length - 1;
+      _currentQuestionIndex =
+          _currentSections[_currentSectionIndex].questions.length - 1;
     }
     notifyListeners();
   }
@@ -118,7 +140,9 @@ class GoetheExamController extends ChangeNotifier {
   }
 
   void goToQuestion(int index) {
-    if (currentSection != null && index >= 0 && index < currentSection!.questions.length) {
+    if (currentSection != null &&
+        index >= 0 &&
+        index < currentSection!.questions.length) {
       _currentQuestionIndex = index;
       notifyListeners();
     }
@@ -136,41 +160,10 @@ class GoetheExamController extends ChangeNotifier {
         recommendation: 'Start an exam first',
       );
     }
-
     final result = _service.evaluateExam(_currentExam!, _answers);
     _examCompleted = true;
     notifyListeners();
     return result;
-  }
-
-  Future<WritingEvaluation> submitWriting(String text, ExamLevel level) async {
-    _isLoading = true;
-    notifyListeners();
-
-    final evaluation = _service.evaluateWriting(text, level);
-    _writingSubmission = WritingSubmission(
-      id: 'writing_${DateTime.now().millisecondsSinceEpoch}',
-      userId: 'current_user',
-      level: level,
-      prompt: 'Writing task',
-      userText: text,
-      evaluation: evaluation,
-      submittedAt: DateTime.now(),
-    );
-
-    _isLoading = false;
-    notifyListeners();
-    return evaluation;
-  }
-
-  Future<SpeakingEvaluation> submitSpeaking(String transcript, ExamLevel level) async {
-    _isLoading = true;
-    notifyListeners();
-
-    final evaluation = _service.evaluateSpeaking(transcript, level);
-    _isLoading = false;
-    notifyListeners();
-    return evaluation;
   }
 
   void resetExam() {
@@ -179,7 +172,6 @@ class GoetheExamController extends ChangeNotifier {
     _currentQuestionIndex = 0;
     _answers = {};
     _examCompleted = false;
-    _writingSubmission = null;
     notifyListeners();
   }
 
@@ -194,7 +186,6 @@ class GoetheExamController extends ChangeNotifier {
   Map<String, dynamic> getExamStats() {
     int correct = 0;
     int total = 0;
-
     for (final section in _currentSections) {
       for (final question in section.questions) {
         total++;
@@ -203,7 +194,6 @@ class GoetheExamController extends ChangeNotifier {
         }
       }
     }
-
     return {
       'correct': correct,
       'total': total,
@@ -216,7 +206,8 @@ class GoetheExamController extends ChangeNotifier {
     final incorrect = <ExamQuestion>[];
     for (final section in _currentSections) {
       for (final question in section.questions) {
-        if (_answers.containsKey(question.id) && _answers[question.id] != question.correctAnswer) {
+        if (_answers.containsKey(question.id) &&
+            _answers[question.id] != question.correctAnswer) {
           incorrect.add(question);
         }
       }

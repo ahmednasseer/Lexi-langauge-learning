@@ -39,16 +39,9 @@ class PassportStamp extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: _getStampColor().withValues(alpha: 0.2),
-              border: Border.all(
-                color: _getStampColor(),
-                width: 3,
-              ),
+              border: Border.all(color: _getStampColor(), width: 3),
             ),
-            child: Icon(
-              _getStampIcon(),
-              color: _getStampColor(),
-              size: 30,
-            ),
+            child: Icon(_getStampIcon(), color: _getStampColor(), size: 30),
           ),
 
           const SizedBox(width: 16),
@@ -97,8 +90,12 @@ class PassportStamp extends StatelessWidget {
                           child: LinearProgressIndicator(
                             value: level.progress,
                             minHeight: 8,
-                            backgroundColor: Colors.white.withValues(alpha: 0.2),
-                            valueColor: AlwaysStoppedAnimation<Color>(_getStampColor()),
+                            backgroundColor: Colors.white.withValues(
+                              alpha: 0.2,
+                            ),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              _getStampColor(),
+                            ),
                           ),
                         ),
                       ),

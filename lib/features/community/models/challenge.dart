@@ -49,14 +49,21 @@ class Challenge {
     title: json['title'] ?? '',
     description: json['description'] ?? '',
     icon: json['icon'] ?? '🏆',
-    duration: ChallengeDuration.values.firstWhere((e) => e.name == json['duration'], orElse: () => ChallengeDuration.weekly),
+    duration: ChallengeDuration.values.firstWhere(
+      (e) => e.name == json['duration'],
+      orElse: () => ChallengeDuration.weekly,
+    ),
     targetProgress: json['targetProgress'] ?? 7,
     rewardXp: json['rewardXp'] ?? 100,
     rewardGems: json['rewardGems'] ?? 0,
     badgeId: json['badgeId'],
     participantCount: json['participantCount'] ?? 0,
-    startDate: json['startDate'] != null ? DateTime.parse(json['startDate']) : DateTime.now(),
-    endDate: json['endDate'] != null ? DateTime.parse(json['endDate']) : DateTime.now().add(const Duration(days: 7)),
+    startDate: json['startDate'] != null
+        ? DateTime.parse(json['startDate'])
+        : DateTime.now(),
+    endDate: json['endDate'] != null
+        ? DateTime.parse(json['endDate'])
+        : DateTime.now().add(const Duration(days: 7)),
   );
 
   static List<Challenge> getActiveChallenges() {
@@ -136,7 +143,8 @@ class UserChallenge {
     required this.joinedAt,
   });
 
-  double get progressPercent => progress > 0 ? progress.toDouble().clamp(0.0, 1.0) : 0.0;
+  double get progressPercent =>
+      progress > 0 ? progress.toDouble().clamp(0.0, 1.0) : 0.0;
 
   UserChallenge copyWith({int? progress, bool? isCompleted, bool? isClaimed}) {
     return UserChallenge(

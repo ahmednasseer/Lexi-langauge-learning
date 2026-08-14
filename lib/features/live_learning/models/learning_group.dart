@@ -1,15 +1,6 @@
-enum GroupStatus {
-  active,
-  inactive,
-  archived,
-}
+enum GroupStatus { active, inactive, archived }
 
-enum SessionFrequency {
-  daily,
-  weekly,
-  biweekly,
-  monthly,
-}
+enum SessionFrequency { daily, weekly, biweekly, monthly }
 
 extension SessionFrequencyExtension on SessionFrequency {
   String get displayName {
@@ -140,18 +131,26 @@ class LearningGroup {
       orElse: () => GroupStatus.active,
     ),
     maxMembers: json['maxMembers'] ?? 50,
-    members: (json['members'] as List?)
-        ?.map((m) => GroupMember.fromJson(m))
-        .toList() ?? [],
-    createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-    lastSessionAt: json['lastSessionAt'] != null ? DateTime.parse(json['lastSessionAt']) : null,
+    members:
+        (json['members'] as List?)
+            ?.map((m) => GroupMember.fromJson(m))
+            .toList() ??
+        [],
+    createdAt: DateTime.parse(
+      json['createdAt'] ?? DateTime.now().toIso8601String(),
+    ),
+    lastSessionAt: json['lastSessionAt'] != null
+        ? DateTime.parse(json['lastSessionAt'])
+        : null,
     frequency: SessionFrequency.values.firstWhere(
       (f) => f.name == json['frequency'],
       orElse: () => SessionFrequency.weekly,
     ),
-    sessions: (json['sessions'] as List?)
-        ?.map((s) => GroupSession.fromJson(s))
-        .toList() ?? [],
+    sessions:
+        (json['sessions'] as List?)
+            ?.map((s) => GroupSession.fromJson(s))
+            .toList() ??
+        [],
     teacherId: json['teacherId'],
     teacherName: json['teacherName'] ?? 'Lexi AI',
     tags: List<String>.from(json['tags'] ?? []),
@@ -209,7 +208,9 @@ class GroupMember {
     userName: json['userName'] ?? '',
     avatarUrl: json['avatarUrl'],
     role: json['role'] ?? 'member',
-    joinedAt: DateTime.parse(json['joinedAt'] ?? DateTime.now().toIso8601String()),
+    joinedAt: DateTime.parse(
+      json['joinedAt'] ?? DateTime.now().toIso8601String(),
+    ),
     attendanceCount: json['attendanceCount'] ?? 0,
     xpEarned: json['xpEarned'] ?? 0,
   );
@@ -257,8 +258,12 @@ class GroupSession {
     id: json['id'] ?? '',
     groupId: json['groupId'] ?? '',
     title: json['title'] ?? '',
-    scheduledAt: DateTime.parse(json['scheduledAt'] ?? DateTime.now().toIso8601String()),
-    startedAt: json['startedAt'] != null ? DateTime.parse(json['startedAt']) : null,
+    scheduledAt: DateTime.parse(
+      json['scheduledAt'] ?? DateTime.now().toIso8601String(),
+    ),
+    startedAt: json['startedAt'] != null
+        ? DateTime.parse(json['startedAt'])
+        : null,
     endedAt: json['endedAt'] != null ? DateTime.parse(json['endedAt']) : null,
     durationMinutes: json['durationMinutes'] ?? 60,
     participantsCount: json['participantsCount'] ?? 0,

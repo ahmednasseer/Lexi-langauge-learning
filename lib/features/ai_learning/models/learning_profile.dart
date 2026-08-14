@@ -1,6 +1,17 @@
 enum LearningGoal { travel, work, study, conversation, hobby, goetheExam }
+
 enum LearningSpeed { slow, normal, fast }
-enum WeaknessCategory { articles, verbConjugation, cases, wordOrder, vocabulary, pronunciation, listening, writing }
+
+enum WeaknessCategory {
+  articles,
+  verbConjugation,
+  cases,
+  wordOrder,
+  vocabulary,
+  pronunciation,
+  listening,
+  writing,
+}
 
 class LearningProfile {
   final String userId;
@@ -46,37 +57,59 @@ class LearningProfile {
     'overallProgress': overallProgress,
   };
 
-  factory LearningProfile.fromJson(Map<String, dynamic> json) => LearningProfile(
-    userId: json['userId'] ?? '',
-    currentLevel: json['currentLevel'] ?? 'A1',
-    learningGoal: LearningGoal.values.firstWhere((e) => e.name == json['learningGoal'], orElse: () => LearningGoal.conversation),
-    dailyMinutes: json['dailyMinutes'] ?? 15,
-    weakAreas: (json['weakAreas'] as List? ?? []).map((w) => WeaknessArea.fromJson(w)).toList(),
-    strongAreas: (json['strongAreas'] as List? ?? []).map((s) => StrongArea.fromJson(s)).toList(),
-    preferredTopics: List<String>.from(json['preferredTopics'] ?? []),
-    learningSpeed: LearningSpeed.values.firstWhere((e) => e.name == json['learningSpeed'], orElse: () => LearningSpeed.normal),
-    lastAnalysisDate: json['lastAnalysisDate'] != null ? DateTime.parse(json['lastAnalysisDate']) : DateTime.now(),
-    totalStudyHours: json['totalStudyHours'] ?? 0,
-    currentStreak: json['currentStreak'] ?? 0,
-    overallProgress: (json['overallProgress'] ?? 0.0).toDouble(),
-  );
+  factory LearningProfile.fromJson(Map<String, dynamic> json) =>
+      LearningProfile(
+        userId: json['userId'] ?? '',
+        currentLevel: json['currentLevel'] ?? 'A1',
+        learningGoal: LearningGoal.values.firstWhere(
+          (e) => e.name == json['learningGoal'],
+          orElse: () => LearningGoal.conversation,
+        ),
+        dailyMinutes: json['dailyMinutes'] ?? 15,
+        weakAreas: (json['weakAreas'] as List? ?? [])
+            .map((w) => WeaknessArea.fromJson(w))
+            .toList(),
+        strongAreas: (json['strongAreas'] as List? ?? [])
+            .map((s) => StrongArea.fromJson(s))
+            .toList(),
+        preferredTopics: List<String>.from(json['preferredTopics'] ?? []),
+        learningSpeed: LearningSpeed.values.firstWhere(
+          (e) => e.name == json['learningSpeed'],
+          orElse: () => LearningSpeed.normal,
+        ),
+        lastAnalysisDate: json['lastAnalysisDate'] != null
+            ? DateTime.parse(json['lastAnalysisDate'])
+            : DateTime.now(),
+        totalStudyHours: json['totalStudyHours'] ?? 0,
+        currentStreak: json['currentStreak'] ?? 0,
+        overallProgress: (json['overallProgress'] ?? 0.0).toDouble(),
+      );
 
   String get goalText {
     switch (learningGoal) {
-      case LearningGoal.travel: return 'Travel & Tourism';
-      case LearningGoal.work: return 'Business German';
-      case LearningGoal.study: return 'Academic Studies';
-      case LearningGoal.conversation: return 'Daily Conversation';
-      case LearningGoal.hobby: return 'Hobby & Culture';
-      case LearningGoal.goetheExam: return 'Goethe Exam Preparation';
+      case LearningGoal.travel:
+        return 'Travel & Tourism';
+      case LearningGoal.work:
+        return 'Business German';
+      case LearningGoal.study:
+        return 'Academic Studies';
+      case LearningGoal.conversation:
+        return 'Daily Conversation';
+      case LearningGoal.hobby:
+        return 'Hobby & Culture';
+      case LearningGoal.goetheExam:
+        return 'Goethe Exam Preparation';
     }
   }
 
   String get speedText {
     switch (learningSpeed) {
-      case LearningSpeed.slow: return 'Thorough (More practice)';
-      case LearningSpeed.normal: return 'Balanced';
-      case LearningSpeed.fast: return 'Accelerated';
+      case LearningSpeed.slow:
+        return 'Thorough (More practice)';
+      case LearningSpeed.normal:
+        return 'Balanced';
+      case LearningSpeed.fast:
+        return 'Accelerated';
     }
   }
 }
@@ -112,7 +145,9 @@ class WeaknessArea {
     subCategory: json['subCategory'] ?? '',
     mistakeCount: json['mistakeCount'] ?? 0,
     severity: (json['severity'] ?? 0.0).toDouble(),
-    lastMistakeAt: json['lastMistakeAt'] != null ? DateTime.parse(json['lastMistakeAt']) : DateTime.now(),
+    lastMistakeAt: json['lastMistakeAt'] != null
+        ? DateTime.parse(json['lastMistakeAt'])
+        : DateTime.now(),
     commonMistakes: List<String>.from(json['commonMistakes'] ?? []),
   );
 
@@ -152,14 +187,17 @@ class StrongArea {
     subCategory: json['subCategory'] ?? '',
     correctCount: json['correctCount'] ?? 0,
     mastery: (json['mastery'] ?? 0.0).toDouble(),
-    lastPracticedAt: json['lastPracticedAt'] != null ? DateTime.parse(json['lastPracticedAt']) : DateTime.now(),
+    lastPracticedAt: json['lastPracticedAt'] != null
+        ? DateTime.parse(json['lastPracticedAt'])
+        : DateTime.now(),
   );
 }
 
 class AIRecommendation {
   final String id;
   final String userId;
-  final String type; // 'weakness_fix', 'review', 'new_topic', 'challenge', 'daily'
+  final String
+  type; // 'weakness_fix', 'review', 'new_topic', 'challenge', 'daily'
   final String title;
   final String description;
   final String category;
@@ -197,28 +235,39 @@ class AIRecommendation {
     'isCompleted': isCompleted,
   };
 
-  factory AIRecommendation.fromJson(Map<String, dynamic> json) => AIRecommendation(
-    id: json['id'] ?? '',
-    userId: json['userId'] ?? '',
-    type: json['type'] ?? '',
-    title: json['title'] ?? '',
-    description: json['description'] ?? '',
-    category: json['category'] ?? '',
-    estimatedMinutes: json['estimatedMinutes'] ?? 5,
-    priority: json['priority'] ?? 5,
-    createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
-    completedAt: json['completedAt'] != null ? DateTime.parse(json['completedAt']) : null,
-    isCompleted: json['isCompleted'] ?? false,
-  );
+  factory AIRecommendation.fromJson(Map<String, dynamic> json) =>
+      AIRecommendation(
+        id: json['id'] ?? '',
+        userId: json['userId'] ?? '',
+        type: json['type'] ?? '',
+        title: json['title'] ?? '',
+        description: json['description'] ?? '',
+        category: json['category'] ?? '',
+        estimatedMinutes: json['estimatedMinutes'] ?? 5,
+        priority: json['priority'] ?? 5,
+        createdAt: json['createdAt'] != null
+            ? DateTime.parse(json['createdAt'])
+            : DateTime.now(),
+        completedAt: json['completedAt'] != null
+            ? DateTime.parse(json['completedAt'])
+            : null,
+        isCompleted: json['isCompleted'] ?? false,
+      );
 
   String get typeEmoji {
     switch (type) {
-      case 'weakness_fix': return '🎯';
-      case 'review': return '🔄';
-      case 'new_topic': return '📚';
-      case 'challenge': return '⚡';
-      case 'daily': return '📅';
-      default: return '💡';
+      case 'weakness_fix':
+        return '🎯';
+      case 'review':
+        return '🔄';
+      case 'new_topic':
+        return '📚';
+      case 'challenge':
+        return '⚡';
+      case 'daily':
+        return '📅';
+      default:
+        return '💡';
     }
   }
 }
@@ -259,11 +308,19 @@ class StudyPlan {
     id: json['id'] ?? '',
     userId: json['userId'] ?? '',
     title: json['title'] ?? '',
-    startDate: json['startDate'] != null ? DateTime.parse(json['startDate']) : DateTime.now(),
-    endDate: json['endDate'] != null ? DateTime.parse(json['endDate']) : DateTime.now().add(const Duration(days: 7)),
-    days: (json['days'] as List? ?? []).map((d) => StudyPlanDay.fromJson(d)).toList(),
+    startDate: json['startDate'] != null
+        ? DateTime.parse(json['startDate'])
+        : DateTime.now(),
+    endDate: json['endDate'] != null
+        ? DateTime.parse(json['endDate'])
+        : DateTime.now().add(const Duration(days: 7)),
+    days: (json['days'] as List? ?? [])
+        .map((d) => StudyPlanDay.fromJson(d))
+        .toList(),
     isActive: json['isActive'] ?? false,
-    createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
+    createdAt: json['createdAt'] != null
+        ? DateTime.parse(json['createdAt'])
+        : DateTime.now(),
   );
 }
 
@@ -286,13 +343,16 @@ class StudyPlanDay {
 
   factory StudyPlanDay.fromJson(Map<String, dynamic> json) => StudyPlanDay(
     dayName: json['dayName'] ?? '',
-    activities: (json['activities'] as List? ?? []).map((a) => StudyPlanActivity.fromJson(a)).toList(),
+    activities: (json['activities'] as List? ?? [])
+        .map((a) => StudyPlanActivity.fromJson(a))
+        .toList(),
     totalMinutes: json['totalMinutes'] ?? 0,
   );
 }
 
 class StudyPlanActivity {
-  final String type; // 'vocabulary', 'grammar', 'speaking', 'listening', 'ai_chat', 'quiz'
+  final String
+  type; // 'vocabulary', 'grammar', 'speaking', 'listening', 'ai_chat', 'quiz'
   final String title;
   final int minutes;
   final String? lessonId;
@@ -314,23 +374,31 @@ class StudyPlanActivity {
     'description': description,
   };
 
-  factory StudyPlanActivity.fromJson(Map<String, dynamic> json) => StudyPlanActivity(
-    type: json['type'] ?? '',
-    title: json['title'] ?? '',
-    minutes: json['minutes'] ?? 5,
-    lessonId: json['lessonId'],
-    description: json['description'],
-  );
+  factory StudyPlanActivity.fromJson(Map<String, dynamic> json) =>
+      StudyPlanActivity(
+        type: json['type'] ?? '',
+        title: json['title'] ?? '',
+        minutes: json['minutes'] ?? 5,
+        lessonId: json['lessonId'],
+        description: json['description'],
+      );
 
   String get typeEmoji {
     switch (type) {
-      case 'vocabulary': return '📝';
-      case 'grammar': return '📖';
-      case 'speaking': return '🎤';
-      case 'listening': return '🎧';
-      case 'ai_chat': return '🤖';
-      case 'quiz': return '❓';
-      default: return '📚';
+      case 'vocabulary':
+        return '📝';
+      case 'grammar':
+        return '📖';
+      case 'speaking':
+        return '🎤';
+      case 'listening':
+        return '🎧';
+      case 'ai_chat':
+        return '🤖';
+      case 'quiz':
+        return '❓';
+      default:
+        return '📚';
     }
   }
 }
@@ -363,11 +431,17 @@ class StudentMemory {
 
   factory StudentMemory.fromJson(Map<String, dynamic> json) => StudentMemory(
     userId: json['userId'] ?? '',
-    mistakePatterns: (json['mistakePatterns'] as List? ?? []).map((m) => MistakePattern.fromJson(m)).toList(),
+    mistakePatterns: (json['mistakePatterns'] as List? ?? [])
+        .map((m) => MistakePattern.fromJson(m))
+        .toList(),
     successfullyLearned: List<String>.from(json['successfullyLearned'] ?? []),
-    conversationHistory: (json['conversationHistory'] as List? ?? []).map((c) => ConversationSummary.fromJson(c)).toList(),
+    conversationHistory: (json['conversationHistory'] as List? ?? [])
+        .map((c) => ConversationSummary.fromJson(c))
+        .toList(),
     preferences: LearningPreferences.fromJson(json['preferences'] ?? {}),
-    lastUpdated: json['lastUpdated'] != null ? DateTime.parse(json['lastUpdated']) : DateTime.now(),
+    lastUpdated: json['lastUpdated'] != null
+        ? DateTime.parse(json['lastUpdated'])
+        : DateTime.now(),
   );
 }
 
@@ -402,8 +476,12 @@ class MistakePattern {
     category: json['category'] ?? '',
     occurrences: json['occurrences'] ?? 0,
     examples: List<String>.from(json['examples'] ?? []),
-    firstSeen: json['firstSeen'] != null ? DateTime.parse(json['firstSeen']) : DateTime.now(),
-    lastSeen: json['lastSeen'] != null ? DateTime.parse(json['lastSeen']) : DateTime.now(),
+    firstSeen: json['firstSeen'] != null
+        ? DateTime.parse(json['firstSeen'])
+        : DateTime.now(),
+    lastSeen: json['lastSeen'] != null
+        ? DateTime.parse(json['lastSeen'])
+        : DateTime.now(),
   );
 }
 
@@ -430,13 +508,16 @@ class ConversationSummary {
     'durationMinutes': durationMinutes,
   };
 
-  factory ConversationSummary.fromJson(Map<String, dynamic> json) => ConversationSummary(
-    date: json['date'] != null ? DateTime.parse(json['date']) : DateTime.now(),
-    topic: json['topic'] ?? '',
-    keyPoints: List<String>.from(json['keyPoints'] ?? []),
-    mistakesMade: List<String>.from(json['mistakesMade'] ?? []),
-    durationMinutes: json['durationMinutes'] ?? 0,
-  );
+  factory ConversationSummary.fromJson(Map<String, dynamic> json) =>
+      ConversationSummary(
+        date: json['date'] != null
+            ? DateTime.parse(json['date'])
+            : DateTime.now(),
+        topic: json['topic'] ?? '',
+        keyPoints: List<String>.from(json['keyPoints'] ?? []),
+        mistakesMade: List<String>.from(json['mistakesMade'] ?? []),
+        durationMinutes: json['durationMinutes'] ?? 0,
+      );
 }
 
 class LearningPreferences {
@@ -462,11 +543,12 @@ class LearningPreferences {
     'audioEnabled': audioEnabled,
   };
 
-  factory LearningPreferences.fromJson(Map<String, dynamic> json) => LearningPreferences(
-    preferredDifficulty: json['preferredDifficulty'] ?? 'intermediate',
-    favoriteTopics: List<String>.from(json['favoriteTopics'] ?? []),
-    feedbackStyle: json['feedbackStyle'] ?? 'gentle',
-    showTranslations: json['showTranslations'] ?? true,
-    audioEnabled: json['audioEnabled'] ?? true,
-  );
+  factory LearningPreferences.fromJson(Map<String, dynamic> json) =>
+      LearningPreferences(
+        preferredDifficulty: json['preferredDifficulty'] ?? 'intermediate',
+        favoriteTopics: List<String>.from(json['favoriteTopics'] ?? []),
+        feedbackStyle: json['feedbackStyle'] ?? 'gentle',
+        showTranslations: json['showTranslations'] ?? true,
+        audioEnabled: json['audioEnabled'] ?? true,
+      );
 }

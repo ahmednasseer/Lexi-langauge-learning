@@ -51,22 +51,31 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           children: [
             _buildHeader(context),
             Expanded(
-            child: _isLoading
-                ? const LoadingState(message: 'Loading notifications...')
-                : _notifications.isEmpty
-                      ? Center(
-                          child: Text(
-                            'لا توجد إشعارات',
-                            style: GoogleFonts.poppins(fontSize: 16, color: AppColors.textHint),
-                          ),
-                        )
-                      : ListView.builder(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          itemCount: _notifications.length,
-                          itemBuilder: (context, index) {
-                            return _buildNotificationCard(_notifications[index], index);
-                          },
+              child: _isLoading
+                  ? const LoadingState(message: 'Loading notifications...')
+                  : _notifications.isEmpty
+                  ? Center(
+                      child: Text(
+                        'لا توجد إشعارات',
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          color: AppColors.textHint,
                         ),
+                      ),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      itemCount: _notifications.length,
+                      itemBuilder: (context, index) {
+                        return _buildNotificationCard(
+                          _notifications[index],
+                          index,
+                        );
+                      },
+                    ),
             ),
             _buildShowMoreButton(),
           ],
@@ -81,7 +90,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: AppColors.textPrimary, size: 20),
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: AppColors.textPrimary,
+              size: 20,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
           const SizedBox(width: 8),
@@ -109,84 +122,87 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     final avatar = notif.title.isNotEmpty ? notif.title[0] : 'إ';
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Center(
-              child: Text(
-                avatar,
-                style: GoogleFonts.poppins(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: color,
+          margin: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 52,
+                height: 52,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Center(
+                  child: Text(
+                    avatar,
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: color,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  notif.title,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      notif.title,
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      notif.body,
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        color: AppColors.textPrimary.withValues(alpha: 0.75),
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      _formatTime(notif.createdAt),
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        color: AppColors.textHint,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  notif.body,
-                  style: GoogleFonts.poppins(
-                    fontSize: 13,
-                    color: AppColors.textPrimary.withValues(alpha: 0.75),
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  _formatTime(notif.createdAt),
-                  style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    color: AppColors.textHint,
+              ),
+              if (!notif.isRead) ...[
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: const BoxDecoration(
+                    color: AppColors.primary,
+                    shape: BoxShape.circle,
                   ),
                 ),
               ],
-            ),
+            ],
           ),
-          if (!notif.isRead) ...[
-            Container(
-              width: 8,
-              height: 8,
-              decoration: const BoxDecoration(
-                color: AppColors.primary,
-                shape: BoxShape.circle,
-              ),
-            ),
-          ],
-        ],
-      ),
-    )
+        )
         .animate()
-        .fadeIn(delay: Duration(milliseconds: 150 + index * 80), duration: 400.ms)
+        .fadeIn(
+          delay: Duration(milliseconds: 150 + index * 80),
+          duration: 400.ms,
+        )
         .slideX(begin: 0.08);
   }
 

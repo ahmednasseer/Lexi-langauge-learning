@@ -39,17 +39,7 @@ class AppProvider extends ChangeNotifier {
 
   void setUser(UserModel user) {
     _user = user;
-    StorageService.save('current_user', user.toJson());
-    notifyListeners();
-  }
-
-  void addXp(int amount) {
-    _user = _user.copyWith(
-      xp: _user.xp + amount,
-      totalXp: _user.totalXp + amount,
-      dailyXp: _user.dailyXp + amount,
-    );
-    StorageService.save('current_user', _user.toJson());
+    StorageService.save('lexi_user_profile', user.toJson());
     notifyListeners();
   }
 

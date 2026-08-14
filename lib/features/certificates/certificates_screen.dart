@@ -96,7 +96,8 @@ class _CertificatesScreenState extends State<CertificatesScreen>
             AppAssets.lottieConfetti,
             fit: BoxFit.cover,
             repeat: true,
-            errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+            errorBuilder: (context, error, stackTrace) =>
+                const SizedBox.shrink(),
           ),
 
           // Content
@@ -124,7 +125,10 @@ class _CertificatesScreenState extends State<CertificatesScreen>
       return const LoadingState(message: 'Loading certificates...');
     }
     if (_status == _CertStatus.error) {
-      return ErrorState(message: _error ?? 'Something went wrong.', onRetry: _load);
+      return ErrorState(
+        message: _error ?? 'Something went wrong.',
+        onRetry: _load,
+      );
     }
     if (_status == _CertStatus.empty) {
       return const EmptyState(
@@ -140,10 +144,12 @@ class _CertificatesScreenState extends State<CertificatesScreen>
         children: [
           const SizedBox(height: 20),
           if (_certificates.isNotEmpty)
-            ..._certificates.map((c) => Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: CertificateCard(certificate: c),
-                )),
+            ..._certificates.map(
+              (c) => Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: CertificateCard(certificate: c),
+              ),
+            ),
           _buildCertificateCard(),
           const SizedBox(height: 32),
           _buildShareButton(),
@@ -195,78 +201,78 @@ class _CertificatesScreenState extends State<CertificatesScreen>
 
   Widget _buildCertificateCard() {
     return AnimatedBuilder(
-      animation: _glowController,
-      builder: (context, child) {
-        return Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                const Color(0xFF1E2A4A),
-                const Color(0xFF151D35),
-              ],
-            ),
-            border: Border.all(
-              color: AppColors.gold.withValues(
-                alpha: 0.6 + (_glowController.value * 0.4),
-              ),
-              width: 2,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.gold.withValues(
-                  alpha: 0.2 + (_glowController.value * 0.15),
+          animation: _glowController,
+          builder: (context, child) {
+            return Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [const Color(0xFF1E2A4A), const Color(0xFF151D35)],
                 ),
-                blurRadius: 30,
-                spreadRadius: 0,
-                offset: const Offset(0, 10),
-              ),
-              BoxShadow(
-                color: AppColors.primary.withValues(alpha: 0.1),
-                blurRadius: 40,
-                spreadRadius: -10,
-              ),
-            ],
-          ),
-          child: child,
-        );
-      },
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  AppColors.surface.withValues(alpha: 0.9),
-                  AppColors.surface.withValues(alpha: 0.95),
+                border: Border.all(
+                  color: AppColors.gold.withValues(
+                    alpha: 0.6 + (_glowController.value * 0.4),
+                  ),
+                  width: 2,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.gold.withValues(
+                      alpha: 0.2 + (_glowController.value * 0.15),
+                    ),
+                    blurRadius: 30,
+                    spreadRadius: 0,
+                    offset: const Offset(0, 10),
+                  ),
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.1),
+                    blurRadius: 40,
+                    spreadRadius: -10,
+                  ),
                 ],
               ),
-            ),
-            child: Column(
-              children: [
-                _buildZertifikatHeader(),
-                const SizedBox(height: 24),
-                _buildLexiLanguageSubtitle(),
-                const SizedBox(height: 20),
-                _buildLevelBadge(),
-                const SizedBox(height: 24),
-                _buildCompletionText(),
-                const SizedBox(height: 20),
-                _buildAchievementLabel(),
-              ],
+              child: child,
+            );
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      AppColors.surface.withValues(alpha: 0.9),
+                      AppColors.surface.withValues(alpha: 0.95),
+                    ],
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    _buildZertifikatHeader(),
+                    const SizedBox(height: 24),
+                    _buildLexiLanguageSubtitle(),
+                    const SizedBox(height: 20),
+                    _buildLevelBadge(),
+                    const SizedBox(height: 24),
+                    _buildCompletionText(),
+                    const SizedBox(height: 20),
+                    _buildAchievementLabel(),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-    ).animate().fadeIn(duration: 600.ms).scale(
+        )
+        .animate()
+        .fadeIn(duration: 600.ms)
+        .scale(
           begin: const Offset(0.95, 0.95),
           duration: 600.ms,
           curve: Curves.easeOutBack,
@@ -293,11 +299,7 @@ class _CertificatesScreenState extends State<CertificatesScreen>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.workspace_premium,
-            color: AppColors.gold,
-            size: 28,
-          ),
+          Icon(Icons.workspace_premium, color: AppColors.gold, size: 28),
           const SizedBox(width: 12),
           Text(
             'ZERTIFIKAT',
@@ -309,11 +311,7 @@ class _CertificatesScreenState extends State<CertificatesScreen>
             ),
           ),
           const SizedBox(width: 12),
-          Icon(
-            Icons.workspace_premium,
-            color: AppColors.gold,
-            size: 28,
-          ),
+          Icon(Icons.workspace_premium, color: AppColors.gold, size: 28),
         ],
       ),
     ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1, delay: 200.ms);
@@ -351,38 +349,45 @@ class _CertificatesScreenState extends State<CertificatesScreen>
 
   Widget _buildLevelBadge() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-      decoration: BoxDecoration(
-        gradient: AppColors.goldGradient,
-        borderRadius: BorderRadius.circular(30),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.gold.withValues(alpha: 0.4),
-            blurRadius: 20,
-            spreadRadius: 0,
-            offset: const Offset(0, 6),
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+          decoration: BoxDecoration(
+            gradient: AppColors.goldGradient,
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.gold.withValues(alpha: 0.4),
+                blurRadius: 20,
+                spreadRadius: 0,
+                offset: const Offset(0, 6),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ClipOval(
-            child: Image.asset(AppAssets.badgeB1, width: 40, height: 40, fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) => Icon(Icons.broken_image, size: 40)),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipOval(
+                child: Image.asset(
+                  AppAssets.badgeB1,
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) =>
+                      Icon(Icons.broken_image, size: 40),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                'B1',
+                style: GoogleFonts.poppins(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white,
+                  letterSpacing: 4,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 12),
-          Text(
-            'B1',
-            style: GoogleFonts.poppins(
-              fontSize: 28,
-              fontWeight: FontWeight.w900,
-              color: Colors.white,
-              letterSpacing: 4,
-            ),
-          ),
-        ],
-      ),
-    )
+        )
         .animate()
         .fadeIn(delay: 400.ms)
         .scale(
@@ -409,10 +414,7 @@ class _CertificatesScreenState extends State<CertificatesScreen>
           decoration: BoxDecoration(
             color: AppColors.surfaceLight.withValues(alpha: 0.6),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: AppColors.border,
-              width: 1,
-            ),
+            border: Border.all(color: AppColors.border, width: 1),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -430,11 +432,7 @@ class _CertificatesScreenState extends State<CertificatesScreen>
                     ),
                   ],
                 ),
-                child: const Icon(
-                  Icons.person,
-                  color: Colors.white,
-                  size: 24,
-                ),
+                child: const Icon(Icons.person, color: Colors.white, size: 24),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -508,11 +506,7 @@ class _CertificatesScreenState extends State<CertificatesScreen>
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(
-            Icons.emoji_events,
-            color: AppColors.success,
-            size: 22,
-          ),
+          const Icon(Icons.emoji_events, color: AppColors.success, size: 22),
           const SizedBox(width: 10),
           Text(
             'إنجاز رائع',
@@ -532,7 +526,9 @@ class _CertificatesScreenState extends State<CertificatesScreen>
       text: 'مشاركة الشهادة',
       onPressed: () {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('تم نسخ الرابط. يمكنك مشاركة الشهادة الآن.')),
+          const SnackBar(
+            content: Text('تم نسخ الرابط. يمكنك مشاركة الشهادة الآن.'),
+          ),
         );
       },
       gradient: AppColors.primaryGradient,
@@ -545,57 +541,58 @@ class _CertificatesScreenState extends State<CertificatesScreen>
 
   Widget _buildChampionBadge() {
     return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                AppColors.primary.withValues(alpha: 0.15),
-                AppColors.primary.withValues(alpha: 0.08),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(30),
-            border: Border.all(
-              color: AppColors.primary.withValues(alpha: 0.4),
-              width: 1,
-            ),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                Icons.military_tech,
-                color: AppColors.primary,
-                size: 24,
-              ),
-              const SizedBox(width: 10),
-              Text(
-                'B1 Champion',
-                style: GoogleFonts.poppins(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.primary.withValues(alpha: 0.15),
+                    AppColors.primary.withValues(alpha: 0.08),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(
+                  color: AppColors.primary.withValues(alpha: 0.4),
+                  width: 1,
                 ),
               ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          'أكملت المستوى B1 بنجاح',
-          style: GoogleFonts.poppins(
-            fontSize: 14,
-            color: AppColors.textSecondary,
-          ),
-        ),
-      ],
-    ).animate().fadeIn(delay: 800.ms).scale(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.military_tech,
+                    color: AppColors.primary,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    'B1 Champion',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'أكملت المستوى B1 بنجاح',
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+        )
+        .animate()
+        .fadeIn(delay: 800.ms)
+        .scale(
           begin: const Offset(0.9, 0.9),
           delay: 800.ms,
           curve: Curves.easeOutBack,
         );
   }
 }
-
-

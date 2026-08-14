@@ -6,12 +6,7 @@ class PostCard extends StatelessWidget {
   final VoidCallback? onLike;
   final VoidCallback? onComment;
 
-  const PostCard({
-    super.key,
-    required this.post,
-    this.onLike,
-    this.onComment,
-  });
+  const PostCard({super.key, required this.post, this.onLike, this.onComment});
 
   Color _getTypeColor() {
     switch (post.type) {
@@ -102,7 +97,10 @@ class PostCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 6),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.blue.shade100,
                             borderRadius: BorderRadius.circular(4),
@@ -157,13 +155,7 @@ class PostCard extends StatelessWidget {
           const SizedBox(height: 12),
 
           // Content
-          Text(
-            post.content,
-            style: const TextStyle(
-              fontSize: 14,
-              height: 1.5,
-            ),
-          ),
+          Text(post.content, style: const TextStyle(fontSize: 14, height: 1.5)),
 
           const SizedBox(height: 12),
 
@@ -199,14 +191,15 @@ class PostCard extends StatelessWidget {
                 onTap: onComment,
                 child: Row(
                   children: [
-                    const Icon(Icons.chat_bubble_outline, size: 20, color: Colors.grey),
+                    const Icon(
+                      Icons.chat_bubble_outline,
+                      size: 20,
+                      color: Colors.grey,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       '${post.commentsCount}',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                   ],
                 ),
@@ -217,10 +210,7 @@ class PostCard extends StatelessWidget {
               // Time
               Text(
                 _formatTime(post.createdAt),
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Colors.grey.shade400,
-                ),
+                style: TextStyle(fontSize: 11, color: Colors.grey.shade400),
               ),
             ],
           ),

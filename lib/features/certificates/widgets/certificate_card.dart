@@ -15,10 +15,7 @@ class CertificateCard extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Colors.blue.shade800,
-            Colors.purple.shade800,
-          ],
+          colors: [Colors.blue.shade800, Colors.purple.shade800],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.amber.shade400, width: 3),
@@ -64,10 +61,7 @@ class CertificateCard extends StatelessWidget {
           // Certificate content
           const Text(
             'This certifies that',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.white70,
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.white70),
           ),
 
           const SizedBox(height: 8),
@@ -85,10 +79,7 @@ class CertificateCard extends StatelessWidget {
 
           const Text(
             'has successfully completed',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.white70,
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.white70),
           ),
 
           const SizedBox(height: 8),
@@ -138,10 +129,7 @@ class CertificateCard extends StatelessWidget {
                   children: [
                     const Text(
                       'Issued:',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white70,
-                      ),
+                      style: TextStyle(fontSize: 12, color: Colors.white70),
                     ),
                     Text(
                       certificate.formattedDate,
@@ -159,10 +147,7 @@ class CertificateCard extends StatelessWidget {
                   children: [
                     const Text(
                       'Certificate ID:',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white70,
-                      ),
+                      style: TextStyle(fontSize: 12, color: Colors.white70),
                     ),
                     Text(
                       certificate.certificateCode,
@@ -223,10 +208,7 @@ class CertificateCard extends StatelessWidget {
         ),
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 10,
-            color: Colors.white70,
-          ),
+          style: const TextStyle(fontSize: 10, color: Colors.white70),
         ),
       ],
     );

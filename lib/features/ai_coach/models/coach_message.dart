@@ -45,7 +45,9 @@ class CoachMessage {
     id: json['id'] ?? '',
     content: json['content'] ?? '',
     isUser: json['isUser'] ?? false,
-    timestamp: DateTime.parse(json['timestamp'] ?? DateTime.now().toIso8601String()),
+    timestamp: DateTime.parse(
+      json['timestamp'] ?? DateTime.now().toIso8601String(),
+    ),
     correction: json['correction'],
     originalSentence: json['originalSentence'],
     correctSentence: json['correctSentence'],

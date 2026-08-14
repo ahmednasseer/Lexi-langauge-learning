@@ -26,11 +26,29 @@ class CustomButton extends StatelessWidget {
     this.height = 56,
   });
 
-  const CustomButton.primary({super.key, required this.label, required this.onPressed, this.icon, this.isLoading = false, this.width})
-      : gradient = AppColors.primaryGradient, color = null, textColor = Colors.white, height = 56;
+  const CustomButton.primary({
+    super.key,
+    required this.label,
+    required this.onPressed,
+    this.icon,
+    this.isLoading = false,
+    this.width,
+  }) : gradient = AppColors.primaryGradient,
+       color = null,
+       textColor = Colors.white,
+       height = 56;
 
-  const CustomButton.outline({super.key, required this.label, required this.onPressed, this.icon})
-      : gradient = null, color = null, textColor = AppColors.primary, isLoading = false, width = null, height = 56;
+  const CustomButton.outline({
+    super.key,
+    required this.label,
+    required this.onPressed,
+    this.icon,
+  }) : gradient = null,
+       color = null,
+       textColor = AppColors.primary,
+       isLoading = false,
+       width = null,
+       height = 56;
 
   @override
   Widget build(BuildContext context) {
@@ -48,17 +66,36 @@ class CustomButton extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.transparent,
             shadowColor: Colors.transparent,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
             padding: const EdgeInsets.symmetric(horizontal: 24),
           ),
           child: isLoading
-              ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+              ? const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                )
               : Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if (icon != null) ...[Icon(icon, color: textColor), const SizedBox(width: 8)],
-                    Text(label, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600, color: textColor)),
+                    if (icon != null) ...[
+                      Icon(icon, color: textColor),
+                      const SizedBox(width: 8),
+                    ],
+                    Text(
+                      label,
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: textColor,
+                      ),
+                    ),
                   ],
                 ),
         ),

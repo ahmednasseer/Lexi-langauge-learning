@@ -14,8 +14,10 @@ class LexiIcon extends StatelessWidget {
     this.size = 24,
     this.semanticLabel,
     this.color,
-  }) : assert(assetPath != null || materialIcon != null,
-            'Either assetPath or materialIcon must be provided');
+  }) : assert(
+         assetPath != null || materialIcon != null,
+         'Either assetPath or materialIcon must be provided',
+       );
 
   const LexiIcon.asset(
     String path, {
@@ -23,8 +25,8 @@ class LexiIcon extends StatelessWidget {
     this.size = 24,
     this.semanticLabel,
     this.color,
-  })  : assetPath = path,
-        materialIcon = null;
+  }) : assetPath = path,
+       materialIcon = null;
 
   const LexiIcon.material(
     IconData icon, {
@@ -32,8 +34,8 @@ class LexiIcon extends StatelessWidget {
     this.size = 24,
     this.semanticLabel,
     this.color,
-  })  : assetPath = null,
-        materialIcon = icon;
+  }) : assetPath = null,
+       materialIcon = icon;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +49,8 @@ class LexiIcon extends StatelessWidget {
           fit: BoxFit.contain,
           color: color,
           gaplessPlayback: true,
-          errorBuilder: (context, error, stackTrace) => Icon(Icons.broken_image, size: size, color: color),
+          errorBuilder: (context, error, stackTrace) =>
+              Icon(Icons.broken_image, size: size, color: color),
         ),
       );
     }

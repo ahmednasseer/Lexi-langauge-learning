@@ -1,6 +1,6 @@
 import {
   Controller, Get, Post, Put, Delete, Body, Param, Query,
-  UseGuards, Request, HttpCode, HttpStatus,
+  UseGuards, Request, HttpCode, HttpStatus, HttpException,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -8,6 +8,7 @@ import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/guards/roles.decorator';
 import { UserRole } from '../../common/guards/roles.guard';
 import { AdminService } from './admin.service';
+import { WalletService } from '../payments/wallet/wallet.service';
 
 @ApiTags('Admin')
 @ApiBearerAuth()
@@ -15,7 +16,10 @@ import { AdminService } from './admin.service';
 @Roles(UserRole.ADMIN)
 @Controller('admin')
 export class AdminController {
-  constructor(private adminService: AdminService) {}
+  constructor(
+    private adminService: AdminService,
+    private walletService: WalletService,
+  ) {}
 
   @Get('dashboard')
   @ApiOperation({ summary: 'Get admin dashboard stats' })
@@ -53,6 +57,18 @@ export class AdminController {
   @ApiOperation({ summary: 'Ban user' })
   async banUser(@Param('id') id: string) {
     return this.adminService.banUser(id);
+  }
+
+  @Post('users/:id/wallet/credit')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Credit user wallet (admin only)' })
+  async creditWallet(@Param('id') id: string, @Body() body: { amount: number; description?: string }) {
+    const amount = Number(body.amount);
+    if (!Number.isFinite(amount) || amount <= 0) {
+      throw new HttpException('Amount must be a positive number', HttpStatus.BAD_REQUEST);
+    }
+    await this.walletService.addGems(id, amount, body.description || 'Admin credit');
+    return { success: true };
   }
 
   // ==================== LANGUAGES ====================

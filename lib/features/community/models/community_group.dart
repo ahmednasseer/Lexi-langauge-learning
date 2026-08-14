@@ -56,7 +56,9 @@ class CommunityGroup {
     memberCount: json['memberCount'] ?? 0,
     postCount: json['postCount'] ?? 0,
     isJoined: json['isJoined'] ?? false,
-    createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
+    createdAt: json['createdAt'] != null
+        ? DateTime.parse(json['createdAt'])
+        : DateTime.now(),
   );
 
   static List<CommunityGroup> getDefaultGroups() {

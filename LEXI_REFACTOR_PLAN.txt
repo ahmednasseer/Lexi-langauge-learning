@@ -1,3 +1,10 @@
+﻿===============================================================================
+                            HISTORICAL REFERENCE
+===============================================================================
+Status: SUPERSEDED — DO NOT USE AS CURRENT STATE REFERENCE
+Current State Audit: See LEXI_CURRENT_STATE_AUDIT.md
+===============================================================================
+
 ================================================================================
               LEXI REFACTOR PLAN
 ================================================================================
@@ -10,87 +17,87 @@ SECTION 1: CLASSIFICATION OF ALL FILES
 
 CATEGORY: CORE SERVICES
 --------------------------------------------------------------------------------
-Current: lib/services/analytics_service.dart        → Target: lib/core/services/
-Current: lib/services/connectivity_service.dart      → Target: lib/core/services/
-Current: lib/services/notification_service.dart      → Target: lib/core/services/
-Current: lib/services/storage_service.dart            → Target: lib/core/services/
-Current: lib/services/api_service.dart                → Target: lib/core/services/
+Current: lib/services/analytics_service.dart        â†’ Target: lib/core/services/
+Current: lib/services/connectivity_service.dart      â†’ Target: lib/core/services/
+Current: lib/services/notification_service.dart      â†’ Target: lib/core/services/
+Current: lib/services/storage_service.dart            â†’ Target: lib/core/services/
+Current: lib/services/api_service.dart                â†’ Target: lib/core/services/
 
 CATEGORY: CORE DATA SOURCES
 --------------------------------------------------------------------------------
-Current: lib/services/curriculum/curriculum_service.dart      → Target: lib/core/services/
-Current: lib/services/curriculum/user_progress_service.dart   → Target: lib/core/services/
+Current: lib/services/curriculum/curriculum_service.dart      â†’ Target: lib/core/services/
+Current: lib/services/curriculum/user_progress_service.dart   â†’ Target: lib/core/services/
 
 CATEGORY: FEATURE SERVICES (Stay in Features)
 --------------------------------------------------------------------------------
-Current: lib/features/advanced_speaking/services/ai_conversation_service.dart       → Stay
-Current: lib/features/advanced_speaking/services/conversation_memory_service.dart   → Stay
-Current: lib/features/advanced_speaking/services/voice_service.dart                 → Stay
-Current: lib/features/ai_learning/ai_learning_service.dart                          → Stay
-Current: lib/features/goethe/goethe_exam_service.dart                               → Stay
-Current: lib/features/growth/growth_service.dart                                    → Stay
-Current: lib/features/live_learning/live_learning_service.dart                      → Stay
-Current: lib/features/pronunciation/speech_service.dart                             → Stay
-Current: lib/features/subscription/payment_service.dart                             → Stay
+Current: lib/features/advanced_speaking/services/ai_conversation_service.dart       â†’ Stay
+Current: lib/features/advanced_speaking/services/conversation_memory_service.dart   â†’ Stay
+Current: lib/features/advanced_speaking/services/voice_service.dart                 â†’ Stay
+Current: lib/features/ai_learning/ai_learning_service.dart                          â†’ Stay
+Current: lib/features/goethe/goethe_exam_service.dart                               â†’ Stay
+Current: lib/features/growth/growth_service.dart                                    â†’ Stay
+Current: lib/features/live_learning/live_learning_service.dart                      â†’ Stay
+Current: lib/features/pronunciation/speech_service.dart                             â†’ Stay
+Current: lib/features/subscription/payment_service.dart                             â†’ Stay
 
 CATEGORY: REPOSITORIES (Restructure within Features)
 --------------------------------------------------------------------------------
-Current: lib/features/auth/auth_repository.dart                     → Target: lib/features/auth/data/repositories/
-Current: lib/features/profile/profile_repository.dart               → Target: lib/features/profile/data/repositories/
-Current: lib/features/wallet/wallet_repository.dart                 → Target: lib/features/wallet/data/repositories/
-Current: lib/features/lessons/lesson_repository.dart               → Target: lib/features/lessons/data/repositories/
-Current: lib/features/store/store_repository.dart                   → Target: lib/features/store/data/repositories/
-Current: lib/features/friends/friends_repository.dart               → Target: lib/features/friends/data/repositories/
-Current: lib/features/community/community_repository.dart           → Target: lib/features/community/data/repositories/
-Current: lib/features/notifications/notifications_repository.dart   → Target: lib/features/notifications/data/repositories/
-Current: lib/features/search/search_repository.dart                 → Target: lib/features/search/data/repositories/
-Current: lib/features/ai_tutor/ai_repository.dart                   → Target: lib/features/ai_tutor/data/repositories/
-Current: lib/features/goethe/goethe_repository.dart                 → Target: lib/features/goethe/data/repositories/
-Current: lib/features/growth/growth_repository.dart                 → Target: lib/features/growth/data/repositories/
-Current: lib/features/live_learning/live_learning_repository.dart    → Target: lib/features/live_learning/data/repositories/
-Current: lib/features/speaking/speaking_repository.dart             → Target: lib/features/speaking/data/repositories/
-Current: lib/features/passport/passport_repository.dart             → Target: lib/features/passport/data/repositories/
-Current: lib/features/certificates/certificates_repository.dart     → Target: lib/features/certificates/data/repositories/
-Current: lib/features/achievements/achievements_repository.dart     → Target: lib/features/achievements/data/repositories/
-Current: lib/features/daily_missions/daily_missions_repository.dart → Target: lib/features/daily_missions/data/repositories/
-Current: lib/features/advanced_speaking/advanced_speaking_repository.dart → Target: lib/features/advanced_speaking/data/repositories/
-Current: lib/features/ai_coach/ai_coach_repository.dart            → Target: lib/features/ai_coach/data/repositories/
-Current: lib/features/ai_learning/ai_learning_repository.dart      → Target: lib/features/ai_learning/data/repositories/
-Current: lib/features/account/achievements_repository.dart          → Target: lib/features/account/data/repositories/
+Current: lib/features/auth/auth_repository.dart                     â†’ Target: lib/features/auth/data/repositories/
+Current: lib/features/profile/profile_repository.dart               â†’ Target: lib/features/profile/data/repositories/
+Current: lib/features/wallet/wallet_repository.dart                 â†’ Target: lib/features/wallet/data/repositories/
+Current: lib/features/lessons/lesson_repository.dart               â†’ Target: lib/features/lessons/data/repositories/
+Current: lib/features/store/store_repository.dart                   â†’ Target: lib/features/store/data/repositories/
+Current: lib/features/friends/friends_repository.dart               â†’ Target: lib/features/friends/data/repositories/
+Current: lib/features/community/community_repository.dart           â†’ Target: lib/features/community/data/repositories/
+Current: lib/features/notifications/notifications_repository.dart   â†’ Target: lib/features/notifications/data/repositories/
+Current: lib/features/search/search_repository.dart                 â†’ Target: lib/features/search/data/repositories/
+Current: lib/features/ai_tutor/ai_repository.dart                   â†’ Target: lib/features/ai_tutor/data/repositories/
+Current: lib/features/goethe/goethe_repository.dart                 â†’ Target: lib/features/goethe/data/repositories/
+Current: lib/features/growth/growth_repository.dart                 â†’ Target: lib/features/growth/data/repositories/
+Current: lib/features/live_learning/live_learning_repository.dart    â†’ Target: lib/features/live_learning/data/repositories/
+Current: lib/features/speaking/speaking_repository.dart             â†’ Target: lib/features/speaking/data/repositories/
+Current: lib/features/passport/passport_repository.dart             â†’ Target: lib/features/passport/data/repositories/
+Current: lib/features/certificates/certificates_repository.dart     â†’ Target: lib/features/certificates/data/repositories/
+Current: lib/features/achievements/achievements_repository.dart     â†’ Target: lib/features/achievements/data/repositories/
+Current: lib/features/daily_missions/daily_missions_repository.dart â†’ Target: lib/features/daily_missions/data/repositories/
+Current: lib/features/advanced_speaking/advanced_speaking_repository.dart â†’ Target: lib/features/advanced_speaking/data/repositories/
+Current: lib/features/ai_coach/ai_coach_repository.dart            â†’ Target: lib/features/ai_coach/data/repositories/
+Current: lib/features/ai_learning/ai_learning_repository.dart      â†’ Target: lib/features/ai_learning/data/repositories/
+Current: lib/features/account/achievements_repository.dart          â†’ Target: lib/features/account/data/repositories/
 
-CATEGORY: CONTROLLERS → BLOC/CUBIT
+CATEGORY: CONTROLLERS â†’ BLOC/CUBIT
 --------------------------------------------------------------------------------
-Current: lib/features/auth/login_controller.dart                    → Target: lib/features/auth/presentation/cubit/
-Current: lib/features/profile/profile_controller.dart               → Target: lib/features/profile/presentation/cubit/
-Current: lib/features/home/home_controller.dart                     → Target: lib/features/home/presentation/cubit/
-Current: lib/features/community/community_controller.dart           → Target: lib/features/community/presentation/cubit/
-Current: lib/features/ai_tutor/ai_tutor_controller.dart             → Target: lib/features/ai_tutor/presentation/cubit/
-Current: lib/features/ai_coach/ai_coach_controller.dart            → Target: lib/features/ai_coach/presentation/cubit/
-Current: lib/features/goethe/goethe_exam_controller.dart           → Target: lib/features/goethe/presentation/cubit/
-Current: lib/features/growth/growth_controller.dart                 → Target: lib/features/growth/presentation/cubit/
-Current: lib/features/live_learning/live_learning_controller.dart   → Target: lib/features/live_learning/presentation/cubit/
-Current: lib/features/speaking/speaking_controller.dart             → Target: lib/features/speaking/presentation/cubit/
-Current: lib/features/advanced_speaking/speaking_controller.dart   → Target: lib/features/advanced_speaking/presentation/cubit/
-Current: lib/features/ai_learning/ai_learning_controller.dart      → Target: lib/features/ai_learning/presentation/cubit/
-Current: lib/features/lessons/lesson_controller.dart               → Target: lib/features/lessons/presentation/cubit/
-Current: lib/features/daily_missions/daily_missions_controller.dart → Target: lib/features/daily_missions/presentation/cubit/
+Current: lib/features/auth/login_controller.dart                    â†’ Target: lib/features/auth/presentation/cubit/
+Current: lib/features/profile/profile_controller.dart               â†’ Target: lib/features/profile/presentation/cubit/
+Current: lib/features/home/home_controller.dart                     â†’ Target: lib/features/home/presentation/cubit/
+Current: lib/features/community/community_controller.dart           â†’ Target: lib/features/community/presentation/cubit/
+Current: lib/features/ai_tutor/ai_tutor_controller.dart             â†’ Target: lib/features/ai_tutor/presentation/cubit/
+Current: lib/features/ai_coach/ai_coach_controller.dart            â†’ Target: lib/features/ai_coach/presentation/cubit/
+Current: lib/features/goethe/goethe_exam_controller.dart           â†’ Target: lib/features/goethe/presentation/cubit/
+Current: lib/features/growth/growth_controller.dart                 â†’ Target: lib/features/growth/presentation/cubit/
+Current: lib/features/live_learning/live_learning_controller.dart   â†’ Target: lib/features/live_learning/presentation/cubit/
+Current: lib/features/speaking/speaking_controller.dart             â†’ Target: lib/features/speaking/presentation/cubit/
+Current: lib/features/advanced_speaking/speaking_controller.dart   â†’ Target: lib/features/advanced_speaking/presentation/cubit/
+Current: lib/features/ai_learning/ai_learning_controller.dart      â†’ Target: lib/features/ai_learning/presentation/cubit/
+Current: lib/features/lessons/lesson_controller.dart               â†’ Target: lib/features/lessons/presentation/cubit/
+Current: lib/features/daily_missions/daily_missions_controller.dart â†’ Target: lib/features/daily_missions/presentation/cubit/
 
-CATEGORY: MODELS → ENTITIES + DATA MODELS
+CATEGORY: MODELS â†’ ENTITIES + DATA MODELS
 --------------------------------------------------------------------------------
-Current: lib/features/*/models/*.dart → Split into:
+Current: lib/features/*/models/*.dart â†’ Split into:
   - lib/features/*/domain/entities/ (Business entities)
   - lib/features/*/data/models/ (Data models/DTOs)
 
 CATEGORY: DATA SOURCES
 --------------------------------------------------------------------------------
-Current: lib/data/german_content.dart → Target: lib/core/data/datasources/local/
-Current: lib/data/models/*.dart       → Target: lib/core/data/models/
+Current: lib/data/german_content.dart â†’ Target: lib/core/data/datasources/local/
+Current: lib/data/models/*.dart       â†’ Target: lib/core/data/models/
 
-CATEGORY: SHARED MODELS → DOMAIN
+CATEGORY: SHARED MODELS â†’ DOMAIN
 --------------------------------------------------------------------------------
-Current: lib/shared/models/achievement_model.dart → Target: lib/features/achievements/domain/entities/
-Current: lib/shared/models/language_model.dart    → Target: lib/features/language/domain/entities/
-Current: lib/shared/models/user_model.dart        → Target: lib/features/profile/domain/entities/
+Current: lib/shared/models/achievement_model.dart â†’ Target: lib/features/achievements/domain/entities/
+Current: lib/shared/models/language_model.dart    â†’ Target: lib/features/language/domain/entities/
+Current: lib/shared/models/user_model.dart        â†’ Target: lib/features/profile/domain/entities/
 
 ================================================================================
 SECTION 2: DETAILED FILE MOVEMENT PLAN
@@ -163,13 +170,13 @@ Order:      PHASE 1
 SECTION 3: REPOSITORY RESTRUCTURING
 ================================================================================
 
-PATTERN: repositories/ → data/repositories/
+PATTERN: repositories/ â†’ data/repositories/
 --------------------------------------------------------------------------------
 All repositories move ONE level deeper into data/ folder.
 
 Example:
   lib/features/profile/profile_repository.dart
-  → lib/features/profile/data/repositories/profile_repository.dart
+  â†’ lib/features/profile/data/repositories/profile_repository.dart
 
 AFFECTED FEATURES (22 repositories):
 --------------------------------------------------------------------------------
@@ -183,16 +190,16 @@ AFFECTS: Each feature's screens and controllers
 ORDER: PHASE 2 (per feature)
 
 ================================================================================
-SECTION 4: CONTROLLER → BLOC/CUBIT MIGRATION
+SECTION 4: CONTROLLER â†’ BLOC/CUBIT MIGRATION
 ================================================================================
 
-PATTERN: controllers/ → presentation/cubit/
+PATTERN: controllers/ â†’ presentation/cubit/
 --------------------------------------------------------------------------------
 All controllers become Cubits (simple) or Blocs (complex).
 
 Example:
   lib/features/profile/profile_controller.dart
-  → lib/features/profile/presentation/cubit/profile_cubit.dart
+  â†’ lib/features/profile/presentation/cubit/profile_cubit.dart
 
 AFFECTED FEATURES (13 controllers):
 --------------------------------------------------------------------------------
@@ -208,7 +215,7 @@ ORDER: PHASE 3 (per feature, after repositories)
 SECTION 5: MODEL SPLITTING
 ================================================================================
 
-PATTERN: models/ → domain/entities/ + data/models/
+PATTERN: models/ â†’ domain/entities/ + data/models/
 --------------------------------------------------------------------------------
 Split each model into:
   - Entity (business logic, no JSON)
@@ -216,8 +223,8 @@ Split each model into:
 
 Example:
   lib/features/profile/models/user.dart
-  → lib/features/profile/domain/entities/user.dart (Entity)
-  → lib/features/profile/data/models/user_model.dart (DataModel)
+  â†’ lib/features/profile/domain/entities/user.dart (Entity)
+  â†’ lib/features/profile/data/models/user_model.dart (DataModel)
 
 AFFECTED: All features with models/ folders
 SAFE: NO - Requires code changes
@@ -227,7 +234,7 @@ ORDER: PHASE 4 (per feature)
 SECTION 6: EXECUTION PHASES (UPDATED)
 ================================================================================
 
-PHASE 1: CORE SERVICES (Day 1-2) ✅ COMPLETE
+PHASE 1: CORE SERVICES (Day 1-2) âœ… COMPLETE
 --------------------------------------------------------------------------------
 Actions:
 1. Create lib/core/services/ directory
@@ -245,7 +252,7 @@ Actions:
 Files Moved: 8
 Import Updates: ~30 files
 Risk: LOW
-STATUS: ✅ COMPLETE
+STATUS: âœ… COMPLETE
 
 PHASE 2: PILOT FEATURE MIGRATION (Day 3-5)
 --------------------------------------------------------------------------------
@@ -254,32 +261,32 @@ SELECTED FEATURE: Auth (smallest, most critical)
 Actions:
 1. Create new directory structure for Auth:
    lib/features/auth/
-   ├── data/
-   │   ├── datasources/
-   │   │   └── auth_remote_datasource.dart
-   │   ├── models/
-   │   │   └── user_model.dart
-   │   └── repositories/
-   │       └── auth_repository_impl.dart
-   ├── domain/
-   │   ├── entities/
-   │   │   └── user.dart
-   │   ├── repositories/
-   │   └── usecases/
-   │       ├── login_usecase.dart
-   │       ├── register_usecase.dart
-   │       └── logout_usecase.dart
-   └── presentation/
-       ├── bloc/
-       │   └── auth_cubit.dart
-       ├── screens/
-       │   ├── login_screen.dart
-       │   └── register_screen.dart
-       └── widgets/
-           └── auth_button.dart
+   â”œâ”€â”€ data/
+   â”‚   â”œâ”€â”€ datasources/
+   â”‚   â”‚   â””â”€â”€ auth_remote_datasource.dart
+   â”‚   â”œâ”€â”€ models/
+   â”‚   â”‚   â””â”€â”€ user_model.dart
+   â”‚   â””â”€â”€ repositories/
+   â”‚       â””â”€â”€ auth_repository_impl.dart
+   â”œâ”€â”€ domain/
+   â”‚   â”œâ”€â”€ entities/
+   â”‚   â”‚   â””â”€â”€ user.dart
+   â”‚   â”œâ”€â”€ repositories/
+   â”‚   â””â”€â”€ usecases/
+   â”‚       â”œâ”€â”€ login_usecase.dart
+   â”‚       â”œâ”€â”€ register_usecase.dart
+   â”‚       â””â”€â”€ logout_usecase.dart
+   â””â”€â”€ presentation/
+       â”œâ”€â”€ bloc/
+       â”‚   â””â”€â”€ auth_cubit.dart
+       â”œâ”€â”€ screens/
+       â”‚   â”œâ”€â”€ login_screen.dart
+       â”‚   â””â”€â”€ register_screen.dart
+       â””â”€â”€ widgets/
+           â””â”€â”€ auth_button.dart
 
-2. Migrate auth_repository.dart → data/repositories/
-3. Migrate login_controller.dart → presentation/bloc/
+2. Migrate auth_repository.dart â†’ data/repositories/
+3. Migrate login_controller.dart â†’ presentation/bloc/
 4. Create proper Repository Interface in domain/
 5. Create Entities in domain/entities/
 6. Create UseCases in domain/usecases/
@@ -342,31 +349,32 @@ SECTION 8: ACCEPTANCE CRITERIA
 ================================================================================
 
 Phase 1 Complete When:
-☐ All core services in lib/core/services/
-☐ All imports updated
-☐ flutter analyze shows no errors
-☐ App compiles and runs
+âکگ All core services in lib/core/services/
+âکگ All imports updated
+âکگ flutter analyze shows no errors
+âکگ App compiles and runs
 
 Phase 2 Complete When:
-☐ All repositories in feature/data/repositories/
-☐ All imports updated
-☐ flutter analyze shows no errors
+âکگ All repositories in feature/data/repositories/
+âکگ All imports updated
+âکگ flutter analyze shows no errors
 
 Phase 3 Complete When:
-☐ All controllers converted to Bloc/Cubit
-☐ All screens use BlocProvider
-☐ Widget tests pass
+âکگ All controllers converted to Bloc/Cubit
+âکگ All screens use BlocProvider
+âکگ Widget tests pass
 
 Phase 4 Complete When:
-☐ All models split into Entity + DataModel
-☐ JSON serialization works
-☐ Unit tests pass
+âکگ All models split into Entity + DataModel
+âکگ JSON serialization works
+âکگ Unit tests pass
 
 Phase 5 Complete When:
-☐ Zero analyzer issues
-☐ All tests pass
-☐ App runs without errors
+âکگ Zero analyzer issues
+âکگ All tests pass
+âکگ App runs without errors
 
 ================================================================================
                     END OF REFACTOR PLAN
 ================================================================================
+

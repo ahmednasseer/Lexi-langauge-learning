@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'models/referral_models.dart';
-import 'models/gamification_models.dart';
-import 'models/seasonal_event.dart';
-import 'models/push_notification.dart';
-import 'models/ab_testing.dart';
-import 'models/premium_conversion.dart';
+import 'package:lexi/features/growth/models/referral_models.dart';
+import 'package:lexi/features/growth/models/gamification_models.dart';
+import 'package:lexi/features/growth/models/seasonal_event.dart';
+import 'package:lexi/features/growth/models/push_notification.dart';
+import 'package:lexi/features/growth/models/ab_testing.dart';
+import 'package:lexi/features/growth/models/premium_conversion.dart';
 import 'services/growth_service.dart';
 import 'growth_repository.dart';
 
 class GrowthController extends ChangeNotifier {
   final GrowthService _service = GrowthService();
   final GrowthRepository _repository = GrowthRepository();
-
   ReferralCode? _referralCode;
   ReferralStats _referralStats = ReferralStats.empty();
   UserProgress _userProgress = UserProgress.empty();
@@ -21,7 +20,6 @@ class GrowthController extends ChangeNotifier {
   SmartPaywall? _paywall;
   FreeTrial? _freeTrial;
   bool _isLoading = false;
-
   ReferralCode? get referralCode => _referralCode;
   ReferralStats get referralStats => _referralStats;
   UserProgress get userProgress => _userProgress;
@@ -31,17 +29,13 @@ class GrowthController extends ChangeNotifier {
   SmartPaywall? get paywall => _paywall;
   FreeTrial? get freeTrial => _freeTrial;
   bool get isLoading => _isLoading;
-
   List<UserLevel> get allLevels => _service.getAllLevels();
   List<AchievementBadge> get allBadges => _service.getAllBadges();
   List<NotificationTemplate> get smartTemplates => _service.getSmartTemplates();
-
   int get unreadNotifications => _notifications.where((n) => !n.isRead).length;
-
   Future<void> initialize(String userId) async {
     _isLoading = true;
     notifyListeners();
-
     try {
       _referralCode = await _service.generateReferralCode(userId);
       _referralStats = await _service.getReferralStats(userId);
@@ -50,7 +44,6 @@ class GrowthController extends ChangeNotifier {
       _notifications = await _service.getNotifications(userId);
       _abTests = await _service.getABTests();
       _paywall = await _service.getSmartPaywall(userId);
-
       final stats = await _repository.getGrowthStats();
       _userProgress = _userProgress.copyWith(
         totalXp: stats['totalXp'] ?? _userProgress.totalXp,
@@ -60,15 +53,17 @@ class GrowthController extends ChangeNotifier {
     } catch (e) {
       debugPrint('Error initializing growth: $e');
     }
-
     _isLoading = false;
     notifyListeners();
   }
 
-  Future<void> applyReferralCode(String code, String userId, String userName) async {
+  Future<void> applyReferralCode(
+    String code,
+    String userId,
+    String userName,
+  ) async {
     _isLoading = true;
     notifyListeners();
-
     try {
       final referral = await _service.applyReferralCode(code, userId, userName);
       if (referral != null) {
@@ -83,7 +78,6 @@ class GrowthController extends ChangeNotifier {
     } catch (e) {
       debugPrint('Error applying referral code: $e');
     }
-
     _isLoading = false;
     notifyListeners();
   }
@@ -118,13 +112,11 @@ class GrowthController extends ChangeNotifier {
   Future<void> startFreeTrial(String userId) async {
     _isLoading = true;
     notifyListeners();
-
     try {
       _freeTrial = await _service.startFreeTrial(userId);
     } catch (e) {
       debugPrint('Error starting free trial: $e');
     }
-
     _isLoading = false;
     notifyListeners();
   }

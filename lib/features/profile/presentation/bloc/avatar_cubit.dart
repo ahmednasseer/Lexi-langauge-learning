@@ -65,10 +65,10 @@ class AvatarCubit extends Cubit<AvatarState> {
     FirebaseStorage? storage,
     ImagePicker? picker,
     fb.FirebaseAuth? firebaseAuth,
-  })  : _storage = storage ?? FirebaseStorage.instance,
-        _picker = picker ?? ImagePicker(),
-        _firebaseAuth = firebaseAuth ?? fb.FirebaseAuth.instance,
-        super(AvatarInitial());
+  }) : _storage = storage ?? FirebaseStorage.instance,
+       _picker = picker ?? ImagePicker(),
+       _firebaseAuth = firebaseAuth ?? fb.FirebaseAuth.instance,
+       super(AvatarInitial());
 
   Future<void> pickImage() async {
     emit(AvatarPicking());

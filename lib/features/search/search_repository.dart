@@ -29,14 +29,13 @@ class SearchRepository {
 
   Future<List<SearchResult>> search(String query, {String? type}) async {
     if (query.trim().isEmpty) return [];
-    try {
-      final result = await _api.search(query, type: type);
-      if (result.isSuccess) {
-        return result.data!
-            .map((e) => SearchResult.fromJson(e as Map<String, dynamic>))
-            .toList();
-      }
-    } catch (_) {}
-    return [];
+    final result = await _api.search(query, type: type);
+    if (!result.isSuccess) {
+      throw Exception(result.error ?? 'Failed to search');
+    }
+    if (result.data == null) return [];
+    return result.data!
+        .map((e) => SearchResult.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 }

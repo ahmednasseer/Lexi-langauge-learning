@@ -1,71 +1,105 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart' as fb;
+import 'package:flutter/foundation.dart';
+import '../../../../core/services/api_service.dart';
+import '../../../../core/utils/error_logger.dart';
 import '../../domain/entities/profile.dart';
 import '../../domain/repositories/profile_repository.dart';
 import '../models/profile_model.dart';
 
 class ProfileRepositoryImpl implements ProfileRepository {
-  final FirebaseFirestore _firestore;
-  final fb.FirebaseAuth _firebaseAuth;
+  final ApiService _api;
 
-  ProfileRepositoryImpl({
-    FirebaseFirestore? firestore,
-    fb.FirebaseAuth? firebaseAuth,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _firebaseAuth = firebaseAuth ?? fb.FirebaseAuth.instance;
+  static final Map<String, int> _levelToInt = {
+    'A1': 1,
+    'A2': 2,
+    'B1': 3,
+    'B2': 4,
+    'C1': 5,
+    'C2': 6,
+  };
+
+  ProfileRepositoryImpl({ApiService? api}) : _api = api ?? ApiService();
+
+  ProfileModel _fromApiResponse(Map<String, dynamic> json) {
+    final levelValue = json['level'];
+    int parsedLevel;
+    if (levelValue is int) {
+      parsedLevel = levelValue;
+    } else if (levelValue is String) {
+      parsedLevel = _levelToInt[levelValue] ?? 1;
+    } else {
+      parsedLevel = 1;
+    }
+
+    String? avatarUrl = json['photoUrl'] ?? json['avatar'];
+
+    return ProfileModel(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      email: json['email'] ?? '',
+      photoUrl: avatarUrl,
+      bio: json['bio'],
+      nativeLanguage: json['nativeLanguage'] ?? 'English',
+      learningLanguage: json['learningLanguage'] ?? 'German',
+      isPremium: json['isPremium'] ?? false,
+      xp: json['xp'] ?? 0,
+      level: parsedLevel,
+      streak: json['streak'] ?? 0,
+      dailyGoal: json['dailyGoal'] ?? 50,
+      notificationsEnabled: json['notificationsEnabled'] ?? true,
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
+          : DateTime.now(),
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'])
+          : (json['createdAt'] != null
+              ? DateTime.parse(json['createdAt'])
+              : DateTime.now()),
+    );
+  }
 
   @override
   Future<Profile?> getCurrentProfile() async {
-    final user = _firebaseAuth.currentUser;
-    if (user == null) return null;
-    return getProfile(user.uid);
+    final result = await _api.getProfile();
+    if (result.isFailure) {
+      if (kDebugMode) {
+        print('Profile fetch failed: ${result.error}');
+      }
+      ErrorLogger.logError('Failed to load profile: ${result.error}', stackTrace: StackTrace.current);
+      return null;
+    }
+    if (result.data == null) return null;
+    return _fromApiResponse(result.data!);
   }
 
   @override
   Future<Profile?> getProfile(String userId) async {
-    try {
-      final doc = await _firestore.collection('users').doc(userId).get();
-      if (!doc.exists || doc.data() == null) return null;
-      return ProfileModel.fromJson(doc.data()!);
-    } catch (e) {
-      return null;
-    }
+    return getCurrentProfile();
   }
 
   @override
   Future<Profile> updateProfile(Profile profile) async {
-    try {
-      final model = ProfileModel(
-        id: profile.id,
-        name: profile.name,
-        email: profile.email,
-        photoUrl: profile.photoUrl,
-        bio: profile.bio,
-        nativeLanguage: profile.nativeLanguage,
-        learningLanguage: profile.learningLanguage,
-        isPremium: profile.isPremium,
-        xp: profile.xp,
-        level: profile.level,
-        streak: profile.streak,
-        dailyGoal: profile.dailyGoal,
-        notificationsEnabled: profile.notificationsEnabled,
-        createdAt: profile.createdAt,
-        updatedAt: DateTime.now(),
-      );
-      await _firestore.collection('users').doc(profile.id).set(model.toJson());
-      return model;
-    } catch (e) {
-      throw Exception('Failed to update profile');
+    final data = <String, dynamic>{
+      'name': profile.name,
+      'nativeLanguage': profile.nativeLanguage,
+      'learningLanguage': profile.learningLanguage,
+      'dailyGoal': profile.dailyGoal,
+      'notificationsEnabled': profile.notificationsEnabled,
+    };
+
+    final result = await _api.updateProfile(data);
+    if (result.isFailure) {
+      ErrorLogger.logError('Failed to update profile: ${result.error}', stackTrace: StackTrace.current);
+      throw Exception(result.error ?? 'Failed to update profile');
     }
+    if (result.data == null) {
+      throw Exception('No data returned from server');
+    }
+    return _fromApiResponse(result.data!);
   }
 
   @override
-  Future<void> deleteProfile(String userId) async {
-    try {
-      await _firestore.collection('users').doc(userId).delete();
-    } catch (e) {
-      throw Exception('Failed to delete profile');
-    }
+  Future<void> deleteProfile(String userId) {
+    throw UnsupportedError('Profile deletion is not supported via the API');
   }
 
   @override
@@ -75,24 +109,20 @@ class ProfileRepositoryImpl implements ProfileRepository {
     String? learningLanguage,
     String? nativeLanguage,
   }) async {
-    final user = _firebaseAuth.currentUser;
-    if (user == null) throw Exception('No user logged in');
-
-    final updates = <String, dynamic>{
-      'updatedAt': DateTime.now().toIso8601String(),
-    };
-
+    final data = <String, dynamic>{};
     if (notificationsEnabled != null) {
-      updates['notificationsEnabled'] = notificationsEnabled;
+      data['notificationsEnabled'] = notificationsEnabled;
     }
-    if (dailyGoal != null) updates['dailyGoal'] = dailyGoal;
-    if (learningLanguage != null) updates['learningLanguage'] = learningLanguage;
-    if (nativeLanguage != null) updates['nativeLanguage'] = nativeLanguage;
+    if (dailyGoal != null) data['dailyGoal'] = dailyGoal;
+    if (learningLanguage != null) {
+      data['learningLanguage'] = learningLanguage;
+    }
+    if (nativeLanguage != null) data['nativeLanguage'] = nativeLanguage;
 
-    try {
-      await _firestore.collection('users').doc(user.uid).update(updates);
-    } catch (e) {
-      throw Exception('Failed to update preferences');
+    final result = await _api.updateProfile(data);
+    if (result.isFailure) {
+      ErrorLogger.logError('Failed to update preferences: ${result.error}', stackTrace: StackTrace.current);
+      throw Exception(result.error ?? 'Failed to update preferences');
     }
   }
 }

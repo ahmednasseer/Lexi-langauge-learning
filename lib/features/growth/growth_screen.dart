@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lexi/core/services/auth_service.dart';
 import '../../shared/widgets/state_widgets.dart';
 import 'models/gamification_models.dart';
 import 'models/seasonal_event.dart';
@@ -32,7 +33,7 @@ class _GrowthScreenState extends State<GrowthScreen> {
       _initialized = false;
     });
     try {
-      await _controller.initialize('current_user');
+      await _controller.initialize(AuthService.instance.currentUser?.id ?? '');
     } catch (e) {
       if (!mounted) return;
       setState(() => _initError = true);
@@ -68,16 +69,16 @@ class _GrowthScreenState extends State<GrowthScreen> {
       ),
       body: !_initialized
           ? (_initError
-              ? ErrorState(
-                  message: 'Failed to load growth data. Please try again.',
-                  onRetry: _initializeController,
-                )
-              : const LoadingState(message: 'Loading growth data...'))
+                ? ErrorState(
+                    message: 'Failed to load growth data. Please try again.',
+                    onRetry: _initializeController,
+                  )
+                : const LoadingState(message: 'Loading growth data...'))
           : RefreshIndicator(
               color: const Color(0xFF6C63FF),
               onRefresh: () async {
                 try {
-                  await _controller.initialize('current_user');
+      await _controller.initialize(AuthService.instance.currentUser?.id ?? '');
                   if (mounted) setState(() => _initError = false);
                 } catch (e) {
                   if (mounted) setState(() => _initError = true);
@@ -86,9 +87,7 @@ class _GrowthScreenState extends State<GrowthScreen> {
               child: Column(
                 children: [
                   _buildTabBar(),
-                  Expanded(
-                    child: _buildTabContent(),
-                  ),
+                  Expanded(child: _buildTabContent()),
                 ],
               ),
             ),
@@ -128,7 +127,11 @@ class _GrowthScreenState extends State<GrowthScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: isSelected ? Colors.white : Colors.white54, size: 16),
+              Icon(
+                icon,
+                color: isSelected ? Colors.white : Colors.white54,
+                size: 16,
+              ),
               const SizedBox(width: 4),
               Text(
                 label,
@@ -273,16 +276,36 @@ class _GrowthScreenState extends State<GrowthScreen> {
     final stats = _controller.referralStats;
     return Row(
       children: [
-        _buildStatCard('Total Invites', '${stats.totalReferrals}', Icons.people, const Color(0xFF6C63FF)),
+        _buildStatCard(
+          'Total Invites',
+          '${stats.totalReferrals}',
+          Icons.people,
+          const Color(0xFF6C63FF),
+        ),
         const SizedBox(width: 12),
-        _buildStatCard('Gems Earned', '${stats.totalGemsEarned}', Icons.diamond, const Color(0xFFFF9800)),
+        _buildStatCard(
+          'Gems Earned',
+          '${stats.totalGemsEarned}',
+          Icons.diamond,
+          const Color(0xFFFF9800),
+        ),
         const SizedBox(width: 12),
-        _buildStatCard('Premium Days', '${stats.totalPremiumDaysEarned}', Icons.diamond, const Color(0xFF4CAF50)),
+        _buildStatCard(
+          'Premium Days',
+          '${stats.totalPremiumDaysEarned}',
+          Icons.diamond,
+          const Color(0xFF4CAF50),
+        ),
       ],
     );
   }
 
-  Widget _buildStatCard(String label, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+    String label,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -304,10 +327,7 @@ class _GrowthScreenState extends State<GrowthScreen> {
             ),
             Text(
               label,
-              style: GoogleFonts.poppins(
-                color: Colors.white54,
-                fontSize: 11,
-              ),
+              style: GoogleFonts.poppins(color: Colors.white54, fontSize: 11),
               textAlign: TextAlign.center,
             ),
           ],
@@ -330,8 +350,16 @@ class _GrowthScreenState extends State<GrowthScreen> {
         ),
         const SizedBox(height: 12),
         _buildStep(1, 'Share your code', 'Send your referral code to friends'),
-        _buildStep(2, 'Friend signs up', 'They create an account using your code'),
-        _buildStep(3, 'Both earn rewards', 'You get 500 gems + 7 days Premium!'),
+        _buildStep(
+          2,
+          'Friend signs up',
+          'They create an account using your code',
+        ),
+        _buildStep(
+          3,
+          'Both earn rewards',
+          'You get 500 gems + 7 days Premium!',
+        ),
       ],
     );
   }
@@ -474,10 +502,14 @@ class _GrowthScreenState extends State<GrowthScreen> {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isUnlocked ? const Color(0xFF1A1A2E) : Colors.white.withValues(alpha: 0.03),
+        color: isUnlocked
+            ? const Color(0xFF1A1A2E)
+            : Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isUnlocked ? const Color(0xFF6C63FF).withValues(alpha: 0.5) : Colors.white.withValues(alpha: 0.1),
+          color: isUnlocked
+              ? const Color(0xFF6C63FF).withValues(alpha: 0.5)
+              : Colors.white.withValues(alpha: 0.1),
         ),
       ),
       child: Row(
@@ -486,7 +518,9 @@ class _GrowthScreenState extends State<GrowthScreen> {
             width: 50,
             height: 50,
             decoration: BoxDecoration(
-              color: isUnlocked ? const Color(0xFF6C63FF).withValues(alpha: 0.2) : Colors.white.withValues(alpha: 0.05),
+              color: isUnlocked
+                  ? const Color(0xFF6C63FF).withValues(alpha: 0.2)
+                  : Colors.white.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(25),
             ),
             child: Center(
@@ -578,7 +612,9 @@ class _GrowthScreenState extends State<GrowthScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: event.isActive ? Colors.green.withValues(alpha: 0.2) : Colors.orange.withValues(alpha: 0.2),
+                  color: event.isActive
+                      ? Colors.green.withValues(alpha: 0.2)
+                      : Colors.orange.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -595,10 +631,7 @@ class _GrowthScreenState extends State<GrowthScreen> {
           const SizedBox(height: 8),
           Text(
             event.description,
-            style: GoogleFonts.poppins(
-              color: Colors.white54,
-              fontSize: 13,
-            ),
+            style: GoogleFonts.poppins(color: Colors.white54, fontSize: 13),
           ),
           const SizedBox(height: 12),
           // Progress
@@ -621,45 +654,49 @@ class _GrowthScreenState extends State<GrowthScreen> {
             const SizedBox(height: 12),
           ],
           // Goals
-          ...event.goals.map((goal) => Container(
-            margin: const EdgeInsets.only(bottom: 8),
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.05),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  goal.isCompleted ? Icons.check_circle : Icons.circle_outlined,
-                  color: goal.isCompleted ? Colors.green : Colors.white54,
-                  size: 20,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        goal.title,
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontSize: 13,
-                        ),
-                      ),
-                      Text(
-                        '${goal.currentValue}/${goal.targetValue} ${goal.unit}',
-                        style: GoogleFonts.poppins(
-                          color: Colors.white54,
-                          fontSize: 11,
-                        ),
-                      ),
-                    ],
+          ...event.goals.map(
+            (goal) => Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.05),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    goal.isCompleted
+                        ? Icons.check_circle
+                        : Icons.circle_outlined,
+                    color: goal.isCompleted ? Colors.green : Colors.white54,
+                    size: 20,
                   ),
-                ),
-              ],
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          goal.title,
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 13,
+                          ),
+                        ),
+                        Text(
+                          '${goal.currentValue}/${goal.targetValue} ${goal.unit}',
+                          style: GoogleFonts.poppins(
+                            color: Colors.white54,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          )),
+          ),
           const SizedBox(height: 12),
           // Reward
           Container(
@@ -671,7 +708,11 @@ class _GrowthScreenState extends State<GrowthScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.emoji_events, color: Color(0xFFFF9800), size: 20),
+                const Icon(
+                  Icons.emoji_events,
+                  color: Color(0xFFFF9800),
+                  size: 20,
+                ),
                 const SizedBox(width: 8),
                 Text(
                   'Reward: ${event.reward.xp} XP + ${event.reward.gems} Gems',
@@ -772,7 +813,7 @@ class _GrowthScreenState extends State<GrowthScreen> {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () async {
-              await _controller.startFreeTrial('current_user');
+              await _controller.startFreeTrial(AuthService.instance.currentUser?.id ?? '');
               if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -803,13 +844,15 @@ class _GrowthScreenState extends State<GrowthScreen> {
   }
 
   Widget _buildPremiumFeatures(SmartPaywall? paywall) {
-    final features = paywall?.features ?? [
-      'Unlimited AI conversations',
-      'All lesson levels (A1-C2)',
-      'Advanced Speaking Lab',
-      'Goethe exam preparation',
-      'Priority support',
-    ];
+    final features =
+        paywall?.features ??
+        [
+          'Unlimited AI conversations',
+          'All lesson levels (A1-C2)',
+          'Advanced Speaking Lab',
+          'Goethe exam preparation',
+          'Priority support',
+        ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -823,29 +866,35 @@ class _GrowthScreenState extends State<GrowthScreen> {
           ),
         ),
         const SizedBox(height: 12),
-        ...features.map((feature) => Container(
-          margin: const EdgeInsets.only(bottom: 8),
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: const Color(0xFF1A1A2E),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(
-            children: [
-              const Icon(Icons.check_circle, color: Color(0xFF4CAF50), size: 20),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  feature,
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
-                    fontSize: 14,
+        ...features.map(
+          (feature) => Container(
+            margin: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFF1A1A2E),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.check_circle,
+                  color: Color(0xFF4CAF50),
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    feature,
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        )),
+        ),
       ],
     );
   }
@@ -876,10 +925,14 @@ class _GrowthScreenState extends State<GrowthScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isRecommended ? const Color(0xFF6C63FF).withValues(alpha: 0.2) : const Color(0xFF1A1A2E),
+        color: isRecommended
+            ? const Color(0xFF6C63FF).withValues(alpha: 0.2)
+            : const Color(0xFF1A1A2E),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isRecommended ? const Color(0xFF6C63FF) : Colors.white.withValues(alpha: 0.1),
+          color: isRecommended
+              ? const Color(0xFF6C63FF)
+              : Colors.white.withValues(alpha: 0.1),
           width: isRecommended ? 2 : 1,
         ),
       ),
@@ -902,7 +955,10 @@ class _GrowthScreenState extends State<GrowthScreen> {
                     if (isRecommended) ...[
                       const SizedBox(width: 8),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFF6C63FF),
                           borderRadius: BorderRadius.circular(8),
@@ -942,7 +998,9 @@ class _GrowthScreenState extends State<GrowthScreen> {
           ElevatedButton(
             onPressed: () => Navigator.pushNamed(context, '/premium'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: isRecommended ? const Color(0xFF6C63FF) : Colors.white.withValues(alpha: 0.1),
+              backgroundColor: isRecommended
+                  ? const Color(0xFF6C63FF)
+                  : Colors.white.withValues(alpha: 0.1),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),

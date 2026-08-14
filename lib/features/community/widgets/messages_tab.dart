@@ -24,10 +24,7 @@ class MessagesTab extends StatelessWidget {
           // Conversations
           const Text(
             'Messages',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
 
@@ -57,10 +54,7 @@ class MessagesTab extends StatelessWidget {
           children: [
             const Text(
               'Message Requests',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(width: 8),
             Container(
@@ -139,10 +133,7 @@ class MessagesTab extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   'wants to message you',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                 ),
               ],
             ),
@@ -285,18 +276,12 @@ class MessagesTab extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             'No messages yet',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey.shade600,
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
           ),
           const SizedBox(height: 8),
           Text(
             'Connect with learners by sending message requests',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey.shade500,
-            ),
+            style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
             textAlign: TextAlign.center,
           ),
         ],

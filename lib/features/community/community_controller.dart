@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'models/community_group.dart';
-import 'models/community_post.dart';
-import 'models/community_comment.dart';
-import 'models/challenge.dart';
-import 'models/community_user.dart';
-import 'models/message.dart';
+import 'package:lexi/features/community/models/community_group.dart';
+import 'package:lexi/features/community/models/community_post.dart';
+import 'package:lexi/features/community/models/community_comment.dart';
+import 'package:lexi/features/community/models/challenge.dart';
+import 'package:lexi/features/community/models/community_user.dart';
+import 'package:lexi/features/community/models/message.dart';
+import 'package:lexi/core/services/auth_service.dart';
 import 'community_repository.dart';
 import 'leaderboard_repository.dart';
 import 'security_service.dart';
@@ -21,9 +22,8 @@ class CommunityController extends ChangeNotifier {
   final List<Conversation> _conversations = [];
   final List<MessageRequest> _messageRequests = [];
   bool _isLoading = false;
-  String _currentUserId = 'current_user';
-  bool _isPremium = false;
-
+   bool _isPremium = false;
+  String get _userId => AuthService.instance.currentUser?.id ?? '';
   CommunityTab get selectedTab => _selectedTab;
   List<CommunityGroup> get groups => _groups;
   List<CommunityPost> get posts => _posts;
@@ -33,17 +33,20 @@ class CommunityController extends ChangeNotifier {
   List<MessageRequest> get messageRequests => _messageRequests;
   bool get isLoading => _isLoading;
   SecurityService get securityService => _securityService;
-
-  int get unreadMessages => _conversations.fold<int>(0, (sum, c) => sum + c.unreadCount);
-  int get pendingRequests => _messageRequests.where((r) => r.status == MessageRequestStatus.pending).length;
-  int get remainingMessages => _securityService.getRemainingDailyMessages(_currentUserId, _isPremium);
-
-  CommunityController() {
-    _loadData();
+  int get unreadMessages =>
+      _conversations.fold<int>(0, (sum, c) => sum + c.unreadCount);
+  int get pendingRequests => _messageRequests
+      .where((r) => r.status == MessageRequestStatus.pending)
+      .length;
+  int get remainingMessages =>
+      _securityService.getRemainingDailyMessages(
+        AuthService.instance.currentUser?.id ?? '',
+        _isPremium,
+      );
+  CommunityController({bool loadOnCreate = true}) {
+    if (loadOnCreate) _loadData();
   }
-
-  void setCurrentUser(String userId, {bool isPremium = false}) {
-    _currentUserId = userId;
+  void setCurrentUser({bool isPremium = false}) {
     _isPremium = isPremium;
     notifyListeners();
   }
@@ -59,11 +62,9 @@ class CommunityController extends ChangeNotifier {
     CommunityTab.challenges,
     CommunityTab.messages,
   ];
-
   Future<void> _loadData() async {
     _isLoading = true;
     notifyListeners();
-
     try {
       final repo = CommunityRepository();
       final results = await Future.wait([
@@ -72,7 +73,6 @@ class CommunityController extends ChangeNotifier {
         repo.getChallenges(),
         LeaderboardRepository().getLeaderboard(),
       ]);
-
       _groups = results[0] as List<CommunityGroup>;
       _posts = results[1] as List<CommunityPost>;
       _challenges = results[2] as List<Challenge>;
@@ -81,7 +81,6 @@ class CommunityController extends ChangeNotifier {
       debugPrint('Error loading community data: $e');
       _leaderboard = [];
     }
-
     _isLoading = false;
     notifyListeners();
   }
@@ -96,7 +95,9 @@ class CommunityController extends ChangeNotifier {
       final group = _groups[index];
       _groups[index] = group.copyWith(
         isJoined: !group.isJoined,
-        memberCount: group.isJoined ? group.memberCount - 1 : group.memberCount + 1,
+        memberCount: group.isJoined
+            ? group.memberCount - 1
+            : group.memberCount + 1,
       );
       notifyListeners();
       CommunityRepository().joinGroup(groupId);
@@ -118,12 +119,13 @@ class CommunityController extends ChangeNotifier {
   }
 
   void addPost(String content, PostType type) {
+    final user = AuthService.instance.currentUser;
     final newPost = CommunityPost(
       id: 'p${DateTime.now().millisecondsSinceEpoch}',
-      userId: _currentUserId,
-      userName: 'You',
-      userLevel: 'A2',
-      userXp: 1500,
+      userId: user?.id ?? '',
+      userName: user?.name ?? 'User',
+      userLevel: user?.level ?? 'A1',
+      userXp: user?.totalXp ?? 0,
       content: content,
       type: type,
       createdAt: DateTime.now(),
@@ -134,12 +136,13 @@ class CommunityController extends ChangeNotifier {
   }
 
   void addComment(String postId, String text) {
+    final user = AuthService.instance.currentUser;
     CommunityComment(
       id: 'c${DateTime.now().millisecondsSinceEpoch}',
       postId: postId,
-      userId: _currentUserId,
-      userName: 'You',
-      userLevel: 'A2',
+      userId: user?.id ?? '',
+      userName: user?.name ?? 'User',
+      userLevel: user?.level ?? 'A1',
       text: text,
       createdAt: DateTime.now(),
     );
@@ -159,32 +162,48 @@ class CommunityController extends ChangeNotifier {
   }
 
   String? sendMessageRequest(String receiverId, UserProfile receiverProfile) {
-    if (!_securityService.canSendRequest(_currentUserId, receiverId, receiverProfile, _isPremium)) {
-      if (_securityService.isBlocked(_currentUserId, receiverId)) {
+    if (!_securityService.canSendRequest(
+      _userId,
+      receiverId,
+      receiverProfile,
+      _isPremium,
+    )) {
+      if (_securityService.isBlocked(_userId, receiverId)) {
         return 'blocked';
       }
-      if (!_securityService.canSendMessage(_currentUserId, receiverId, _isPremium)) {
+      if (!_securityService.canSendMessage(
+        _userId,
+        receiverId,
+        _isPremium,
+      )) {
         return 'rate_limit';
       }
       return 'permission_denied';
     }
-
     final existing = _messageRequests.firstWhere(
-      (r) => r.senderId == _currentUserId && r.receiverId == receiverId && r.status == MessageRequestStatus.pending,
-      orElse: () => MessageRequest(id: '', senderId: '', senderName: '', receiverId: '', createdAt: DateTime.now()),
+      (r) =>
+          r.senderId == _userId &&
+          r.receiverId == receiverId &&
+          r.status == MessageRequestStatus.pending,
+      orElse: () => MessageRequest(
+        id: '',
+        senderId: '',
+        senderName: '',
+        receiverId: '',
+        createdAt: DateTime.now(),
+      ),
     );
     if (existing.id.isNotEmpty) return 'already_sent';
-
     final newRequest = MessageRequest(
       id: 'req_${DateTime.now().millisecondsSinceEpoch}',
-      senderId: _currentUserId,
+      senderId: _userId,
       senderName: 'You',
       receiverId: receiverId,
       status: MessageRequestStatus.pending,
       createdAt: DateTime.now(),
     );
     _messageRequests.add(newRequest);
-    _securityService.recordMessageSent(_currentUserId);
+    _securityService.recordMessageSent(_userId);
     notifyListeners();
     return null;
   }
@@ -200,13 +219,15 @@ class CommunityController extends ChangeNotifier {
         status: MessageRequestStatus.accepted,
         createdAt: _messageRequests[index].createdAt,
       );
-      _conversations.add(Conversation(
-        id: 'conv_${_messageRequests[index].senderId}',
-        otherUserId: _messageRequests[index].senderId,
-        otherUserName: _messageRequests[index].senderName,
-        lastMessage: null,
-        unreadCount: 0,
-      ));
+      _conversations.add(
+        Conversation(
+          id: 'conv_${_messageRequests[index].senderId}',
+          otherUserId: _messageRequests[index].senderId,
+          otherUserName: _messageRequests[index].senderName,
+          lastMessage: null,
+          unreadCount: 0,
+        ),
+      );
       notifyListeners();
     }
   }
@@ -227,11 +248,12 @@ class CommunityController extends ChangeNotifier {
   }
 
   bool blockUser(String targetUserId) {
-    final success = _securityService.blockUser(_currentUserId, targetUserId);
+    final success = _securityService.blockUser(_userId, targetUserId);
     if (success) {
-      _messageRequests.removeWhere((r) =>
-        (r.senderId == _currentUserId && r.receiverId == targetUserId) ||
-        (r.senderId == targetUserId && r.receiverId == _currentUserId)
+      _messageRequests.removeWhere(
+        (r) =>
+            (r.senderId == _userId && r.receiverId == targetUserId) ||
+            (r.senderId == targetUserId && r.receiverId == _userId),
       );
       _conversations.removeWhere((c) => c.otherUserId == targetUserId);
       notifyListeners();
@@ -240,7 +262,7 @@ class CommunityController extends ChangeNotifier {
   }
 
   bool unblockUser(String targetUserId) {
-    return _securityService.unblockUser(_currentUserId, targetUserId);
+    return _securityService.unblockUser(_userId, targetUserId);
   }
 
   UserReport? reportUser({
@@ -249,11 +271,11 @@ class CommunityController extends ChangeNotifier {
     required ReportReason reason,
     String? description,
   }) {
-    if (_securityService.hasUserReported(_currentUserId, reportedUserId)) {
+    if (_securityService.hasUserReported(_userId, reportedUserId)) {
       return null;
     }
     final report = _securityService.reportUser(
-      reporterId: _currentUserId,
+      reporterId: _userId,
       reportedUserId: reportedUserId,
       messageId: messageId,
       reason: reason,
@@ -264,10 +286,12 @@ class CommunityController extends ChangeNotifier {
   }
 
   List<BlockedUser> getBlockedUsers() {
-    return _securityService.blockedUsers.where((b) => b.blockerId == _currentUserId).toList();
+    return _securityService.blockedUsers
+        .where((b) => b.blockerId == _userId)
+        .toList();
   }
 
   bool isUserBlocked(String userId) {
-    return _securityService.isBlocked(_currentUserId, userId);
+    return _securityService.isBlocked(_userId, userId);
   }
 }

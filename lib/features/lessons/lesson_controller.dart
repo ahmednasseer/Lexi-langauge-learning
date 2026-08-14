@@ -21,8 +21,11 @@ class LessonController extends ChangeNotifier {
   bool get isOffline => _isOffline;
   String? get error => _error;
 
-  List<LessonModel> get filtered =>
-      _lessons.where((l) => l.level == _selectedLevel && l.category == _selectedCategory).toList();
+  List<LessonModel> get filtered => _lessons
+      .where(
+        (l) => l.level == _selectedLevel && l.category == _selectedCategory,
+      )
+      .toList();
 
   void setLevel(String level) {
     _selectedLevel = level;
@@ -49,7 +52,11 @@ class LessonController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> loadLessonsByLevelCategory(String level, String category, String language) async {
+  Future<void> loadLessonsByLevelCategory(
+    String level,
+    String category,
+    String language,
+  ) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
@@ -62,7 +69,11 @@ class LessonController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> completeLesson(String lessonId, double score, int timeSpent) async {
+  Future<void> completeLesson(
+    String lessonId,
+    double score,
+    int timeSpent,
+  ) async {
     await _repository.completeLesson(lessonId, score, timeSpent);
     final i = _lessons.indexWhere((l) => l.id == lessonId);
     if (i != -1) {

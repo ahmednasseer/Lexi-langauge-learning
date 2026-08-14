@@ -137,27 +137,24 @@ class AchievementBadge {
     'isHidden': isHidden,
   };
 
-  factory AchievementBadge.fromJson(Map<String, dynamic> json) => AchievementBadge(
-    id: json['id'] ?? '',
-    name: json['name'] ?? '',
-    description: json['description'] ?? '',
-    icon: json['icon'] ?? '',
-    rarity: BadgeRarity.values.firstWhere(
-      (r) => r.name == json['rarity'],
-      orElse: () => BadgeRarity.common,
-    ),
-    unlockedAt: json['unlockedAt'] != null ? DateTime.parse(json['unlockedAt']) : null,
-    isHidden: json['isHidden'] ?? false,
-  );
+  factory AchievementBadge.fromJson(Map<String, dynamic> json) =>
+      AchievementBadge(
+        id: json['id'] ?? '',
+        name: json['name'] ?? '',
+        description: json['description'] ?? '',
+        icon: json['icon'] ?? '',
+        rarity: BadgeRarity.values.firstWhere(
+          (r) => r.name == json['rarity'],
+          orElse: () => BadgeRarity.common,
+        ),
+        unlockedAt: json['unlockedAt'] != null
+            ? DateTime.parse(json['unlockedAt'])
+            : null,
+        isHidden: json['isHidden'] ?? false,
+      );
 }
 
-enum BadgeRarity {
-  common,
-  uncommon,
-  rare,
-  epic,
-  legendary,
-}
+enum BadgeRarity { common, uncommon, rare, epic, legendary }
 
 extension BadgeRarityExtension on BadgeRarity {
   String get displayName {
@@ -256,10 +253,6 @@ class UserProgress {
     stats: Map<String, dynamic>.from(json['stats'] ?? {}),
   );
 
-  factory UserProgress.empty() => const UserProgress(
-    totalXp: 0,
-    currentLevel: 1,
-    gems: 0,
-    streak: 0,
-  );
+  factory UserProgress.empty() =>
+      const UserProgress(totalXp: 0, currentLevel: 1, gems: 0, streak: 0);
 }

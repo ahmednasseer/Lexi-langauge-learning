@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../features/splash/splash_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
 import '../../features/auth/presentation/pages/auth_screen.dart';
+import '../../features/auth/presentation/pages/forgot_password_screen.dart';
 import '../../features/home/home_screen.dart';
 import '../../features/lessons/screens/lessons_screen.dart';
 import '../../features/lessons/screens/lesson_detail_screen.dart';
@@ -9,7 +10,6 @@ import '../../features/ai_tutor/ai_tutor_screen.dart';
 import '../../features/ai_coach/ai_coach_screen.dart';
 import '../../features/pronunciation/pronunciation_screen.dart';
 import '../../features/gamification/gamification_screen.dart';
-import '../../features/subscription/premium_screen.dart';
 import '../../features/profile/presentation/pages/profile_screen.dart';
 import '../../features/profile/presentation/pages/edit_profile_screen.dart';
 import '../../features/profile/presentation/pages/settings_screen.dart';
@@ -20,7 +20,7 @@ import '../../features/daily_missions/daily_missions_screen.dart';
 import '../../features/passport/passport_screen.dart';
 import '../../features/certificates/certificates_screen.dart';
 import '../../features/achievements/achievements_screen.dart';
-import '../../features/community/community_screen.dart';
+import '../../features/social/presentation/screens/social_feed_screen.dart';
 import '../../features/ai_learning/ai_learning_screen.dart';
 import '../../features/goethe/goethe_exam_screen.dart';
 import '../../features/advanced_speaking/advanced_speaking_screen.dart';
@@ -49,7 +49,10 @@ import '../../features/inbox/inbox_screen.dart';
 import '../../features/search/search_screen.dart';
 import '../../features/notifications/notifications_screen.dart';
 import '../../features/premium/premium_offer_screen.dart';
-import '../../features/store/store_screen.dart';
+import '../../features/wallet/presentation/screens/wallet_screen.dart';
+import '../../features/inventory/presentation/screens/inventory_screen.dart';
+import '../../features/store/presentation/screens/store_screen.dart';
+import '../../features/premium/presentation/screens/premium_screen.dart';
 import '../../features/lessons/models/lesson_model.dart';
 
 class AppRouter {
@@ -68,6 +71,7 @@ class AppRouter {
   static const String premium = '/premium';
   static const String profile = '/profile';
   static const String profileEdit = '/profile-edit';
+  static const String forgotPassword = '/auth/forgot-password';
   static const String roadmap = '/roadmap';
   static const String flashcards = '/flashcards';
   static const String speaking = '/speaking';
@@ -76,6 +80,7 @@ class AppRouter {
   static const String certificates = '/certificates';
   static const String achievements = '/achievements';
   static const String community = '/community';
+  static const String socialFeed = '/social-feed';
   static const String aiLearning = '/ai-learning';
   static const String goethe = '/goethe';
   static const String advancedSpeaking = '/advanced-speaking';
@@ -106,6 +111,8 @@ class AppRouter {
   static const String notifications = '/notifications';
   static const String premiumOffer = '/premium-offer';
   static const String store = '/store';
+  static const String wallet = '/wallet';
+  static const String inventory = '/inventory';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -136,6 +143,8 @@ class AppRouter {
         return _buildRoute(const ProfileScreen(), settings);
       case profileEdit:
         return _buildRoute(const EditProfileScreen(), settings);
+      case forgotPassword:
+        return _buildRoute(const ForgotPasswordScreen(), settings);
       case roadmap:
         return _buildRoute(const RoadmapScreen(), settings);
       case flashcards:
@@ -151,7 +160,9 @@ class AppRouter {
       case achievements:
         return _buildRoute(const AchievementsScreen(), settings);
       case community:
-        return _buildRoute(const CommunityScreen(), settings);
+        return _buildRoute(const SocialFeedScreen(), settings);
+      case socialFeed:
+        return _buildRoute(const SocialFeedScreen(), settings);
       case aiLearning:
         return _buildRoute(const AILearningScreen(), settings);
       case goethe:
@@ -212,6 +223,12 @@ class AppRouter {
         return _buildRoute(const PremiumOfferScreen(), settings);
       case store:
         return _buildRoute(const StoreScreen(), settings);
+      case wallet:
+        return _buildRoute(const WalletScreen(), settings);
+      case inventory:
+        return _buildRoute(const InventoryScreen(), settings);
+      case premium:
+        return _buildRoute(const PremiumScreen(), settings);
       default:
         return _buildRoute(const SplashScreen(), settings);
     }

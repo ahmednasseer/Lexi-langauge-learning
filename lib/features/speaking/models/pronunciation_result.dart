@@ -81,7 +81,8 @@ class PronunciationResult {
     double score = 100;
     if (target.contains(' ist ') && !spoken.contains(' ist ')) score -= 10;
     if (target.contains(' habe ') && !spoken.contains(' habe ')) score -= 10;
-    if (target.contains(' werden ') && !spoken.contains(' werden ')) score -= 10;
+    if (target.contains(' werden ') && !spoken.contains(' werden '))
+      score -= 10;
     if (target.contains(' der ') && !spoken.contains(' der ')) score -= 5;
     if (target.contains(' die ') && !spoken.contains(' die ')) score -= 5;
     if (target.contains(' das ') && !spoken.contains(' das ')) score -= 5;
@@ -90,7 +91,8 @@ class PronunciationResult {
 
   static double _calculateFluency(String spoken, String target) {
     if (spoken.isEmpty) return 0.0;
-    final hasPunctuation = spoken.contains('.') || spoken.contains('!') || spoken.contains('?');
+    final hasPunctuation =
+        spoken.contains('.') || spoken.contains('!') || spoken.contains('?');
     final lengthRatio = spoken.length / target.length;
     double score = 80;
     if (hasPunctuation) score += 10;
@@ -104,7 +106,9 @@ class PronunciationResult {
     final spokenWords = spoken.split(' ');
     for (int i = 0; i < targetWords.length && i < spokenWords.length; i++) {
       if (targetWords[i] != spokenWords[i]) {
-        mistakes.add('Expected "${targetWords[i]}" but said "${spokenWords[i]}"');
+        mistakes.add(
+          'Expected "${targetWords[i]}" but said "${spokenWords[i]}"',
+        );
       }
     }
     if (spokenWords.length < targetWords.length) {
@@ -115,7 +119,11 @@ class PronunciationResult {
     return mistakes;
   }
 
-  static List<String> _generateSuggestions(double accuracy, double grammar, List<String> mistakes) {
+  static List<String> _generateSuggestions(
+    double accuracy,
+    double grammar,
+    List<String> mistakes,
+  ) {
     final suggestions = <String>[];
     if (accuracy < 70) suggestions.add('Focus on pronunciation of each word');
     if (grammar < 80) suggestions.add('Review sentence structure');
@@ -135,14 +143,15 @@ class PronunciationResult {
     'xpEarned': xpEarned,
   };
 
-  factory PronunciationResult.fromJson(Map<String, dynamic> json) => PronunciationResult(
-    accuracy: (json['accuracy'] ?? 0).toDouble(),
-    fluency: (json['fluency'] ?? 0).toDouble(),
-    grammar: (json['grammar'] ?? 0).toDouble(),
-    mistakes: List<String>.from(json['mistakes'] ?? []),
-    suggestions: List<String>.from(json['suggestions'] ?? []),
-    spokenText: json['spokenText'] ?? '',
-    targetText: json['targetText'] ?? '',
-    xpEarned: json['xpEarned'] ?? 0,
-  );
+  factory PronunciationResult.fromJson(Map<String, dynamic> json) =>
+      PronunciationResult(
+        accuracy: (json['accuracy'] ?? 0).toDouble(),
+        fluency: (json['fluency'] ?? 0).toDouble(),
+        grammar: (json['grammar'] ?? 0).toDouble(),
+        mistakes: List<String>.from(json['mistakes'] ?? []),
+        suggestions: List<String>.from(json['suggestions'] ?? []),
+        spokenText: json['spokenText'] ?? '',
+        targetText: json['targetText'] ?? '',
+        xpEarned: json['xpEarned'] ?? 0,
+      );
 }

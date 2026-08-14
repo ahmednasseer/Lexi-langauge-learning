@@ -80,8 +80,19 @@ class SupportScreen extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(28),
-          child: Image.asset(AppAssets.lexiDefault, width: 120, height: 120, fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) => Icon(Icons.broken_image, size: 120)),
-        ).animate().scale(delay: 200.ms, duration: 500.ms, curve: Curves.easeOutBack),
+          child: Image.asset(
+            AppAssets.lexiDefault,
+            width: 120,
+            height: 120,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) =>
+                Icon(Icons.broken_image, size: 120),
+          ),
+        ).animate().scale(
+          delay: 200.ms,
+          duration: 500.ms,
+          curve: Curves.easeOutBack,
+        ),
       ],
     );
   }
@@ -102,9 +113,7 @@ class SupportScreen extends StatelessWidget {
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: AppColors.primary.withValues(alpha: 0.2),
-          ),
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
         ),
         child: Text(
           'يساعدنا في تقديم أفضل تجربة تعلم اللغة',
@@ -132,10 +141,7 @@ class SupportScreen extends StatelessWidget {
         ),
         child: Column(
           children: [
-            const Text(
-              '🙏',
-              style: TextStyle(fontSize: 40),
-            ),
+            const Text('🙏', style: TextStyle(fontSize: 40)),
             const SizedBox(height: 12),
             Text(
               'شكراً لأنك جزء من رحلة Lexi!',
@@ -163,24 +169,14 @@ class SupportScreen extends StatelessWidget {
 
   Widget _buildDonateOptions(BuildContext context) {
     final options = [
-      {
-        'amount': '5',
-        'label': '5\$',
-        'color': AppColors.success,
-        'icon': '☕',
-      },
+      {'amount': '5', 'label': '5\$', 'color': AppColors.success, 'icon': '☕'},
       {
         'amount': '10',
         'label': '10\$',
         'color': AppColors.primary,
         'icon': '⭐',
       },
-      {
-        'amount': '25',
-        'label': '25\$',
-        'color': AppColors.gold,
-        'icon': '👑',
-      },
+      {'amount': '25', 'label': '25\$', 'color': AppColors.gold, 'icon': '👑'},
     ];
 
     return Padding(
@@ -202,60 +198,61 @@ class SupportScreen extends StatelessWidget {
               final option = options[index];
               final color = option['color'] as Color;
               return Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'شكراً لدعمك بمبلغ ${option['label']}!',
-                          style: GoogleFonts.poppins(),
-                        ),
-                        backgroundColor: AppColors.success,
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    margin: EdgeInsets.only(
-                      left: index < options.length - 1 ? 8 : 0,
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    decoration: BoxDecoration(
-                      color: AppColors.surface,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: color.withValues(alpha: 0.3),
-                        width: 1.5,
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          option['icon'] as String,
-                          style: const TextStyle(fontSize: 28),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          option['label'] as String,
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: color,
+                child:
+                    GestureDetector(
+                          onTap: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'شكراً لدعمك بمبلغ ${option['label']}!',
+                                  style: GoogleFonts.poppins(),
+                                ),
+                                backgroundColor: AppColors.success,
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(
+                              left: index < options.length - 1 ? 8 : 0,
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            decoration: BoxDecoration(
+                              color: AppColors.surface,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: color.withValues(alpha: 0.3),
+                                width: 1.5,
+                              ),
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  option['icon'] as String,
+                                  style: const TextStyle(fontSize: 28),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  option['label'] as String,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: color,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-                    .animate()
-                    .fadeIn(
-                      delay: Duration(milliseconds: 500 + index * 100),
-                      duration: 350.ms,
-                    )
-                    .slideY(begin: 0.15),
+                        )
+                        .animate()
+                        .fadeIn(
+                          delay: Duration(milliseconds: 500 + index * 100),
+                          duration: 350.ms,
+                        )
+                        .slideY(begin: 0.15),
               );
             }),
           ),
@@ -328,15 +325,9 @@ class SupportScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(4),
               child: Column(
                 children: [
-                  Expanded(
-                    child: Container(color: const Color(0xFF000000)),
-                  ),
-                  Expanded(
-                    child: Container(color: Color(0xFFDD0000)),
-                  ),
-                  Expanded(
-                    child: Container(color: Color(0xFFFFCC00)),
-                  ),
+                  Expanded(child: Container(color: const Color(0xFF000000))),
+                  Expanded(child: Container(color: Color(0xFFDD0000))),
+                  Expanded(child: Container(color: Color(0xFFFFCC00))),
                 ],
               ),
             ),

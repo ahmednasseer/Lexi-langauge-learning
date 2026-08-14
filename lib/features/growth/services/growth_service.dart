@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/referral_models.dart';
 import '../models/gamification_models.dart';
@@ -18,7 +19,8 @@ class GrowthService {
 
   // Referral System
   Future<ReferralCode> generateReferralCode(String userId) async {
-    final code = 'LEXI${userId.substring(0, min(4, userId.length)).toUpperCase()}${Random().nextInt(9999).toString().padLeft(4, '0')}';
+    final code =
+        'LEXI${userId.substring(0, min(4, userId.length)).toUpperCase()}${Random().nextInt(9999).toString().padLeft(4, '0')}';
 
     final referralCode = ReferralCode(
       id: 'ref_${DateTime.now().millisecondsSinceEpoch}',
@@ -30,7 +32,10 @@ class GrowthService {
     );
 
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('${_referralKey}_code_$userId', jsonEncode(referralCode.toJson()));
+    await prefs.setString(
+      '${_referralKey}_code_$userId',
+      jsonEncode(referralCode.toJson()),
+    );
 
     return referralCode;
   }
@@ -48,11 +53,17 @@ class GrowthService {
     return ReferralStats.empty();
   }
 
-  Future<Referral?> applyReferralCode(String code, String inviteeId, String inviteeName) async {
+  Future<Referral?> applyReferralCode(
+    String code,
+    String inviteeId,
+    String inviteeName,
+  ) async {
     final prefs = await SharedPreferences.getInstance();
 
     // Find the referral code
-    final keys = prefs.getKeys().where((k) => k.startsWith('${_referralKey}_code_'));
+    final keys = prefs.getKeys().where(
+      (k) => k.startsWith('${_referralKey}_code_'),
+    );
     for (final key in keys) {
       final codeJson = prefs.getString(key);
       if (codeJson != null) {
@@ -73,7 +84,9 @@ class GrowthService {
           );
 
           // Update code usage
-          final updatedCode = referralCode.copyWith(currentUses: referralCode.currentUses + 1);
+          final updatedCode = referralCode.copyWith(
+            currentUses: referralCode.currentUses + 1,
+          );
           await prefs.setString(key, jsonEncode(updatedCode.toJson()));
 
           return referral;
@@ -99,7 +112,10 @@ class GrowthService {
 
   Future<void> saveUserProgress(String userId, UserProgress progress) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('${_progressKey}_$userId', jsonEncode(progress.toJson()));
+    await prefs.setString(
+      '${_progressKey}_$userId',
+      jsonEncode(progress.toJson()),
+    );
   }
 
   Future<void> addXp(String userId, int xp) async {
@@ -129,30 +145,144 @@ class GrowthService {
 
   List<UserLevel> getAllLevels() {
     return [
-      const UserLevel(level: 1, title: 'Beginner', minXp: 0, maxXp: 100, reward: LevelReward(gems: 0)),
-      const UserLevel(level: 5, title: 'Explorer', minXp: 500, maxXp: 1000, reward: LevelReward(gems: 100, frameId: 'explorer_frame')),
-      const UserLevel(level: 10, title: 'Adventurer', minXp: 2000, maxXp: 3000, reward: LevelReward(gems: 200, frameId: 'adventurer_frame')),
-      const UserLevel(level: 15, title: 'Scholar', minXp: 5000, maxXp: 7500, reward: LevelReward(gems: 300, badgeId: 'scholar_badge')),
-      const UserLevel(level: 20, title: 'Expert', minXp: 10000, maxXp: 15000, reward: LevelReward(gems: 500, frameId: 'expert_frame')),
-      const UserLevel(level: 25, title: 'German Student', minXp: 20000, maxXp: 30000, reward: LevelReward(gems: 750, badgeId: 'german_student_badge')),
-      const UserLevel(level: 30, title: 'Linguist', minXp: 40000, maxXp: 60000, reward: LevelReward(gems: 1000, frameId: 'linguist_frame')),
-      const UserLevel(level: 40, title: 'Master', minXp: 100000, maxXp: 150000, reward: LevelReward(gems: 2000, badgeId: 'master_badge')),
-      const UserLevel(level: 50, title: 'Language Master', minXp: 250000, maxXp: 300000, reward: LevelReward(gems: 5000, frameId: 'master_frame')),
+      const UserLevel(
+        level: 1,
+        title: 'Beginner',
+        minXp: 0,
+        maxXp: 100,
+        reward: LevelReward(gems: 0),
+      ),
+      const UserLevel(
+        level: 5,
+        title: 'Explorer',
+        minXp: 500,
+        maxXp: 1000,
+        reward: LevelReward(gems: 100, frameId: 'explorer_frame'),
+      ),
+      const UserLevel(
+        level: 10,
+        title: 'Adventurer',
+        minXp: 2000,
+        maxXp: 3000,
+        reward: LevelReward(gems: 200, frameId: 'adventurer_frame'),
+      ),
+      const UserLevel(
+        level: 15,
+        title: 'Scholar',
+        minXp: 5000,
+        maxXp: 7500,
+        reward: LevelReward(gems: 300, badgeId: 'scholar_badge'),
+      ),
+      const UserLevel(
+        level: 20,
+        title: 'Expert',
+        minXp: 10000,
+        maxXp: 15000,
+        reward: LevelReward(gems: 500, frameId: 'expert_frame'),
+      ),
+      const UserLevel(
+        level: 25,
+        title: 'German Student',
+        minXp: 20000,
+        maxXp: 30000,
+        reward: LevelReward(gems: 750, badgeId: 'german_student_badge'),
+      ),
+      const UserLevel(
+        level: 30,
+        title: 'Linguist',
+        minXp: 40000,
+        maxXp: 60000,
+        reward: LevelReward(gems: 1000, frameId: 'linguist_frame'),
+      ),
+      const UserLevel(
+        level: 40,
+        title: 'Master',
+        minXp: 100000,
+        maxXp: 150000,
+        reward: LevelReward(gems: 2000, badgeId: 'master_badge'),
+      ),
+      const UserLevel(
+        level: 50,
+        title: 'Language Master',
+        minXp: 250000,
+        maxXp: 300000,
+        reward: LevelReward(gems: 5000, frameId: 'master_frame'),
+      ),
     ];
   }
 
   List<AchievementBadge> getAllBadges() {
     return [
-      const AchievementBadge(id: 'first_lesson', name: 'First Steps', description: 'Complete your first lesson', icon: '🎯', rarity: BadgeRarity.common),
-      const AchievementBadge(id: 'streak_7', name: 'Week Warrior', description: '7-day streak', icon: '🔥', rarity: BadgeRarity.uncommon),
-      const AchievementBadge(id: 'streak_30', name: 'Monthly Master', description: '30-day streak', icon: '💪', rarity: BadgeRarity.rare),
-      const AchievementBadge(id: 'words_100', name: 'Word Collector', description: 'Learn 100 words', icon: '📚', rarity: BadgeRarity.uncommon),
-      const AchievementBadge(id: 'words_1000', name: 'Vocabulary Master', description: 'Learn 1000 words', icon: '🎓', rarity: BadgeRarity.epic),
-      const AchievementBadge(id: 'speaking_100', name: 'Speaking Star', description: 'Practice speaking 100 minutes', icon: '🎤', rarity: BadgeRarity.rare),
-      const AchievementBadge(id: 'goethe_a1', name: 'Goethe A1', description: 'Pass Goethe A1 exam', icon: '📝', rarity: BadgeRarity.uncommon),
-      const AchievementBadge(id: 'goethe_b1', name: 'Goethe B1', description: 'Pass Goethe B1 exam', icon: '📝', rarity: BadgeRarity.rare),
-      const AchievementBadge(id: 'referral_5', name: 'Social Butterfly', description: 'Invite 5 friends', icon: '🦋', rarity: BadgeRarity.epic),
-      const AchievementBadge(id: 'summer_master', name: 'Summer Master', description: 'Complete Summer Challenge', icon: '☀️', rarity: BadgeRarity.legendary),
+      const AchievementBadge(
+        id: 'first_lesson',
+        name: 'First Steps',
+        description: 'Complete your first lesson',
+        icon: '🎯',
+        rarity: BadgeRarity.common,
+      ),
+      const AchievementBadge(
+        id: 'streak_7',
+        name: 'Week Warrior',
+        description: '7-day streak',
+        icon: '🔥',
+        rarity: BadgeRarity.uncommon,
+      ),
+      const AchievementBadge(
+        id: 'streak_30',
+        name: 'Monthly Master',
+        description: '30-day streak',
+        icon: '💪',
+        rarity: BadgeRarity.rare,
+      ),
+      const AchievementBadge(
+        id: 'words_100',
+        name: 'Word Collector',
+        description: 'Learn 100 words',
+        icon: '📚',
+        rarity: BadgeRarity.uncommon,
+      ),
+      const AchievementBadge(
+        id: 'words_1000',
+        name: 'Vocabulary Master',
+        description: 'Learn 1000 words',
+        icon: '🎓',
+        rarity: BadgeRarity.epic,
+      ),
+      const AchievementBadge(
+        id: 'speaking_100',
+        name: 'Speaking Star',
+        description: 'Practice speaking 100 minutes',
+        icon: '🎤',
+        rarity: BadgeRarity.rare,
+      ),
+      const AchievementBadge(
+        id: 'goethe_a1',
+        name: 'Goethe A1',
+        description: 'Pass Goethe A1 exam',
+        icon: '📝',
+        rarity: BadgeRarity.uncommon,
+      ),
+      const AchievementBadge(
+        id: 'goethe_b1',
+        name: 'Goethe B1',
+        description: 'Pass Goethe B1 exam',
+        icon: '📝',
+        rarity: BadgeRarity.rare,
+      ),
+      const AchievementBadge(
+        id: 'referral_5',
+        name: 'Social Butterfly',
+        description: 'Invite 5 friends',
+        icon: '🦋',
+        rarity: BadgeRarity.epic,
+      ),
+      const AchievementBadge(
+        id: 'summer_master',
+        name: 'Summer Master',
+        description: 'Complete Summer Challenge',
+        icon: '☀️',
+        rarity: BadgeRarity.legendary,
+      ),
     ];
   }
 
@@ -166,14 +296,17 @@ class GrowthService {
         return list.map((j) => SeasonalEvent.fromJson(j)).toList();
       }
     } catch (e) {
-      // Fall through to default
+      debugPrint('Failed to load cached seasonal events: $e');
     }
-    return [SeasonalEvent.demo()];
+    return [];
   }
 
   Future<void> saveSeasonalEvents(List<SeasonalEvent> events) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_eventsKey, jsonEncode(events.map((e) => e.toJson()).toList()));
+    await prefs.setString(
+      _eventsKey,
+      jsonEncode(events.map((e) => e.toJson()).toList()),
+    );
   }
 
   // Push Notifications
@@ -186,9 +319,9 @@ class GrowthService {
         return list.map((j) => PushNotification.fromJson(j)).toList();
       }
     } catch (e) {
-      // Fall through to default
+      debugPrint('Failed to load cached notifications: $e');
     }
-    return _getDemoNotifications();
+    return [];
   }
 
   List<PushNotification> _getDemoNotifications() {
@@ -230,7 +363,8 @@ class GrowthService {
       const NotificationTemplate(
         id: 'template_streak_risk',
         title: '{name}, your streak is waiting 🔥',
-        body: 'Only {minutes} minutes today to continue your {streak}-day streak!',
+        body:
+            'Only {minutes} minutes today to continue your {streak}-day streak!',
         type: NotificationType.streak,
         priority: NotificationPriority.high,
         variables: ['name', 'minutes', 'streak'],
@@ -239,7 +373,8 @@ class GrowthService {
       const NotificationTemplate(
         id: 'template_comeback',
         title: 'We miss you, {name}! 💙',
-        body: 'Your German learning is waiting. Just {minutes} minutes a day makes a difference.',
+        body:
+            'Your German learning is waiting. Just {minutes} minutes a day makes a difference.',
         type: NotificationType.reminder,
         priority: NotificationPriority.medium,
         variables: ['name', 'minutes'],
@@ -276,9 +411,9 @@ class GrowthService {
         return list.map((j) => ABTest.fromJson(j)).toList();
       }
     } catch (e) {
-      // Fall through to default
+      debugPrint('Failed to load cached A/B tests: $e');
     }
-    return [ABTest.demo()];
+    return [];
   }
 
   ABTestVariant getVariant(String testId, String userId) {
@@ -309,7 +444,10 @@ class GrowthService {
     );
 
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('${_premiumKey}_trial_$userId', jsonEncode(trial.toJson()));
+    await prefs.setString(
+      '${_premiumKey}_trial_$userId',
+      jsonEncode(trial.toJson()),
+    );
 
     return trial;
   }

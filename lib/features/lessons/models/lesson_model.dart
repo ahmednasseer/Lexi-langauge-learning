@@ -34,37 +34,80 @@ class LessonModel {
   });
 
   LessonModel copyWith({
-    String? id, String? title, String? description, String? level,
-    String? language, String? category, List<VocabularyItem>? vocabulary,
-    List<GrammarRule>? grammar, List<QuizQuestion>? quiz, int? xpReward,
-    int? orderIndex, bool? isLocked, bool? isCompleted, double? progress,
+    String? id,
+    String? title,
+    String? description,
+    String? level,
+    String? language,
+    String? category,
+    List<VocabularyItem>? vocabulary,
+    List<GrammarRule>? grammar,
+    List<QuizQuestion>? quiz,
+    int? xpReward,
+    int? orderIndex,
+    bool? isLocked,
+    bool? isCompleted,
+    double? progress,
   }) => LessonModel(
-    id: id ?? this.id, title: title ?? this.title, description: description ?? this.description,
-    level: level ?? this.level, language: language ?? this.language, category: category ?? this.category,
-    vocabulary: vocabulary ?? this.vocabulary, grammar: grammar ?? this.grammar, quiz: quiz ?? this.quiz,
-    xpReward: xpReward ?? this.xpReward, orderIndex: orderIndex ?? this.orderIndex,
-    isLocked: isLocked ?? this.isLocked, isCompleted: isCompleted ?? this.isCompleted,
+    id: id ?? this.id,
+    title: title ?? this.title,
+    description: description ?? this.description,
+    level: level ?? this.level,
+    language: language ?? this.language,
+    category: category ?? this.category,
+    vocabulary: vocabulary ?? this.vocabulary,
+    grammar: grammar ?? this.grammar,
+    quiz: quiz ?? this.quiz,
+    xpReward: xpReward ?? this.xpReward,
+    orderIndex: orderIndex ?? this.orderIndex,
+    isLocked: isLocked ?? this.isLocked,
+    isCompleted: isCompleted ?? this.isCompleted,
     progress: progress ?? this.progress,
   );
 
   Map<String, dynamic> toJson() => {
-    'id': id, 'title': title, 'description': description, 'level': level,
-    'language': language, 'category': category,
+    'id': id,
+    'title': title,
+    'description': description,
+    'level': level,
+    'language': language,
+    'category': category,
     'vocabulary': vocabulary.map((v) => v.toJson()).toList(),
     'grammar': grammar.map((g) => g.toJson()).toList(),
     'quiz': quiz.map((q) => q.toJson()).toList(),
-    'xpReward': xpReward, 'orderIndex': orderIndex,
-    'isLocked': isLocked, 'isCompleted': isCompleted, 'progress': progress,
+    'xpReward': xpReward,
+    'orderIndex': orderIndex,
+    'isLocked': isLocked,
+    'isCompleted': isCompleted,
+    'progress': progress,
   };
 
   factory LessonModel.fromJson(Map<String, dynamic> json) => LessonModel(
-    id: json['id'] ?? '', title: json['title'] ?? '', description: json['description'] ?? '',
-    level: json['level'] ?? 'A1', language: json['language'] ?? '', category: json['category'] ?? '',
-    vocabulary: (json['vocabulary'] as List?)?.map((v) => VocabularyItem.fromJson(v)).toList() ?? [],
-    grammar: (json['grammar'] as List?)?.map((g) => GrammarRule.fromJson(g)).toList() ?? [],
-    quiz: (json['quiz'] as List?)?.map((q) => QuizQuestion.fromJson(q)).toList() ?? [],
-    xpReward: json['xpReward'] ?? 50, orderIndex: json['orderIndex'] ?? 0,
-    isLocked: json['isLocked'] ?? false, isCompleted: json['isCompleted'] ?? false,
+    id: json['id'] ?? '',
+    title: json['title'] ?? '',
+    description: json['description'] ?? '',
+    level: json['level'] ?? 'A1',
+    language: json['language'] ?? json['languageId'] ?? '',
+    category: json['category'] ?? '',
+    vocabulary:
+        (json['vocabulary'] as List?)
+            ?.map((v) => VocabularyItem.fromJson(Map<String, dynamic>.from(v)))
+            .toList() ??
+        [],
+    grammar:
+        (json['grammar'] as List?)
+            ?.map((g) => GrammarRule.fromJson(Map<String, dynamic>.from(g)))
+            .toList() ??
+        [],
+    quiz:
+        (json['quiz'] as List?)
+            ?.map((q) => QuizQuestion.fromJson(Map<String, dynamic>.from(q)))
+            .toList() ??
+        [],
+    xpReward: json['xpReward'] ?? 50,
+    orderIndex: json['orderIndex'] ?? 0,
+    isLocked: json['isLocked'] ?? false,
+    isCompleted: json['isCompleted'] ?? false,
     progress: (json['progress'] ?? 0.0).toDouble(),
   );
 }
@@ -75,13 +118,25 @@ class GrammarRule {
   final List<String> examples;
   final String? tip;
 
-  const GrammarRule({required this.title, required this.explanation, required this.examples, this.tip});
+  const GrammarRule({
+    required this.title,
+    required this.explanation,
+    required this.examples,
+    this.tip,
+  });
 
-  Map<String, dynamic> toJson() => {'title': title, 'explanation': explanation, 'examples': examples, 'tip': tip};
+  Map<String, dynamic> toJson() => {
+    'title': title,
+    'explanation': explanation,
+    'examples': examples,
+    'tip': tip,
+  };
 
   factory GrammarRule.fromJson(Map<String, dynamic> json) => GrammarRule(
-    title: json['title'] ?? '', explanation: json['explanation'] ?? '',
-    examples: List<String>.from(json['examples'] ?? []), tip: json['tip'],
+    title: json['title'] ?? '',
+    explanation: json['explanation'] ?? '',
+    examples: List<String>.from(json['examples'] ?? []),
+    tip: json['tip'],
   );
 }
 
@@ -93,18 +148,26 @@ class QuizQuestion {
   final String type;
 
   const QuizQuestion({
-    required this.question, required this.correctAnswer, required this.options,
-    this.explanation, this.type = 'multiple_choice',
+    required this.question,
+    required this.correctAnswer,
+    required this.options,
+    this.explanation,
+    this.type = 'multiple_choice',
   });
 
   Map<String, dynamic> toJson() => {
-    'question': question, 'correctAnswer': correctAnswer, 'options': options,
-    'explanation': explanation, 'type': type,
+    'question': question,
+    'correctAnswer': correctAnswer,
+    'options': options,
+    'explanation': explanation,
+    'type': type,
   };
 
   factory QuizQuestion.fromJson(Map<String, dynamic> json) => QuizQuestion(
-    question: json['question'] ?? '', correctAnswer: json['correctAnswer'] ?? '',
-    options: List<String>.from(json['options'] ?? []), explanation: json['explanation'],
+    question: json['question'] ?? '',
+    correctAnswer: json['correctAnswer'] ?? '',
+    options: List<String>.from(json['options'] ?? []),
+    explanation: json['explanation'],
     type: json['type'] ?? 'multiple_choice',
   );
 }

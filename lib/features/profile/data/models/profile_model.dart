@@ -19,18 +19,36 @@ class ProfileModel extends Profile {
     required super.updatedAt,
   });
 
+  static final Map<String, int> _levelToInt = {
+    'A1': 1,
+    'A2': 2,
+    'B1': 3,
+    'B2': 4,
+    'C1': 5,
+    'C2': 6,
+  };
+
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
+    final levelValue = json['level'];
+    int parsedLevel;
+    if (levelValue is int) {
+      parsedLevel = levelValue;
+    } else if (levelValue is String) {
+      parsedLevel = _levelToInt[levelValue] ?? 1;
+    } else {
+      parsedLevel = 1;
+    }
     return ProfileModel(
       id: json['id'] ?? '',
       name: json['name'] ?? '',
       email: json['email'] ?? '',
-      photoUrl: json['photoUrl'],
+      photoUrl: json['photoUrl'] ?? json['avatar'],
       bio: json['bio'],
       nativeLanguage: json['nativeLanguage'] ?? 'English',
       learningLanguage: json['learningLanguage'] ?? 'German',
       isPremium: json['isPremium'] ?? false,
       xp: json['xp'] ?? 0,
-      level: json['level'] ?? 1,
+      level: parsedLevel,
       streak: json['streak'] ?? 0,
       dailyGoal: json['dailyGoal'] ?? 50,
       notificationsEnabled: json['notificationsEnabled'] ?? true,
@@ -39,7 +57,9 @@ class ProfileModel extends Profile {
           : DateTime.now(),
       updatedAt: json['updatedAt'] != null
           ? DateTime.parse(json['updatedAt'])
-          : DateTime.now(),
+          : (json['createdAt'] != null
+              ? DateTime.parse(json['createdAt'])
+              : DateTime.now()),
     );
   }
 
@@ -63,7 +83,11 @@ class ProfileModel extends Profile {
     };
   }
 
-  factory ProfileModel.fromFirebaseUser(String uid, String email, String? name) {
+  factory ProfileModel.fromFirebaseUser(
+    String uid,
+    String email,
+    String? name,
+  ) {
     return ProfileModel(
       id: uid,
       name: name ?? '',

@@ -191,12 +191,7 @@ class AppTheme {
       fontSize: fontSize,
       fontWeight: fontWeight,
       color: color,
-      shadows: [
-        Shadow(
-          color: color.withValues(alpha: 0.5),
-          blurRadius: 10,
-        ),
-      ],
+      shadows: [Shadow(color: color.withValues(alpha: 0.5), blurRadius: 10)],
     );
   }
 }

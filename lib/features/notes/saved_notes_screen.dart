@@ -26,10 +26,14 @@ class SavedNotesScreen extends StatelessWidget {
             _buildHeader(context),
             Expanded(
               child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 8,
+                ),
                 physics: const BouncingScrollPhysics(),
                 itemCount: _words.length,
-                itemBuilder: (context, index) => _buildWordCard(_words[index], index),
+                itemBuilder: (context, index) =>
+                    _buildWordCard(_words[index], index),
               ),
             ),
           ],
@@ -94,89 +98,96 @@ class SavedNotesScreen extends StatelessWidget {
     final cardGlow = word.stars == 3 ? AppColors.gold : AppColors.primary;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: GlowCard(
-        glowColor: cardGlow,
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                gradient: word.stars == 3 ? AppColors.goldGradient : AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Center(
-                child: Text(
-                  word.german[0],
-                  style: GoogleFonts.poppins(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    word.german,
-                    style: GoogleFonts.poppins(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    word.arabic,
-                    style: GoogleFonts.poppins(
-                      fontSize: 13,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+          padding: const EdgeInsets.only(bottom: 12),
+          child: GlowCard(
+            glowColor: cardGlow,
+            padding: const EdgeInsets.all(16),
+            child: Row(
               children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: List.generate(3, (i) {
-                    return Icon(
-                      i < word.stars ? Icons.star : Icons.star_border,
-                      color: i < word.stars ? AppColors.gold : AppColors.textHint,
-                      size: 18,
-                    );
-                  }),
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text('💎', style: TextStyle(fontSize: 12)),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${word.gems} نقطة',
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(
+                    gradient: word.stars == 3
+                        ? AppColors.goldGradient
+                        : AppColors.primaryGradient,
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Center(
+                    child: Text(
+                      word.german[0],
                       style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.gem,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        word.german,
+                        style: GoogleFonts.poppins(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        word.arabic,
+                        style: GoogleFonts.poppins(
+                          fontSize: 13,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: List.generate(3, (i) {
+                        return Icon(
+                          i < word.stars ? Icons.star : Icons.star_border,
+                          color: i < word.stars
+                              ? AppColors.gold
+                              : AppColors.textHint,
+                          size: 18,
+                        );
+                      }),
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('💎', style: TextStyle(fontSize: 12)),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${word.gems} نقطة',
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.gem,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ],
             ),
-          ],
-        ),
-      ),
-    ).animate().fadeIn(delay: Duration(milliseconds: 100 + index * 80)).slideX(begin: 0.15);
+          ),
+        )
+        .animate()
+        .fadeIn(delay: Duration(milliseconds: 100 + index * 80))
+        .slideX(begin: 0.15);
   }
 }
 

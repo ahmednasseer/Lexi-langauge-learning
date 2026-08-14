@@ -2,12 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
-enum VoiceState {
-  idle,
-  listening,
-  processing,
-  speaking,
-}
+enum VoiceState { idle, listening, processing, speaking }
 
 class VoiceService {
   final SpeechToText _speechToText = SpeechToText();

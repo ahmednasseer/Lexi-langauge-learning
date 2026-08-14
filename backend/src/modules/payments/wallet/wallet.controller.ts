@@ -27,10 +27,4 @@ export class WalletController {
   async spendGems(@Req() req, @Body() body: { amount: number; description: string }) {
     return this.walletService.spendGems(req.user.sub, body.amount, body.description);
   }
-
-  @Post('add')
-  @ApiOperation({ summary: 'Add gems (admin reward)' })
-  async addGems(@Req() req, @Body() body: { amount: number; description: string }) {
-    return this.walletService.addGems(req.user.sub, body.amount, body.description);
-  }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'models/learning_profile.dart';
+import 'package:lexi/features/ai_learning/models/learning_profile.dart';
 import 'ai_learning_service.dart';
 
 class AILearningController extends ChangeNotifier {
@@ -9,22 +9,22 @@ class AILearningController extends ChangeNotifier {
   StudyPlan? _studyPlan;
   StudentMemory? _memory;
   bool _isLoading = false;
-
   LearningProfile? get profile => _profile;
   List<AIRecommendation> get recommendations => _recommendations;
   StudyPlan? get studyPlan => _studyPlan;
   StudentMemory? get memory => _memory;
   bool get isLoading => _isLoading;
-
   String get dailySummary {
-    if (_profile == null) return 'Start learning to get personalized recommendations!';
+    if (_profile == null)
+      return 'Start learning to get personalized recommendations!';
     final weakCount = _profile!.weakAreas.length;
     final strongCount = _profile!.strongAreas.length;
     return '$weakCount areas to improve, $strongCount strengths identified';
   }
 
   String get todayRecommendation {
-    if (_recommendations.isEmpty) return 'Complete some lessons to get AI recommendations!';
+    if (_recommendations.isEmpty)
+      return 'Complete some lessons to get AI recommendations!';
     final dailyRecs = _recommendations.where((r) => r.type == 'daily').toList();
     if (dailyRecs.isNotEmpty) return dailyRecs.first.description;
     return _recommendations.first.description;
@@ -56,10 +56,8 @@ class AILearningController extends ChangeNotifier {
     required List<Map<String, dynamic>> aiConversationMistakes,
   }) async {
     if (_profile == null) return;
-
     _isLoading = true;
     notifyListeners();
-
     _profile = _service.analyzeAndUpdateProfile(
       _profile!,
       quizResults: quizResults,
@@ -67,10 +65,8 @@ class AILearningController extends ChangeNotifier {
       speakingResults: speakingResults,
       aiConversationMistakes: aiConversationMistakes,
     );
-
     _recommendations = _service.generateRecommendations(_profile!);
     _studyPlan = _service.generateStudyPlan(_profile!);
-
     _isLoading = false;
     notifyListeners();
   }
@@ -82,14 +78,12 @@ class AILearningController extends ChangeNotifier {
     LearningSpeed? speed,
   }) {
     if (_profile == null) return;
-
     _profile = _profile!.copyWith(
       currentLevel: level,
       learningGoal: goal,
       dailyMinutes: dailyMinutes,
       learningSpeed: speed,
     );
-
     _recommendations = _service.generateRecommendations(_profile!);
     _studyPlan = _service.generateStudyPlan(_profile!);
     notifyListeners();
@@ -97,7 +91,6 @@ class AILearningController extends ChangeNotifier {
 
   void recordMistake(String mistake, String category) {
     if (_memory == null) return;
-
     _memory = _service.updateStudentMemory(
       _memory!,
       newMistake: mistake,
@@ -108,7 +101,6 @@ class AILearningController extends ChangeNotifier {
 
   void recordConversation(String topic, List<String> mistakes) {
     if (_memory == null) return;
-
     _memory = _service.updateStudentMemory(
       _memory!,
       conversationTopic: topic,
@@ -119,11 +111,7 @@ class AILearningController extends ChangeNotifier {
 
   void recordLearnedWord(String word) {
     if (_memory == null) return;
-
-    _memory = _service.updateStudentMemory(
-      _memory!,
-      learnedWord: word,
-    );
+    _memory = _service.updateStudentMemory(_memory!, learnedWord: word);
     notifyListeners();
   }
 
@@ -170,10 +158,7 @@ class AILearningController extends ChangeNotifier {
   }
 
   List<AIRecommendation> getTopRecommendations({int count = 3}) {
-    return _recommendations
-        .where((r) => !r.isCompleted)
-        .take(count)
-        .toList();
+    return _recommendations.where((r) => !r.isCompleted).take(count).toList();
   }
 
   List<AIRecommendation> getCompletedRecommendations() {
@@ -193,36 +178,42 @@ class AILearningController extends ChangeNotifier {
   Map<String, int> getWeeklyActivity() {
     final now = DateTime.now();
     final weekAgo = now.subtract(const Duration(days: 7));
-    
     final activities = <String, int>{};
     for (int i = 0; i < 7; i++) {
       final date = weekAgo.add(Duration(days: i));
       final dayName = _getDayName(date.weekday);
       activities[dayName] = 0;
     }
-
     if (_memory != null) {
       for (final conv in _memory!.conversationHistory) {
         if (conv.date.isAfter(weekAgo)) {
           final dayName = _getDayName(conv.date.weekday);
-          activities[dayName] = (activities[dayName] ?? 0) + conv.durationMinutes;
+          activities[dayName] =
+              (activities[dayName] ?? 0) + conv.durationMinutes;
         }
       }
     }
-
     return activities;
   }
 
   String _getDayName(int weekday) {
     switch (weekday) {
-      case 1: return 'Mon';
-      case 2: return 'Tue';
-      case 3: return 'Wed';
-      case 4: return 'Thu';
-      case 5: return 'Fri';
-      case 6: return 'Sat';
-      case 7: return 'Sun';
-      default: return '';
+      case 1:
+        return 'Mon';
+      case 2:
+        return 'Tue';
+      case 3:
+        return 'Wed';
+      case 4:
+        return 'Thu';
+      case 5:
+        return 'Fri';
+      case 6:
+        return 'Sat';
+      case 7:
+        return 'Sun';
+      default:
+        return '';
     }
   }
 }

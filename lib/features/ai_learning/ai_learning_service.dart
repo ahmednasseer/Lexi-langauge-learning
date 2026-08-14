@@ -1,9 +1,8 @@
 import 'dart:math';
-import 'models/learning_profile.dart';
+import 'package:lexi/features/ai_learning/models/learning_profile.dart';
 
 class AILearningService {
   final Random _random = Random();
-
   LearningProfile generateDefaultProfile(String userId) {
     return LearningProfile(
       userId: userId,
@@ -30,12 +29,10 @@ class AILearningService {
   }) {
     final Map<String, WeaknessArea> weaknesses = {};
     final Map<String, StrongArea> strengths = {};
-
     for (final quiz in quizResults) {
       final category = quiz['category'] ?? 'General';
       final correct = quiz['correct'] as bool? ?? false;
       final mistake = quiz['mistake'] as String?;
-
       if (correct) {
         strengths[category] = _updateStrongArea(
           strengths[category],
@@ -50,12 +47,10 @@ class AILearningService {
         );
       }
     }
-
     for (final card in flashcardResults) {
       final word = card['word'] ?? '';
       final category = card['category'] ?? 'Vocabulary';
       final remembered = card['remembered'] as bool? ?? false;
-
       if (remembered) {
         strengths[category] = _updateStrongArea(
           strengths[category],
@@ -70,12 +65,10 @@ class AILearningService {
         );
       }
     }
-
     for (final speaking in speakingResults) {
       final category = speaking['category'] ?? 'Speaking';
       final score = speaking['score'] as double? ?? 0.0;
       final mistakes = List<String>.from(speaking['mistakes'] ?? []);
-
       if (score >= 0.8) {
         strengths[category] = _updateStrongArea(
           strengths[category],
@@ -92,29 +85,24 @@ class AILearningService {
         }
       }
     }
-
     for (final mistake in aiConversationMistakes) {
       final category = mistake['category'] ?? 'Grammar';
       final error = mistake['error'] ?? '';
-
       weaknesses[category] = _updateWeaknessArea(
         weaknesses[category],
         category,
         error,
       );
     }
-
     final sortedWeaknesses = weaknesses.values.toList()
       ..sort((a, b) => b.severity.compareTo(a.severity));
-
     final sortedStrengths = strengths.values.toList()
       ..sort((a, b) => b.mastery.compareTo(a.mastery));
-
     final totalAttempts = quizResults.length + flashcardResults.length;
-    final correctAttempts = quizResults.where((q) => q['correct'] == true).length +
+    final correctAttempts =
+        quizResults.where((q) => q['correct'] == true).length +
         flashcardResults.where((c) => c['remembered'] == true).length;
     final progress = totalAttempts > 0 ? correctAttempts / totalAttempts : 0.0;
-
     return profile.copyWith(
       weakAreas: sortedWeaknesses.take(5).toList(),
       strongAreas: sortedStrengths.take(5).toList(),
@@ -182,79 +170,89 @@ class AILearningService {
   List<AIRecommendation> generateRecommendations(LearningProfile profile) {
     final recommendations = <AIRecommendation>[];
     int priority = 10;
-
     for (final weakness in profile.weakAreas.take(3)) {
-      recommendations.add(AIRecommendation(
-        id: 'rec_weak_${weakness.category}_${DateTime.now().millisecondsSinceEpoch}',
-        userId: profile.userId,
-        type: 'weakness_fix',
-        title: 'Practice ${weakness.category}',
-        description: _getWeaknessDescription(weakness),
-        category: weakness.category,
-        estimatedMinutes: _estimateMinutes(weakness.severity),
-        priority: priority--,
-        createdAt: DateTime.now(),
-      ));
+      recommendations.add(
+        AIRecommendation(
+          id: 'rec_weak_${weakness.category}_${DateTime.now().millisecondsSinceEpoch}',
+          userId: profile.userId,
+          type: 'weakness_fix',
+          title: 'Practice ${weakness.category}',
+          description: _getWeaknessDescription(weakness),
+          category: weakness.category,
+          estimatedMinutes: _estimateMinutes(weakness.severity),
+          priority: priority--,
+          createdAt: DateTime.now(),
+        ),
+      );
     }
-
     if (profile.strongAreas.isNotEmpty) {
       final weakestStrong = profile.strongAreas.last;
       if (weakestStrong.mastery < 0.8) {
-        recommendations.add(AIRecommendation(
-          id: 'rec_review_${DateTime.now().millisecondsSinceEpoch}',
-          userId: profile.userId,
-          type: 'review',
-          title: 'Review ${weakestStrong.category}',
-          description: 'Maintain your progress in ${weakestStrong.category} with a quick review session.',
-          category: weakestStrong.category,
-          estimatedMinutes: 10,
-          priority: priority--,
-          createdAt: DateTime.now(),
-        ));
+        recommendations.add(
+          AIRecommendation(
+            id: 'rec_review_${DateTime.now().millisecondsSinceEpoch}',
+            userId: profile.userId,
+            type: 'review',
+            title: 'Review ${weakestStrong.category}',
+            description:
+                'Maintain your progress in ${weakestStrong.category} with a quick review session.',
+            category: weakestStrong.category,
+            estimatedMinutes: 10,
+            priority: priority--,
+            createdAt: DateTime.now(),
+          ),
+        );
       }
     }
-
-    final newTopics = _getNewTopicsForLevel(profile.currentLevel, profile.weakAreas);
+    final newTopics = _getNewTopicsForLevel(
+      profile.currentLevel,
+      profile.weakAreas,
+    );
     if (newTopics.isNotEmpty) {
-      recommendations.add(AIRecommendation(
-        id: 'rec_new_${DateTime.now().millisecondsSinceEpoch}',
-        userId: profile.userId,
-        type: 'new_topic',
-        title: 'Explore: ${newTopics.first}',
-        description: 'Ready to learn something new? Try ${newTopics.first} to expand your knowledge.',
-        category: 'New Content',
-        estimatedMinutes: 15,
-        priority: priority--,
-        createdAt: DateTime.now(),
-      ));
+      recommendations.add(
+        AIRecommendation(
+          id: 'rec_new_${DateTime.now().millisecondsSinceEpoch}',
+          userId: profile.userId,
+          type: 'new_topic',
+          title: 'Explore: ${newTopics.first}',
+          description:
+              'Ready to learn something new? Try ${newTopics.first} to expand your knowledge.',
+          category: 'New Content',
+          estimatedMinutes: 15,
+          priority: priority--,
+          createdAt: DateTime.now(),
+        ),
+      );
     }
-
     if (profile.currentStreak > 0 && profile.currentStreak % 7 == 0) {
-      recommendations.add(AIRecommendation(
-        id: 'rec_challenge_${DateTime.now().millisecondsSinceEpoch}',
-        userId: profile.userId,
-        type: 'challenge',
-        title: 'Weekly Challenge',
-        description: 'You\'ve been consistent for ${profile.currentStreak} days! Take on a challenge to test your skills.',
-        category: 'Challenge',
-        estimatedMinutes: 20,
-        priority: 8,
-        createdAt: DateTime.now(),
-      ));
+      recommendations.add(
+        AIRecommendation(
+          id: 'rec_challenge_${DateTime.now().millisecondsSinceEpoch}',
+          userId: profile.userId,
+          type: 'challenge',
+          title: 'Weekly Challenge',
+          description:
+              'You\'ve been consistent for ${profile.currentStreak} days! Take on a challenge to test your skills.',
+          category: 'Challenge',
+          estimatedMinutes: 20,
+          priority: 8,
+          createdAt: DateTime.now(),
+        ),
+      );
     }
-
-    recommendations.add(AIRecommendation(
-      id: 'rec_daily_${DateTime.now().millisecondsSinceEpoch}',
-      userId: profile.userId,
-      type: 'daily',
-      title: _getDailyRecommendationTitle(profile),
-      description: _getDailyRecommendation(profile),
-      category: 'Daily',
-      estimatedMinutes: profile.dailyMinutes,
-      priority: 5,
-      createdAt: DateTime.now(),
-    ));
-
+    recommendations.add(
+      AIRecommendation(
+        id: 'rec_daily_${DateTime.now().millisecondsSinceEpoch}',
+        userId: profile.userId,
+        type: 'daily',
+        title: _getDailyRecommendationTitle(profile),
+        description: _getDailyRecommendation(profile),
+        category: 'Daily',
+        estimatedMinutes: profile.dailyMinutes,
+        priority: 5,
+        createdAt: DateTime.now(),
+      ),
+    );
     return recommendations;
   }
 
@@ -286,20 +284,45 @@ class AILearningService {
     return 5;
   }
 
-  List<String> _getNewTopicsForLevel(String level, List<WeaknessArea> weaknesses) {
+  List<String> _getNewTopicsForLevel(
+    String level,
+    List<WeaknessArea> weaknesses,
+  ) {
     final allTopics = {
       'A1': ['Greetings', 'Numbers', 'Colors', 'Family', 'Food', 'Body Parts'],
-      'A2': ['Shopping', 'Travel', 'Health', 'Weather', 'Hobbies', 'Directions'],
-      'B1': ['Work', 'Education', 'Environment', 'Technology', 'Culture', 'News'],
+      'A2': [
+        'Shopping',
+        'Travel',
+        'Health',
+        'Weather',
+        'Hobbies',
+        'Directions',
+      ],
+      'B1': [
+        'Work',
+        'Education',
+        'Environment',
+        'Technology',
+        'Culture',
+        'News',
+      ],
       'B2': ['Politics', 'Science', 'Arts', 'Philosophy', 'Economics', 'Law'],
-      'C1': ['Academic Writing', 'Professional', 'Literature', 'Media', 'Research'],
+      'C1': [
+        'Academic Writing',
+        'Professional',
+        'Literature',
+        'Media',
+        'Research',
+      ],
       'C2': ['Idioms', 'Dialects', 'Advanced Grammar', 'Nuanced Expression'],
     };
-
     final currentTopics = allTopics[level] ?? allTopics['A1']!;
-    final weakCategories = weaknesses.map((w) => w.category.toLowerCase()).toList();
-
-    return currentTopics.where((topic) => !weakCategories.contains(topic.toLowerCase())).toList();
+    final weakCategories = weaknesses
+        .map((w) => w.category.toLowerCase())
+        .toList();
+    return currentTopics
+        .where((topic) => !weakCategories.contains(topic.toLowerCase()))
+        .toList();
   }
 
   String _getDailyRecommendationTitle(LearningProfile profile) {
@@ -323,35 +346,42 @@ class AILearningService {
 
   StudyPlan generateStudyPlan(LearningProfile profile) {
     final days = <StudyPlanDay>[];
-    final dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-
+    final dayNames = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
     final activities = _getActivitiesForGoal(profile);
-
     int activityIndex = 0;
     for (final dayName in dayNames) {
       final dayActivities = <StudyPlanActivity>[];
       int remainingMinutes = profile.dailyMinutes;
-
       while (remainingMinutes > 0 && activityIndex < activities.length * 2) {
         final activity = activities[activityIndex % activities.length];
         final minutes = min(activity.minutes, remainingMinutes);
-        dayActivities.add(StudyPlanActivity(
-          type: activity.type,
-          title: activity.title,
-          minutes: minutes,
-          description: activity.description,
-        ));
+        dayActivities.add(
+          StudyPlanActivity(
+            type: activity.type,
+            title: activity.title,
+            minutes: minutes,
+            description: activity.description,
+          ),
+        );
         remainingMinutes -= minutes;
         activityIndex++;
       }
-
-      days.add(StudyPlanDay(
-        dayName: dayName,
-        activities: dayActivities,
-        totalMinutes: profile.dailyMinutes - remainingMinutes,
-      ));
+      days.add(
+        StudyPlanDay(
+          dayName: dayName,
+          activities: dayActivities,
+          totalMinutes: profile.dailyMinutes - remainingMinutes,
+        ),
+      );
     }
-
     final goalTitle = profile.goalText;
     return StudyPlan(
       id: 'plan_${DateTime.now().millisecondsSinceEpoch}',
@@ -369,33 +399,123 @@ class AILearningService {
     switch (profile.learningGoal) {
       case LearningGoal.goetheExam:
         return [
-          const StudyPlanActivity(type: 'grammar', title: 'Grammar Focus', minutes: 10, description: 'Practice exam-style grammar questions'),
-          const StudyPlanActivity(type: 'vocabulary', title: 'Vocabulary Builder', minutes: 10, description: 'Learn exam-level vocabulary'),
-          const StudyPlanActivity(type: 'listening', title: 'Listening Comprehension', minutes: 10, description: 'Practice with exam audio'),
-          const StudyPlanActivity(type: 'quiz', title: 'Practice Quiz', minutes: 10, description: 'Test your knowledge'),
-          const StudyPlanActivity(type: 'ai_chat', title: 'Writing Practice', minutes: 10, description: 'Practice essay writing with AI'),
+          const StudyPlanActivity(
+            type: 'grammar',
+            title: 'Grammar Focus',
+            minutes: 10,
+            description: 'Practice exam-style grammar questions',
+          ),
+          const StudyPlanActivity(
+            type: 'vocabulary',
+            title: 'Vocabulary Builder',
+            minutes: 10,
+            description: 'Learn exam-level vocabulary',
+          ),
+          const StudyPlanActivity(
+            type: 'listening',
+            title: 'Listening Comprehension',
+            minutes: 10,
+            description: 'Practice with exam audio',
+          ),
+          const StudyPlanActivity(
+            type: 'quiz',
+            title: 'Practice Quiz',
+            minutes: 10,
+            description: 'Test your knowledge',
+          ),
+          const StudyPlanActivity(
+            type: 'ai_chat',
+            title: 'Writing Practice',
+            minutes: 10,
+            description: 'Practice essay writing with AI',
+          ),
         ];
       case LearningGoal.work:
         return [
-          const StudyPlanActivity(type: 'vocabulary', title: 'Business Vocabulary', minutes: 10, description: 'Learn professional terms'),
-          const StudyPlanActivity(type: 'ai_chat', title: 'Meeting Practice', minutes: 10, description: 'Practice business conversations'),
-          const StudyPlanActivity(type: 'grammar', title: 'Formal Grammar', minutes: 10, description: 'Master formal expressions'),
-          const StudyPlanActivity(type: 'listening', title: 'Business Audio', minutes: 10, description: 'Listen to business German'),
+          const StudyPlanActivity(
+            type: 'vocabulary',
+            title: 'Business Vocabulary',
+            minutes: 10,
+            description: 'Learn professional terms',
+          ),
+          const StudyPlanActivity(
+            type: 'ai_chat',
+            title: 'Meeting Practice',
+            minutes: 10,
+            description: 'Practice business conversations',
+          ),
+          const StudyPlanActivity(
+            type: 'grammar',
+            title: 'Formal Grammar',
+            minutes: 10,
+            description: 'Master formal expressions',
+          ),
+          const StudyPlanActivity(
+            type: 'listening',
+            title: 'Business Audio',
+            minutes: 10,
+            description: 'Listen to business German',
+          ),
         ];
       case LearningGoal.travel:
         return [
-          const StudyPlanActivity(type: 'vocabulary', title: 'Travel Phrases', minutes: 10, description: 'Essential travel vocabulary'),
-          const StudyPlanActivity(type: 'ai_chat', title: 'Hotel & Restaurant', minutes: 10, description: 'Practice booking and ordering'),
-          const StudyPlanActivity(type: 'speaking', title: 'Pronunciation', minutes: 10, description: 'Sound natural when traveling'),
-          const StudyPlanActivity(type: 'listening', title: 'Train Announcements', minutes: 10, description: 'Understand public transport'),
+          const StudyPlanActivity(
+            type: 'vocabulary',
+            title: 'Travel Phrases',
+            minutes: 10,
+            description: 'Essential travel vocabulary',
+          ),
+          const StudyPlanActivity(
+            type: 'ai_chat',
+            title: 'Hotel & Restaurant',
+            minutes: 10,
+            description: 'Practice booking and ordering',
+          ),
+          const StudyPlanActivity(
+            type: 'speaking',
+            title: 'Pronunciation',
+            minutes: 10,
+            description: 'Sound natural when traveling',
+          ),
+          const StudyPlanActivity(
+            type: 'listening',
+            title: 'Train Announcements',
+            minutes: 10,
+            description: 'Understand public transport',
+          ),
         ];
       default:
         return [
-          const StudyPlanActivity(type: 'vocabulary', title: 'Daily Vocabulary', minutes: 10, description: 'Build your word bank'),
-          const StudyPlanActivity(type: 'grammar', title: 'Grammar Practice', minutes: 10, description: 'Strengthen your grammar foundation'),
-          const StudyPlanActivity(type: 'ai_chat', title: 'Conversation Practice', minutes: 10, description: 'Chat with AI in German'),
-          const StudyPlanActivity(type: 'listening', title: 'Listening Exercise', minutes: 10, description: 'Improve your comprehension'),
-          const StudyPlanActivity(type: 'quiz', title: 'Daily Quiz', minutes: 10, description: 'Test what you learned'),
+          const StudyPlanActivity(
+            type: 'vocabulary',
+            title: 'Daily Vocabulary',
+            minutes: 10,
+            description: 'Build your word bank',
+          ),
+          const StudyPlanActivity(
+            type: 'grammar',
+            title: 'Grammar Practice',
+            minutes: 10,
+            description: 'Strengthen your grammar foundation',
+          ),
+          const StudyPlanActivity(
+            type: 'ai_chat',
+            title: 'Conversation Practice',
+            minutes: 10,
+            description: 'Chat with AI in German',
+          ),
+          const StudyPlanActivity(
+            type: 'listening',
+            title: 'Listening Exercise',
+            minutes: 10,
+            description: 'Improve your comprehension',
+          ),
+          const StudyPlanActivity(
+            type: 'quiz',
+            title: 'Daily Quiz',
+            minutes: 10,
+            description: 'Test what you learned',
+          ),
         ];
     }
   }
@@ -410,10 +530,13 @@ class AILearningService {
   }) {
     final updatedPatterns = List<MistakePattern>.from(memory.mistakePatterns);
     final updatedLearned = List<String>.from(memory.successfullyLearned);
-    final updatedConversations = List<ConversationSummary>.from(memory.conversationHistory);
-
+    final updatedConversations = List<ConversationSummary>.from(
+      memory.conversationHistory,
+    );
     if (newMistake != null && mistakeCategory != null) {
-      final existingIndex = updatedPatterns.indexWhere((p) => p.pattern == newMistake);
+      final existingIndex = updatedPatterns.indexWhere(
+        (p) => p.pattern == newMistake,
+      );
       if (existingIndex != -1) {
         final existing = updatedPatterns[existingIndex];
         updatedPatterns[existingIndex] = MistakePattern(
@@ -425,34 +548,35 @@ class AILearningService {
           lastSeen: DateTime.now(),
         );
       } else {
-        updatedPatterns.add(MistakePattern(
-          pattern: newMistake,
-          category: mistakeCategory,
-          occurrences: 1,
-          examples: [newMistake],
-          firstSeen: DateTime.now(),
-          lastSeen: DateTime.now(),
-        ));
+        updatedPatterns.add(
+          MistakePattern(
+            pattern: newMistake,
+            category: mistakeCategory,
+            occurrences: 1,
+            examples: [newMistake],
+            firstSeen: DateTime.now(),
+            lastSeen: DateTime.now(),
+          ),
+        );
       }
     }
-
     if (learnedWord != null && !updatedLearned.contains(learnedWord)) {
       updatedLearned.add(learnedWord);
     }
-
     if (conversationTopic != null) {
-      updatedConversations.add(ConversationSummary(
-        date: DateTime.now(),
-        topic: conversationTopic,
-        keyPoints: [],
-        mistakesMade: conversationMistakes ?? [],
-        durationMinutes: 5,
-      ));
+      updatedConversations.add(
+        ConversationSummary(
+          date: DateTime.now(),
+          topic: conversationTopic,
+          keyPoints: [],
+          mistakesMade: conversationMistakes ?? [],
+          durationMinutes: 5,
+        ),
+      );
       if (updatedConversations.length > 50) {
         updatedConversations.removeAt(0);
       }
     }
-
     return StudentMemory(
       userId: memory.userId,
       mistakePatterns: updatedPatterns,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class ScoreCard extends StatefulWidget {
   final double accuracy;
@@ -8,7 +8,6 @@ class ScoreCard extends StatefulWidget {
   final int xpEarned;
   final String feedback;
   final bool isPerfect;
-
   const ScoreCard({
     super.key,
     required this.accuracy,
@@ -18,7 +17,6 @@ class ScoreCard extends StatefulWidget {
     required this.feedback,
     this.isPerfect = false,
   });
-
   @override
   State<ScoreCard> createState() => _ScoreCardState();
 }
@@ -27,7 +25,6 @@ class _ScoreCardState extends State<ScoreCard>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scoreAnimation;
-
   @override
   void initState() {
     super.initState();
@@ -35,9 +32,10 @@ class _ScoreCardState extends State<ScoreCard>
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    _scoreAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
-    );
+    _scoreAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
     _controller.forward();
   }
 
@@ -119,7 +117,10 @@ class _ScoreCardState extends State<ScoreCard>
                       ),
                       Text(
                         '${(widget.accuracy * _scoreAnimation.value).round()}%',
-                        style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey.shade600,
+                        ),
                       ),
                     ],
                   ),
@@ -132,18 +133,27 @@ class _ScoreCardState extends State<ScoreCard>
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: widget.isPerfect ? Colors.amber.shade700 : Colors.blue.shade700,
+                  color: widget.isPerfect
+                      ? Colors.amber.shade700
+                      : Colors.blue.shade700,
                 ),
               ),
               const SizedBox(height: 24),
-              _buildScoreBar('Accuracy', widget.accuracy, _scoreAnimation.value),
+              _buildScoreBar(
+                'Accuracy',
+                widget.accuracy,
+                _scoreAnimation.value,
+              ),
               const SizedBox(height: 12),
               _buildScoreBar('Fluency', widget.fluency, _scoreAnimation.value),
               const SizedBox(height: 12),
               _buildScoreBar('Grammar', widget.grammar, _scoreAnimation.value),
               const SizedBox(height: 24),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [Colors.amber.shade400, Colors.orange.shade400],
@@ -188,7 +198,10 @@ class _ScoreCardState extends State<ScoreCard>
                       SizedBox(width: 8),
                       Text(
                         'PERFECT SCORE!',
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.amber),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.amber,
+                        ),
                       ),
                     ],
                   ),
@@ -210,11 +223,19 @@ class _ScoreCardState extends State<ScoreCard>
           children: [
             Text(
               label,
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.grey.shade700),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade700,
+              ),
             ),
             Text(
               '${(value * animationValue).round()}%',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: _getScoreColor(value)),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: _getScoreColor(value),
+              ),
             ),
           ],
         ),

@@ -43,16 +43,24 @@ class AuthCubit extends Cubit<AuthState> {
   late final RegisterUseCase registerUseCase;
   late final LogoutUseCase logoutUseCase;
   late final GuestLoginUseCase guestLoginUseCase;
+  late final GoogleSignInUseCase googleSignInUseCase;
   late final ResetPasswordUseCase resetPasswordUseCase;
   late final GetCurrentUserUseCase getCurrentUserUseCase;
+  late final SendEmailVerificationUseCase sendEmailVerificationUseCase;
+  late final CheckEmailVerifiedUseCase checkEmailVerifiedUseCase;
+  late final ReloadUserUseCase reloadUserUseCase;
 
   AuthCubit(this.repository) : super(AuthInitial()) {
     loginUseCase = LoginUseCase(repository);
     registerUseCase = RegisterUseCase(repository);
     logoutUseCase = LogoutUseCase(repository);
     guestLoginUseCase = GuestLoginUseCase(repository);
+    googleSignInUseCase = GoogleSignInUseCase(repository);
     resetPasswordUseCase = ResetPasswordUseCase(repository);
     getCurrentUserUseCase = GetCurrentUserUseCase(repository);
+    sendEmailVerificationUseCase = SendEmailVerificationUseCase(repository);
+    checkEmailVerifiedUseCase = CheckEmailVerifiedUseCase(repository);
+    reloadUserUseCase = ReloadUserUseCase(repository);
   }
 
   Future<void> signInWithEmail(String email, String password) async {
@@ -62,7 +70,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (user != null) {
         emit(AuthAuthenticated(user));
       } else {
-        const AuthError('Login failed');
+        emit(const AuthError('Login failed'));
       }
     } on Exception catch (e) {
       emit(AuthError(e.toString()));
@@ -78,7 +86,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (user != null) {
         emit(AuthAuthenticated(user));
       } else {
-        const AuthError('Registration failed');
+        emit(const AuthError('Registration failed'));
       }
     } on Exception catch (e) {
       emit(AuthError(e.toString()));
@@ -94,7 +102,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (user != null) {
         emit(AuthAuthenticated(user));
       } else {
-        const AuthError('Guest login failed');
+        emit(const AuthError('Guest login failed'));
       }
     } on Exception catch (e) {
       emit(AuthError(e.toString()));
@@ -127,6 +135,22 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  Future<void> signInWithGoogle() async {
+    emit(AuthLoading());
+    try {
+      final user = await googleSignInUseCase();
+      if (user != null) {
+        emit(AuthAuthenticated(user));
+      } else {
+        emit(const AuthError('Google sign-in failed'));
+      }
+    } on Exception catch (e) {
+      emit(AuthError(e.toString()));
+    } catch (e) {
+      emit(const AuthError('An unexpected error occurred'));
+    }
+  }
+
   Future<void> checkCurrentUser() async {
     emit(AuthLoading());
     try {
@@ -140,6 +164,30 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthError(e.toString()));
     } catch (e) {
       emit(AuthUnauthenticated());
+    }
+  }
+
+  Future<void> sendEmailVerification() async {
+    try {
+      await sendEmailVerificationUseCase();
+    } catch (e) {
+      emit(AuthError(e.toString()));
+    }
+  }
+
+  Future<bool> checkEmailVerified() async {
+    try {
+      return await checkEmailVerifiedUseCase();
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<void> reloadUser() async {
+    try {
+      await reloadUserUseCase();
+    } catch (e) {
+      // Silently handle reload errors
     }
   }
 }

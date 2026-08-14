@@ -45,9 +45,10 @@ class _ProgressRingState extends State<ProgressRing>
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    _animation = Tween<double>(begin: 0, end: widget.progress).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _animation = Tween<double>(
+      begin: 0,
+      end: widget.progress,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
     if (widget.animate) {
       _controller.forward();
     }
@@ -60,9 +61,7 @@ class _ProgressRingState extends State<ProgressRing>
       _animation = Tween<double>(
         begin: widget.animate ? 0 : widget.progress,
         end: widget.progress,
-      ).animate(
-        CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-      );
+      ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
       if (widget.animate) {
         _controller.forward(from: 0);
       }

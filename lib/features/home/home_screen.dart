@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/constants/app_assets.dart';
 import '../../core/services/auth_service.dart';
+import '../../features/auth/domain/repositories/auth_repository.dart';
+import '../../core/di/injection_container.dart';
+import '../../features/auth/presentation/bloc/auth_cubit.dart';
 import '../../shared/widgets/widgets.dart';
 import '../lessons/screens/lessons_screen.dart';
 import '../ai_coach/ai_coach_screen.dart';
@@ -11,8 +15,9 @@ import '../profile/presentation/pages/profile_screen.dart';
 import '../roadmap/roadmap_screen.dart';
 import '../flashcards/flashcard_screen.dart';
 import '../community/community_screen.dart';
-import '../wallet/transaction_history_screen.dart';
-import '../../core/services/curriculum_service.dart';
+import '../../core/services/api_service.dart';
+import '../../features/learning_progress/presentation/bloc/progress_cubit.dart';
+import '../../features/learning_progress/domain/repositories/progress_repository.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,7 +31,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => ProgressCubit(getIt<ProgressRepository>()),
+        ),
+      ],
+      child: Scaffold(
       backgroundColor: AppColors.background,
       body: IndexedStack(
         index: _idx,
@@ -99,6 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+      ),
     );
   }
 }
@@ -118,24 +130,61 @@ class _Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<_Dashboard> {
   List<Map<String, dynamic>> _wordsOfDay = [];
+  bool _emailVerified = true;
+  bool _checkedVerification = false;
 
   @override
   void initState() {
     super.initState();
     _loadWords();
+    _checkEmailVerification();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userId = AuthService.instance.currentUser?.id ?? '';
+      if (userId.isNotEmpty) {
+        context.read<ProgressCubit>().loadProgress(userId);
+      }
+    });
+  }
+
+  Future<void> _checkEmailVerification() async {
+    final authCubit = getIt<AuthCubit>();
+    final verified = await authCubit.checkEmailVerified();
+    if (mounted) {
+      setState(() {
+        _emailVerified = verified;
+        _checkedVerification = true;
+      });
+    }
+  }
+
+  Future<void> _sendVerificationEmail() async {
+    final authCubit = getIt<AuthCubit>();
+    await authCubit.sendEmailVerification();
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Verification email sent! Check your inbox.'),
+          backgroundColor: AppColors.success,
+        ),
+      );
+    }
   }
 
   Future<void> _loadWords() async {
-    final service = CurriculumService();
-    if (service.curriculum != null && service.curriculum!.units.isNotEmpty) {
-      final firstUnit = service.curriculum!.units.first;
-      if (firstUnit.lessons.isNotEmpty) {
-        final lesson = firstUnit.lessons.first;
-        final words = lesson.vocabulary.take(6).map((v) => {
-          'german': v.german,
-          'english': v.arabic,
-          'icon': Icons.menu_book_outlined,
-          'color': AppColors.primary,
+    final api = ApiService();
+    final result = await api.getLessons('de');
+    if (result.isSuccess && result.data != null && result.data!.isNotEmpty) {
+      final lesson = result.data!.first as Map<String, dynamic>;
+      final vocabulary = lesson['vocabulary'] as List<dynamic>? ?? [];
+      if (vocabulary.isNotEmpty) {
+        final words = vocabulary.take(6).map((v) {
+          final vocab = v as Map<String, dynamic>;
+          return {
+            'german': vocab['german'] ?? '',
+            'english': vocab['arabic'] ?? '',
+            'icon': Icons.menu_book_outlined,
+            'color': AppColors.primary,
+          };
         }).toList();
         if (mounted) {
           setState(() => _wordsOfDay = words);
@@ -146,43 +195,142 @@ class _DashboardState extends State<_Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    final user = AuthService.instance.currentUser;
-    final userName = user?.name ?? 'Learner';
-    final userXp = user?.xp ?? 0;
-    final userLevel = user?.level ?? 'A1';
-    final streak = user?.streak ?? 0;
+    final authRepo = getIt<AuthRepository>();
+    final currentUser = authRepo.getCurrentUserSync();
+    final userName = currentUser?.name ?? 'Learner';
 
+    return BlocProvider<ProgressCubit>(
+      create: (_) => ProgressCubit(getIt<ProgressRepository>()),
+      child: BlocBuilder<ProgressCubit, ProgressState>(
+        builder: (context, progressState) {
+          int userXp = 0;
+          String userLevel = 'A1';
+          int streak = 0;
+          int completedLessons = 0;
+          double completionRate = 0.0;
+
+            if (progressState is ProgressLoaded) {
+            userXp = progressState.progress.totalXp;
+            userLevel = progressState.progress.levelLabel;
+            streak = progressState.progress.streak;
+            completedLessons = progressState.progress.completedLessons.length;
+            completionRate = progressState.progress.completionPercentage;
+          } else if (progressState is ProgressLoading) {
+            return _buildLoadingState();
+          } else if (progressState is ProgressError) {
+            return _buildErrorState(progressState.message);
+          }
+
+        return SafeArea(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHeader(context, userName, userLevel, streak),
+                const SizedBox(height: 16),
+                if (_checkedVerification && !_emailVerified)
+                  _buildEmailVerificationBanner(),
+                if (_checkedVerification && !_emailVerified)
+                  const SizedBox(height: 16),
+                _buildSubtitle(),
+                const SizedBox(height: 20),
+                _buildTodayGoalCard(context, userXp, completedLessons, streak, completionRate),
+                const SizedBox(height: 16),
+                _buildStartLearningButton(context),
+                const SizedBox(height: 20),
+                _buildContinueLearningCard(context, completedLessons, completionRate),
+                const SizedBox(height: 20),
+                _buildLearningRoadmapCard(
+                  context,
+                  userXp: userXp,
+                  userLevel: userLevel,
+                  streak: streak,
+                  completedLessons: completedLessons,
+                  completionRate: completionRate,
+                ),
+                const SizedBox(height: 20),
+                _buildWordsOfDayCard(context),
+                const SizedBox(height: 20),
+                _buildQuickActionsGrid(context),
+                const SizedBox(height: 20),
+                _buildStatsOverview(userXp, streak, userLevel),
+              ],
+            ),
+          ),
+        );
+      },
+    ),
+  );
+  }
+
+  Widget _buildLoadingState() {
+    return const SafeArea(
+      child: Center(child: CircularProgressIndicator()),
+    );
+  }
+
+  Widget _buildErrorState(String message) {
     return SafeArea(
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      child: Center(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildHeader(context, userName, userLevel, streak),
+            Icon(Icons.error_outline, size: 64, color: AppColors.error),
             const SizedBox(height: 16),
-            _buildSubtitle(),
-            const SizedBox(height: 20),
-            _buildTodayGoalCard(),
-            const SizedBox(height: 16),
-            _buildStartLearningButton(context),
-            const SizedBox(height: 20),
-            _buildContinueLearningCard(context),
-            const SizedBox(height: 20),
-            _buildLearningRoadmapCard(context),
-            const SizedBox(height: 20),
-            _buildWordsOfDayCard(context),
-            const SizedBox(height: 20),
-            _buildQuickActionsGrid(context),
-            const SizedBox(height: 20),
-            _buildStatsOverview(userXp, streak),
+            Text(
+              'Failed to load progress',
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              message,
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () {
+                final userId = AuthService.instance.currentUser?.id ?? '';
+                if (userId.isNotEmpty) {
+                  context.read<ProgressCubit>().loadProgress(userId);
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+              child: Text(
+                'Retry',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context, String name, String level, int streak) {
+  Widget _buildHeader(
+    BuildContext context,
+    String name,
+    String level,
+    int streak,
+  ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -191,7 +339,14 @@ class _DashboardState extends State<_Dashboard> {
           children: [
             // Character
             ClipOval(
-              child: Image.asset(AppAssets.lexiHappy, width: 80, height: 80, fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) => Icon(Icons.broken_image, size: 80)),
+              child: Image.asset(
+                AppAssets.lexiHappy,
+                width: 80,
+                height: 80,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) =>
+                    Icon(Icons.broken_image, size: 80),
+              ),
             ).animate().scale(begin: const Offset(0.5, 0.5)),
             const SizedBox(height: 6),
             // Speech bubble
@@ -202,8 +357,8 @@ class _DashboardState extends State<_Dashboard> {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: AppColors.border),
               ),
-              child: Text(
-                'مرحباً بك',
+                child: Text(
+                'Willkommen zurück!',
                 style: GoogleFonts.poppins(
                   fontSize: 11,
                   color: AppColors.textSecondary,
@@ -229,7 +384,7 @@ class _DashboardState extends State<_Dashboard> {
               ).animate().fadeIn().slideX(begin: 0.1),
               const SizedBox(height: 4),
               Text(
-                'مستنيك للتمام اليوم?',
+                'Bereit für heute?',
                 style: GoogleFonts.poppins(
                   fontSize: 13,
                   color: AppColors.textSecondary,
@@ -281,17 +436,73 @@ class _DashboardState extends State<_Dashboard> {
     );
   }
 
+  Widget _buildEmailVerificationBanner() {
+    return GestureDetector(
+      onTap: _sendVerificationEmail,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: AppColors.warning.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.warning.withValues(alpha: 0.3)),
+        ),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.warning_amber_rounded,
+              color: AppColors.warning,
+              size: 22,
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Verify your email',
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.warning,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'Tap here to send verification email',
+                    style: GoogleFonts.poppins(
+                      fontSize: 11,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.arrow_forward_ios,
+              size: 14,
+              color: AppColors.warning,
+            ),
+          ],
+        ),
+      ),
+    ).animate().fadeIn().slideY(begin: 0.1);
+  }
+
   Widget _buildSubtitle() {
     return Text(
-      'مرحباً بك في تعلم اللغة بطريقة ممتعة ومباشرة',
-      style: GoogleFonts.poppins(
-        fontSize: 14,
-        color: AppColors.textSecondary,
-      ),
+      'Weiterhin Deutsch lernen - Schritt für Schritt',
+      style: GoogleFonts.poppins(fontSize: 14, color: AppColors.textSecondary),
     ).animate().fadeIn(delay: 150.ms);
   }
 
-  Widget _buildTodayGoalCard() {
+  Widget _buildTodayGoalCard(
+    BuildContext context,
+    int userXp,
+    int completedLessons,
+    int streak,
+    double completionRate,
+  ) {
     return GlassCard(
       glowColor: AppColors.primary,
       padding: const EdgeInsets.all(20),
@@ -306,7 +517,11 @@ class _DashboardState extends State<_Dashboard> {
                   gradient: AppColors.primaryGradient,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(Icons.flag_outlined, color: Colors.white, size: 20),
+                child: const Icon(
+                  Icons.flag_outlined,
+                  color: Colors.white,
+                  size: 20,
+                ),
               ),
               const SizedBox(width: 12),
               Text(
@@ -320,63 +535,63 @@ class _DashboardState extends State<_Dashboard> {
             ],
           ),
           const SizedBox(height: 20),
-          // Progress bar
-          Row(
-            children: [
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: LinearProgressIndicator(
-                    value: 1.0,
-                    backgroundColor: AppColors.border,
-                    valueColor: const AlwaysStoppedAnimation(AppColors.primary),
-                    minHeight: 10,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                '4/4',
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          // Stats row
-          Row(
-            children: [
-              Expanded(
-                child: _goalStatItem(
-                  icon: Icons.book_outlined,
-                  value: '12',
-                  label: 'كلمة جديدة',
-                  color: AppColors.primary,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: _goalStatItem(
-                  icon: Icons.timer_outlined,
-                  value: '15',
-                  label: 'دقيقة اليوم',
-                  color: AppColors.secondary,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: _goalStatItem(
-                  icon: Icons.fitness_center_outlined,
-                  value: '10',
-                  label: 'تمرين',
-                  color: AppColors.accent,
-                ),
-              ),
-            ],
-          ),
+           // Progress bar
+           Row(
+             children: [
+               Expanded(
+                 child: ClipRRect(
+                   borderRadius: BorderRadius.circular(10),
+                   child: LinearProgressIndicator(
+                     value: userXp > 0 ? (userXp % 50) / 50.0 : 0.0,
+                     backgroundColor: AppColors.border,
+                     valueColor: const AlwaysStoppedAnimation(AppColors.primary),
+                     minHeight: 10,
+                   ),
+                 ),
+               ),
+               const SizedBox(width: 12),
+                Text(
+                  '$userXp XP',
+                 style: GoogleFonts.poppins(
+                   fontSize: 16,
+                   fontWeight: FontWeight.bold,
+                   color: AppColors.primary,
+                 ),
+               ),
+             ],
+           ),
+           const SizedBox(height: 20),
+           // Stats row
+           Row(
+             children: [
+               Expanded(
+                 child: _goalStatItem(
+                   icon: Icons.book_outlined,
+                    value: completedLessons.toString(),
+                   label: 'دروس مكتملة',
+                   color: AppColors.primary,
+                 ),
+               ),
+               const SizedBox(width: 8),
+               Expanded(
+                 child: _goalStatItem(
+                   icon: Icons.stars_outlined,
+                   value: '$streak',
+                   label: 'يوم متواصل',
+                   color: AppColors.secondary,
+                 ),
+               ),
+               const SizedBox(width: 8),
+               Expanded(
+                 child: _goalStatItem(
+                   icon: Icons.show_chart_outlined,
+                   value: '${completionRate.toInt()}%',
+                   label: 'إنجاز',
+                   color: AppColors.accent,
+                 ),
+               ),
+             ],
+           ),
         ],
       ),
     ).animate().fadeIn().slideY(begin: 0.1);
@@ -438,9 +653,9 @@ class _DashboardState extends State<_Dashboard> {
             ),
           ],
         ),
-        child: Center(
+         child: Center(
           child: Text(
-            'ابدأ التعلم',
+            'Jetzt lernen',
             style: GoogleFonts.poppins(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -452,9 +667,13 @@ class _DashboardState extends State<_Dashboard> {
     ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1);
   }
 
-  Widget _buildContinueLearningCard(BuildContext context) {
+   Widget _buildContinueLearningCard(
+    BuildContext context,
+    int completedLessons,
+    double completionRate,
+  ) {
     return GestureDetector(
-        onTap: widget.onNavigateToLessons,
+      onTap: widget.onNavigateToLessons,
       child: GlowCard(
         glowColor: AppColors.primary,
         gradient: LinearGradient(
@@ -472,17 +691,19 @@ class _DashboardState extends State<_Dashboard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'المسار التعليمي',
-                    style: GoogleFonts.poppins(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
+                   Text(
+                     'Weiter lernen',
+                     style: GoogleFonts.poppins(
+                       fontSize: 20,
+                       fontWeight: FontWeight.bold,
+                       color: AppColors.textPrimary,
+                     ),
+                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'الدرس 3',
+                    completedLessons > 0
+                        ? '$completedLessons ${completedLessons == 1 ? "درس مكتمل" : "دروس مكتملة"}'
+                        : 'ليس لديك شيء للمتابعة بعد',
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       color: AppColors.textSecondary,
@@ -496,10 +717,10 @@ class _DashboardState extends State<_Dashboard> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: LinearProgressIndicator(
-                            value: 0.72,
+                            value: completionRate > 0 ? completionRate / 100.0 : 0.0,
                             backgroundColor: AppColors.border,
-                            valueColor: const AlwaysStoppedAnimation(
-                              AppColors.primary,
+                            valueColor: AlwaysStoppedAnimation(
+                              completionRate > 0 ? AppColors.primary : AppColors.textHint,
                             ),
                             minHeight: 8,
                           ),
@@ -507,11 +728,11 @@ class _DashboardState extends State<_Dashboard> {
                       ),
                       const SizedBox(width: 12),
                       Text(
-                        '72%',
+                      '${completionRate.toInt()}%',
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
+                          color: completionRate > 0 ? AppColors.primary : AppColors.textSecondary,
                         ),
                       ),
                     ],
@@ -536,10 +757,7 @@ class _DashboardState extends State<_Dashboard> {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: const Center(
-                child: Text(
-                  '📚',
-                  style: TextStyle(fontSize: 50),
-                ),
+                child: Text('📚', style: TextStyle(fontSize: 50)),
               ),
             ),
           ],
@@ -548,19 +766,18 @@ class _DashboardState extends State<_Dashboard> {
     ).animate().fadeIn(delay: 100.ms);
   }
 
-  Widget _buildLearningRoadmapCard(BuildContext context) {
-    final skills = [
-      {'name': 'المستويات', 'icon': Icons.book_outlined, 'progress': 0.8, 'color': AppColors.primary},
-      {'name': 'القواعد', 'icon': Icons.rule_outlined, 'progress': 0.6, 'color': AppColors.success},
-      {'name': 'الاستماع', 'icon': Icons.headphones_outlined, 'progress': 0.75, 'color': AppColors.secondary},
-      {'name': 'التحدث', 'icon': Icons.mic_outlined, 'progress': 0.4, 'color': AppColors.accent},
-      {'name': 'الكتابة', 'icon': Icons.edit_outlined, 'progress': 0.3, 'color': AppColors.warning},
-    ];
-
+   Widget _buildLearningRoadmapCard(
+    BuildContext context, {
+    required int userXp,
+    required String userLevel,
+    required int streak,
+    required int completedLessons,
+    required double completionRate,
+  }) {
     return GestureDetector(
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const RoadmapScreen()),
-      ),
+      onTap: () => Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => const RoadmapScreen())),
       child: GlassCard(
         glowColor: AppColors.secondary,
         padding: const EdgeInsets.all(20),
@@ -575,7 +792,11 @@ class _DashboardState extends State<_Dashboard> {
                     gradient: AppColors.blueGradient,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(Icons.map_outlined, color: Colors.white, size: 20),
+                  child: const Icon(
+                    Icons.map_outlined,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -596,74 +817,37 @@ class _DashboardState extends State<_Dashboard> {
               ],
             ),
             const SizedBox(height: 20),
-            ...skills.map((s) => _skillItem(
-              s['name'] as String,
-              s['icon'] as IconData,
-              s['progress'] as double,
-              s['color'] as Color,
-            )),
+            Text(
+              'المستوى الحالي: $userLevel',
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 16),
+            LinearProgressIndicator(
+              value: (completionRate / 100).clamp(0.0, 1.0),
+              backgroundColor: AppColors.border,
+              valueColor: AlwaysStoppedAnimation(
+                completionRate > 0 ? AppColors.primary : AppColors.textHint,
+              ),
+              minHeight: 8,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '${completionRate.toInt()}% مكتمل',
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                color: AppColors.textSecondary,
+              ),
+            ),
           ],
         ),
-      ),
-    ).animate().fadeIn(delay: 200.ms);
-  }
-
-  Widget _skillItem(String name, IconData icon, double progress, Color color) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(icon, color: color, size: 20),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: LinearProgressIndicator(
-                    value: progress,
-                    backgroundColor: AppColors.border,
-                    valueColor: AlwaysStoppedAnimation(color),
-                    minHeight: 6,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 12),
-          Text(
-            '${(progress * 100).toInt()}%',
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-        ],
-      ),
+      ).animate().fadeIn(delay: 200.ms),
     );
   }
 
   Widget _buildWordsOfDayCard(BuildContext context) {
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -675,7 +859,11 @@ class _DashboardState extends State<_Dashboard> {
                 gradient: AppColors.accentGradient,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.menu_book_outlined, color: Colors.white, size: 20),
+              child: const Icon(
+                Icons.menu_book_outlined,
+                color: Colors.white,
+                size: 20,
+              ),
             ),
             const SizedBox(width: 12),
             Text(
@@ -711,47 +899,47 @@ class _DashboardState extends State<_Dashboard> {
                   scrollDirection: Axis.horizontal,
                   physics: const BouncingScrollPhysics(),
                   itemCount: _wordsOfDay.length,
-            itemBuilder: (context, i) {
-              final w = _wordsOfDay[i];
-              return Container(
-                width: 150,
-                margin: const EdgeInsets.only(right: 12),
-                child: GlowCard(
-                  glowColor: w['color'] as Color,
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(
-                        w['icon'] as IconData,
-                        color: w['color'] as Color,
-                        size: 28,
-                      ),
-                      const Spacer(),
-                      Text(
-                        w['german'] as String,
-                        style: GoogleFonts.poppins(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                  itemBuilder: (context, i) {
+                    final w = _wordsOfDay[i];
+                    return Container(
+                      width: 150,
+                      margin: const EdgeInsets.only(right: 12),
+                      child: GlowCard(
+                        glowColor: w['color'] as Color,
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              w['icon'] as IconData,
+                              color: w['color'] as Color,
+                              size: 28,
+                            ),
+                            const Spacer(),
+                            Text(
+                              w['german'] as String,
+                              style: GoogleFonts.poppins(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              w['english'] as String,
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        w['english'] as String,
-                        style: GoogleFonts.poppins(
-                          fontSize: 13,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ).animate().fadeIn(
+                      delay: Duration(milliseconds: 300 + i * 100),
+                    );
+                  },
                 ),
-              ).animate().fadeIn(
-                    delay: Duration(milliseconds: 300 + i * 100),
-                  );
-            },
-          ),
         ),
       ],
     );
@@ -761,232 +949,65 @@ class _DashboardState extends State<_Dashboard> {
     final actions = [
       {
         'icon': Icons.school_outlined,
-        'label': 'الدروس',
+        'label': 'Lessons',
         'gradient': AppColors.primaryGradient,
         'onTap': () => Navigator.pushNamed(context, '/lessons'),
       },
       {
         'icon': Icons.smart_toy_outlined,
-        'label': 'المعلم الذكي',
+        'label': 'AI Tutor',
         'gradient': AppColors.cyanGradient,
         'onTap': () => Navigator.pushNamed(context, '/ai-tutor'),
       },
       {
         'icon': Icons.quiz_outlined,
-        'label': 'امتحان غوته',
+        'label': 'Goethe Practice',
         'gradient': AppColors.accentGradient,
         'onTap': () => Navigator.pushNamed(context, '/goethe'),
       },
       {
-        'icon': Icons.record_voice_over_outlined,
-        'label': 'المحادثة',
-        'gradient': AppColors.successGradient,
-        'onTap': () => Navigator.pushNamed(context, '/speaking'),
-      },
-      {
-        'icon': Icons.headphones_outlined,
-        'label': 'الاستماع',
-        'gradient': AppColors.blueGradient,
-        'onTap': () => Navigator.pushNamed(context, '/audio-lessons'),
-      },
-      {
         'icon': Icons.menu_book_outlined,
-        'label': 'البطاقات',
+        'label': 'Flashcards',
         'gradient': AppColors.purpleGradient,
         'onTap': () => Navigator.pushNamed(context, '/flashcards'),
       },
       {
-        'icon': Icons.flag_outlined,
-        'label': 'المهام اليومية',
-        'gradient': AppColors.orangeGradient,
-        'onTap': () => Navigator.pushNamed(context, '/daily-missions'),
+        'icon': Icons.record_voice_over_outlined,
+        'label': 'Speaking',
+        'gradient': AppColors.successGradient,
+        'onTap': () => Navigator.pushNamed(context, '/speaking'),
       },
       {
         'icon': Icons.emoji_events_outlined,
-        'label': 'الإنجازات',
+        'label': 'Achievements',
         'gradient': AppColors.goldGradient,
         'onTap': () => Navigator.pushNamed(context, '/achievements'),
       },
       {
-        'icon': Icons.workspace_premium_outlined,
-        'label': 'الشهادات',
-        'gradient': AppColors.successGradient,
-        'onTap': () => Navigator.pushNamed(context, '/certificates'),
-      },
-      {
         'icon': Icons.store_outlined,
-        'label': 'المتجر',
+        'label': 'Store',
         'gradient': AppColors.purpleGradient,
         'onTap': () => Navigator.pushNamed(context, '/store'),
       },
       {
-        'icon': Icons.diamond_outlined,
-        'label': 'الماس',
-        'gradient': AppColors.blueGradient,
-        'onTap': () => Navigator.pushNamed(context, '/gem-store'),
-      },
-      {
-        'icon': Icons.person_add_outlined,
-        'label': 'الأصدقاء',
+        'icon': Icons.person_outline,
+        'label': 'Profile',
         'gradient': AppColors.primaryGradient,
-        'onTap': () => Navigator.pushNamed(context, '/friends'),
-      },
-      {
-        'icon': Icons.mail_outlined,
-        'label': 'الرسائل',
-        'gradient': AppColors.cyanGradient,
-        'onTap': () => Navigator.pushNamed(context, '/inbox'),
-      },
-      {
-        'icon': Icons.notifications_outlined,
-        'label': 'الاشعارات',
-        'gradient': AppColors.orangeGradient,
-        'onTap': () => Navigator.pushNamed(context, '/notifications'),
-      },
-      {
-        'icon': Icons.local_fire_department_outlined,
-        'label': 'السلسلة',
-        'gradient': AppColors.orangeGradient,
-        'onTap': () => Navigator.pushNamed(context, '/daily-streak'),
-      },
-      {
-        'icon': Icons.event_outlined,
-        'label': 'الاحداث',
-        'gradient': AppColors.blueGradient,
-        'onTap': () => Navigator.pushNamed(context, '/events'),
-      },
-      {
-        'icon': Icons.language_outlined,
-        'label': 'اللغات',
-        'gradient': AppColors.primaryGradient,
-        'onTap': () => Navigator.pushNamed(context, '/language-mixer'),
-      },
-      {
-        'icon': Icons.bookmark_outline,
-        'label': 'المحفوظات',
-        'gradient': AppColors.secondaryGradient,
-        'onTap': () => Navigator.pushNamed(context, '/saved-notes'),
-      },
-      {
-        'icon': Icons.live_tv_outlined,
-        'label': 'Live',
-        'gradient': AppColors.errorGradient,
-        'onTap': () => Navigator.pushNamed(context, '/live-learning'),
-      },
-      {
-        'icon': Icons.trending_up_outlined,
-        'label': 'النمو',
-        'gradient': AppColors.successGradient,
-        'onTap': () => Navigator.pushNamed(context, '/growth'),
-      },
-      {
-        'icon': Icons.star_outline,
-        'label': 'المكافآت',
-        'gradient': AppColors.goldGradient,
-        'onTap': () => Navigator.pushNamed(context, '/daily-quests'),
-      },
-      {
-        'icon': Icons.military_tech_outlined,
-        'label': 'الشارات',
-        'gradient': AppColors.goldGradient,
-        'onTap': () => Navigator.pushNamed(context, '/gamification'),
-      },
-      {
-        'icon': Icons.record_voice_over_outlined,
-        'label': 'النطق',
-        'gradient': AppColors.primaryGradient,
-        'onTap': () => Navigator.pushNamed(context, '/pronunciation'),
-      },
-      {
-        'icon': Icons.card_travel_outlined,
-        'label': 'جواز اللغة',
-        'gradient': AppColors.blueGradient,
-        'onTap': () => Navigator.pushNamed(context, '/passport'),
-      },
-      {
-        'icon': Icons.psychology_outlined,
-        'label': 'تحليل التعلم',
-        'gradient': AppColors.cyanGradient,
-        'onTap': () => Navigator.pushNamed(context, '/ai-learning'),
-      },
-      {
-        'icon': Icons.face_outlined,
-        'label': 'متجر الشخصيات',
-        'gradient': AppColors.purpleGradient,
-        'onTap': () => Navigator.pushNamed(context, '/avatar-shop'),
-      },
-      {
-        'icon': Icons.crop_outlined,
-        'label': 'إطارات',
-        'gradient': AppColors.accentGradient,
-        'onTap': () => Navigator.pushNamed(context, '/frames-workshop'),
-      },
-      {
-        'icon': Icons.wallpaper_outlined,
-        'label': 'الخلفيات',
-        'gradient': AppColors.secondaryGradient,
-        'onTap': () => Navigator.pushNamed(context, '/backgrounds-shop'),
-      },
-      {
-        'icon': Icons.person_pin_outlined,
-        'label': 'اختيار الشخصية',
-        'gradient': AppColors.primaryGradient,
-        'onTap': () => Navigator.pushNamed(context, '/character-selection'),
-      },
-      {
-        'icon': Icons.payment_outlined,
-        'label': 'طرق الدفع',
-        'gradient': AppColors.goldGradient,
-        'onTap': () => Navigator.pushNamed(context, '/payment-methods'),
-      },
-      {
-        'icon': Icons.account_circle_outlined,
-        'label': 'حسابي',
-        'gradient': AppColors.primaryGradient,
-        'onTap': () => Navigator.pushNamed(context, '/account'),
-      },
-      {
-        'icon': Icons.people_alt_outlined,
-        'label': 'الحسابات النشطة',
-        'gradient': AppColors.blueGradient,
-        'onTap': () => Navigator.pushNamed(context, '/active-accounts'),
-      },
-      {
-        'icon': Icons.local_offer_outlined,
-        'label': 'عرض محدود',
-        'gradient': AppColors.orangeGradient,
-        'onTap': () => Navigator.pushNamed(context, '/limited-offer'),
-      },
-      {
-        'icon': Icons.workspace_premium_outlined,
-        'label': 'عرض مميز',
-        'gradient': AppColors.goldGradient,
-        'onTap': () => Navigator.pushNamed(context, '/premium-offer'),
-      },
-      {
-        'icon': Icons.receipt_long_outlined,
-        'label': 'سجل المعاملات',
-        'gradient': AppColors.successGradient,
-        'onTap': () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const TransactionHistoryScreen(),
-          ),
-        ),
+        'onTap': () => Navigator.pushNamed(context, '/profile'),
       },
     ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'إجراءات سريعة',
-          style: GoogleFonts.poppins(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
-          ),
-        ).animate().fadeIn(delay: 400.ms),
+         Text(
+           'Schnellzugriff',
+           style: GoogleFonts.poppins(
+             fontSize: 20,
+             fontWeight: FontWeight.bold,
+             color: AppColors.textPrimary,
+           ),
+         ).animate().fadeIn(delay: 400.ms),
         const SizedBox(height: 16),
         GridView.builder(
           shrinkWrap: true,
@@ -1039,16 +1060,14 @@ class _DashboardState extends State<_Dashboard> {
                   ],
                 ),
               ),
-            ).animate().fadeIn(
-                  delay: Duration(milliseconds: 400 + i * 50),
-                );
+            ).animate().fadeIn(delay: Duration(milliseconds: 400 + i * 50));
           },
         ),
       ],
     );
   }
 
-  Widget _buildStatsOverview(int xp, int streak) {
+   Widget _buildStatsOverview(int xp, int streak, String level) {
     return GlassCard(
       glowColor: AppColors.gold,
       padding: const EdgeInsets.all(20),
@@ -1084,14 +1103,14 @@ class _DashboardState extends State<_Dashboard> {
                 ),
               ),
               const SizedBox(width: 12),
-              Expanded(
-                child: _statItem(
-                  value: '24',
-                  label: 'كلمات',
-                  icon: Icons.menu_book,
-                  gradient: AppColors.purpleGradient,
-                ),
-              ),
+               Expanded(
+                 child: _statItem(
+                    value: level,
+                   label: 'المستوى',
+                   icon: Icons.emoji_events,
+                   gradient: AppColors.goldGradient,
+                 ),
+               ),
             ],
           ),
         ],

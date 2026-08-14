@@ -38,6 +38,8 @@ class LearningMemory {
     correctSentence: json['correctSentence'] ?? '',
     explanation: json['explanation'] ?? '',
     languageLevel: json['languageLevel'] ?? 'A1',
-    createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
+    createdAt: DateTime.parse(
+      json['createdAt'] ?? DateTime.now().toIso8601String(),
+    ),
   );
 }

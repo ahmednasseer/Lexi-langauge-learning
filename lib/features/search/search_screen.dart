@@ -24,16 +24,8 @@ class _SearchScreenState extends State<SearchScreen> {
       'arabic': 'مرحباً',
       'example': 'Hallo, wie geht es dir?',
     },
-    {
-      'german': 'Danke',
-      'arabic': 'شكراً',
-      'example': 'Danke für deine Hilfe.',
-    },
-    {
-      'german': 'Bitte',
-      'arabic': 'من فضلك',
-      'example': 'Bitte sehr.',
-    },
+    {'german': 'Danke', 'arabic': 'شكراً', 'example': 'Danke für deine Hilfe.'},
+    {'german': 'Bitte', 'arabic': 'من فضلك', 'example': 'Bitte sehr.'},
     {
       'german': 'Guten Morgen',
       'arabic': 'صباح الخير',
@@ -49,16 +41,8 @@ class _SearchScreenState extends State<SearchScreen> {
       'arabic': 'مع السلامة',
       'example': 'Tschüss, bis morgen!',
     },
-    {
-      'german': 'Ja',
-      'arabic': 'نعم',
-      'example': 'Ja, natürlich!',
-    },
-    {
-      'german': 'Nein',
-      'arabic': 'لا',
-      'example': 'Nein, danke.',
-    },
+    {'german': 'Ja', 'arabic': 'نعم', 'example': 'Ja, natürlich!'},
+    {'german': 'Nein', 'arabic': 'لا', 'example': 'Nein, danke.'},
   ];
 
   @override
@@ -78,11 +62,13 @@ class _SearchScreenState extends State<SearchScreen> {
       if (mounted) {
         setState(() {
           _remoteResults = results
-              .map((r) => {
-                    'german': r.title,
-                    'arabic': r.subtitle ?? '',
-                    'example': '',
-                  })
+              .map(
+                (r) => {
+                  'german': r.title,
+                  'arabic': r.subtitle ?? '',
+                  'example': '',
+                },
+              )
               .toList();
           _isSearching = false;
         });
@@ -116,7 +102,11 @@ class _SearchScreenState extends State<SearchScreen> {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: AppColors.textPrimary, size: 20),
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: AppColors.textPrimary,
+              size: 20,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
           const SizedBox(width: 8),
@@ -172,10 +162,14 @@ class _SearchScreenState extends State<SearchScreen> {
     final localFiltered = _query.isEmpty
         ? _words
         : _words
-            .where((w) =>
-                (w['german'] as String).toLowerCase().contains(_query.toLowerCase()) ||
-                (w['arabic'] as String).contains(_query))
-            .toList();
+              .where(
+                (w) =>
+                    (w['german'] as String).toLowerCase().contains(
+                      _query.toLowerCase(),
+                    ) ||
+                    (w['arabic'] as String).contains(_query),
+              )
+              .toList();
 
     final remoteAsMap = _remoteResults;
     final merged = <Map<String, String>>[];
@@ -205,27 +199,34 @@ class _SearchScreenState extends State<SearchScreen> {
           child: _isSearching
               ? const Center(child: CircularProgressIndicator())
               : merged.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.search_off, size: 64, color: AppColors.textHint.withValues(alpha: 0.3)),
-                          const SizedBox(height: 16),
-                          Text(
-                            'لا توجد نتائج',
-                            style: GoogleFonts.poppins(fontSize: 16, color: AppColors.textHint),
-                          ),
-                        ],
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.search_off,
+                        size: 64,
+                        color: AppColors.textHint.withValues(alpha: 0.3),
                       ),
-                    )
-                  : ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      itemCount: merged.length,
-                      itemBuilder: (context, index) {
-                        final item = merged[index];
-                        return _buildWordCard(item, index);
-                      },
-                    ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'لا توجد نتائج',
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          color: AppColors.textHint,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: merged.length,
+                  itemBuilder: (context, index) {
+                    final item = merged[index];
+                    return _buildWordCard(item, index);
+                  },
+                ),
         ),
         if (_query.isEmpty && _words.length > 5)
           Padding(
@@ -241,78 +242,81 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildWordCard(Map<String, String> item, int index) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(
-              gradient: AppColors.primaryGradient,
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Center(
-              child: Text(
-                (item['german'] as String)[0],
-                style: GoogleFonts.poppins(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+          margin: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 52,
+                height: 52,
+                decoration: BoxDecoration(
+                  gradient: AppColors.primaryGradient,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Center(
+                  child: Text(
+                    (item['german'] as String)[0],
+                    style: GoogleFonts.poppins(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item['german'] as String,
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
-                  ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item['german'] as String,
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      item['arabic'] as String,
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        color: AppColors.primaryLight,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      item['example'] as String,
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        color: AppColors.textHint,
+                        fontStyle: FontStyle.italic,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  item['arabic'] as String,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: AppColors.primaryLight,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  item['example'] as String,
-                  style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    color: AppColors.textHint,
-                    fontStyle: FontStyle.italic,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
+              ),
+              Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
+                color: AppColors.textHint,
+              ),
+            ],
           ),
-          Icon(
-            Icons.arrow_forward_ios,
-            size: 16,
-            color: AppColors.textHint,
-          ),
-        ],
-      ),
-    )
+        )
         .animate()
-        .fadeIn(delay: Duration(milliseconds: 100 + index * 60), duration: 400.ms)
+        .fadeIn(
+          delay: Duration(milliseconds: 100 + index * 60),
+          duration: 400.ms,
+        )
         .slideX(begin: 0.08);
   }
 

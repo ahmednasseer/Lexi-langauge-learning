@@ -43,10 +43,7 @@ class GlowContainer extends StatelessWidget {
           gradient: gradient,
           color: backgroundColor ?? AppColors.surface,
           borderRadius: BorderRadius.circular(borderRadius),
-          border: border ?? Border.all(
-            color: AppColors.border,
-            width: 1,
-          ),
+          border: border ?? Border.all(color: AppColors.border, width: 1),
           boxShadow: [
             BoxShadow(
               color: glowColor.withValues(alpha: 0.3),
@@ -104,10 +101,7 @@ class GlowCard extends StatelessWidget {
           gradient: gradient,
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(borderRadius),
-          border: Border.all(
-            color: glowColor.withValues(alpha: 0.3),
-            width: 1,
-          ),
+          border: Border.all(color: glowColor.withValues(alpha: 0.3), width: 1),
           boxShadow: [
             BoxShadow(
               color: glowColor.withValues(alpha: 0.15),

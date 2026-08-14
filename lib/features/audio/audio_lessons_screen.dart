@@ -55,7 +55,8 @@ class AudioLessonsScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 physics: const BouncingScrollPhysics(),
                 itemCount: _categories.length,
-                itemBuilder: (context, index) => _buildCategoryCard(_categories[index], index),
+                itemBuilder: (context, index) =>
+                    _buildCategoryCard(_categories[index], index),
               ),
             ),
             _buildBrowseAllButton(),
@@ -161,82 +162,91 @@ class AudioLessonsScreen extends StatelessWidget {
 
   Widget _buildCategoryCard(_LessonCategory category, int index) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: GlowCard(
-        glowColor: category.gradient.colors.first,
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                gradient: category.gradient,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Center(
-                child: Text(
-                  category.icon,
-                  style: const TextStyle(fontSize: 28),
+          padding: const EdgeInsets.only(bottom: 16),
+          child: GlowCard(
+            glowColor: category.gradient.colors.first,
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    gradient: category.gradient,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Center(
+                    child: Text(
+                      category.icon,
+                      style: const TextStyle(fontSize: 28),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    category.arabicName,
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    category.name,
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Row(
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.play_circle_outline, size: 14, color: category.gradient.colors.first),
-                      const SizedBox(width: 4),
                       Text(
-                        '${category.lessonCount} درس',
+                        category.arabicName,
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        category.name,
                         style: GoogleFonts.poppins(
                           fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: category.gradient.colors.first,
+                          color: AppColors.textSecondary,
                         ),
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.play_circle_outline,
+                            size: 14,
+                            color: category.gradient.colors.first,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${category.lessonCount} درس',
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: category.gradient.colors.first,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: category.gradient.colors.first.withValues(
+                      alpha: 0.15,
+                    ),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.play_arrow,
+                    color: category.gradient.colors.first,
+                    size: 20,
+                  ),
+                ),
+              ],
             ),
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: category.gradient.colors.first.withValues(alpha: 0.15),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.play_arrow,
-                color: category.gradient.colors.first,
-                size: 20,
-              ),
-            ),
-          ],
-        ),
-      ),
-    ).animate().fadeIn(delay: Duration(milliseconds: 200 + index * 100)).slideX(begin: 0.15);
+          ),
+        )
+        .animate()
+        .fadeIn(delay: Duration(milliseconds: 200 + index * 100))
+        .slideX(begin: 0.15);
   }
 
   Widget _buildBrowseAllButton() {

@@ -1,18 +1,6 @@
-enum RoomStatus {
-  waiting,
-  active,
-  ended,
-}
+enum RoomStatus { waiting, active, ended }
 
-enum RoomLevel {
-  a1,
-  a2,
-  b1,
-  b2,
-  c1,
-  c2,
-  all,
-}
+enum RoomLevel { a1, a2, b1, b2, c1, c2, all }
 
 extension RoomLevelExtension on RoomLevel {
   String get displayName {
@@ -155,11 +143,17 @@ class LiveRoom {
       orElse: () => RoomStatus.waiting,
     ),
     maxParticipants: json['maxParticipants'] ?? 10,
-    participants: (json['participants'] as List?)
-        ?.map((p) => RoomParticipant.fromJson(p))
-        .toList() ?? [],
-    createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-    startedAt: json['startedAt'] != null ? DateTime.parse(json['startedAt']) : null,
+    participants:
+        (json['participants'] as List?)
+            ?.map((p) => RoomParticipant.fromJson(p))
+            .toList() ??
+        [],
+    createdAt: DateTime.parse(
+      json['createdAt'] ?? DateTime.now().toIso8601String(),
+    ),
+    startedAt: json['startedAt'] != null
+        ? DateTime.parse(json['startedAt'])
+        : null,
     endedAt: json['endedAt'] != null ? DateTime.parse(json['endedAt']) : null,
     durationMinutes: json['durationMinutes'] ?? 30,
     isRecording: json['isRecording'] ?? false,
@@ -238,14 +232,17 @@ class RoomParticipant {
     'xpEarned': xpEarned,
   };
 
-  factory RoomParticipant.fromJson(Map<String, dynamic> json) => RoomParticipant(
-    userId: json['userId'] ?? '',
-    userName: json['userName'] ?? '',
-    avatarUrl: json['avatarUrl'],
-    isMuted: json['isMuted'] ?? false,
-    isSpeaking: json['isSpeaking'] ?? false,
-    isHost: json['isHost'] ?? false,
-    joinedAt: DateTime.parse(json['joinedAt'] ?? DateTime.now().toIso8601String()),
-    xpEarned: json['xpEarned'] ?? 0,
-  );
+  factory RoomParticipant.fromJson(Map<String, dynamic> json) =>
+      RoomParticipant(
+        userId: json['userId'] ?? '',
+        userName: json['userName'] ?? '',
+        avatarUrl: json['avatarUrl'],
+        isMuted: json['isMuted'] ?? false,
+        isSpeaking: json['isSpeaking'] ?? false,
+        isHost: json['isHost'] ?? false,
+        joinedAt: DateTime.parse(
+          json['joinedAt'] ?? DateTime.now().toIso8601String(),
+        ),
+        xpEarned: json['xpEarned'] ?? 0,
+      );
 }

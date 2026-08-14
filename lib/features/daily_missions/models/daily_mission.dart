@@ -1,4 +1,13 @@
-enum MissionType { vocabulary, grammar, speaking, listening, aiChat, flashcards, lesson }
+enum MissionType {
+  vocabulary,
+  grammar,
+  speaking,
+  listening,
+  aiChat,
+  flashcards,
+  lesson,
+}
+
 enum MissionDifficulty { easy, medium, hard }
 
 class DailyMission {
@@ -30,14 +39,11 @@ class DailyMission {
     required this.icon,
   });
 
-  double get progressPercent => target > 0 ? (progress / target).clamp(0.0, 1.0) : 0.0;
+  double get progressPercent =>
+      target > 0 ? (progress / target).clamp(0.0, 1.0) : 0.0;
   bool get canClaim => isCompleted && !isClaimed;
 
-  DailyMission copyWith({
-    int? progress,
-    bool? isCompleted,
-    bool? isClaimed,
-  }) {
+  DailyMission copyWith({int? progress, bool? isCompleted, bool? isClaimed}) {
     return DailyMission(
       id: id,
       title: title,
@@ -73,12 +79,18 @@ class DailyMission {
     id: json['id'] ?? '',
     title: json['title'] ?? '',
     description: json['description'] ?? '',
-    type: MissionType.values.firstWhere((e) => e.name == json['type'], orElse: () => MissionType.vocabulary),
+    type: MissionType.values.firstWhere(
+      (e) => e.name == json['type'],
+      orElse: () => MissionType.vocabulary,
+    ),
     target: json['target'] ?? 1,
     progress: json['progress'] ?? 0,
     rewardXp: json['rewardXp'] ?? 0,
     rewardGems: json['rewardGems'] ?? 0,
-    difficulty: MissionDifficulty.values.firstWhere((e) => e.name == json['difficulty'], orElse: () => MissionDifficulty.medium),
+    difficulty: MissionDifficulty.values.firstWhere(
+      (e) => e.name == json['difficulty'],
+      orElse: () => MissionDifficulty.medium,
+    ),
     isCompleted: json['isCompleted'] ?? false,
     isClaimed: json['isClaimed'] ?? false,
     icon: json['icon'] ?? '🎯',

@@ -8,12 +8,18 @@ import 'api_service.dart';
 import 'analytics_service.dart';
 
 class AuthService {
-  static final AuthService instance = AuthService._();
+  static AuthService instance = AuthService._();
   AuthService._();
 
+  @visibleForTesting
+  AuthService.test({UserModel? user})
+      : _currentUser = user,
+        _isGuest = false,
+        _firebaseAvailable = false;
+
   final ApiService _api = ApiService();
-  final fb.FirebaseAuth _firebaseAuth = fb.FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  late final fb.FirebaseAuth _firebaseAuth = fb.FirebaseAuth.instance;
+  late final GoogleSignIn _googleSignIn = GoogleSignIn();
   UserModel? _currentUser;
   bool _isGuest = false;
   bool _firebaseAvailable = false;
@@ -25,13 +31,13 @@ class AuthService {
   Future<void> init() async {
     await _api.init();
     final prefs = await SharedPreferences.getInstance();
-    final userJson = prefs.getString('current_user');
+    final userJson = prefs.getString('lexi_user_profile');
     if (userJson != null) {
       try {
         _currentUser = UserModel.fromJson(jsonDecode(userJson));
         _isGuest = prefs.getBool('is_guest') ?? false;
       } catch (e) {
-        await prefs.remove('current_user');
+        await prefs.remove('lexi_user_profile');
       }
     }
     _firebaseAvailable = true;
@@ -39,15 +45,20 @@ class AuthService {
     _api.onUnauthorized = _handleUnauthorizedRefresh;
 
     _firebaseAuth.authStateChanges().listen((fb.User? user) async {
-      if (user != null && _currentUser != null && user.uid == _currentUser!.id) {
+      if (user != null && _currentUser != null) {
         try {
           final token = await user.getIdToken();
           if (token != null) _api.setToken(token);
+          await _syncWithBackend();
         } catch (e) {
           debugPrint('Token refresh failed: $e');
         }
       }
     });
+
+    if (_firebaseAuth.currentUser != null && _currentUser != null) {
+      await _syncWithBackend();
+    }
   }
 
   Future<bool> signInWithEmail(String email, String password) async {
@@ -59,6 +70,7 @@ class AuthService {
       );
       final fbUser = credential.user;
       if (fbUser != null) {
+        await _syncToken(fbUser);
         _currentUser = UserModel(
           id: fbUser.uid,
           name: fbUser.displayName ?? email.split('@').first,
@@ -68,7 +80,7 @@ class AuthService {
           streak: 0,
           createdAt: DateTime.now(),
         );
-        await _syncToken(fbUser);
+        await _syncWithBackend();
         await _saveUser();
         AnalyticsService.instance.logLogin(method: 'email');
         return true;
@@ -93,6 +105,7 @@ class AuthService {
       final fbUser = credential.user;
       if (fbUser != null) {
         await fbUser.updateDisplayName(name);
+        await _syncToken(fbUser);
         _currentUser = UserModel(
           id: fbUser.uid,
           name: name,
@@ -102,7 +115,7 @@ class AuthService {
           streak: 0,
           createdAt: DateTime.now(),
         );
-        await _syncToken(fbUser);
+        await _syncWithBackend();
         await _saveUser();
         AnalyticsService.instance.logLogin(method: 'email_signup');
         return true;
@@ -130,9 +143,12 @@ class AuthService {
         idToken: googleAuth.idToken,
       );
 
-      final userCredential = await _firebaseAuth.signInWithCredential(credential);
+      final userCredential = await _firebaseAuth.signInWithCredential(
+        credential,
+      );
       final fbUser = userCredential.user;
       if (fbUser != null) {
+        await _syncToken(fbUser);
         _currentUser = UserModel(
           id: fbUser.uid,
           name: fbUser.displayName ?? 'User',
@@ -142,7 +158,7 @@ class AuthService {
           streak: 0,
           createdAt: DateTime.now(),
         );
-        await _syncToken(fbUser);
+        await _syncWithBackend();
         await _saveUser();
         AnalyticsService.instance.logLogin(method: 'google');
         return true;
@@ -165,9 +181,12 @@ class AuthService {
         ..addScope('email')
         ..addScope('name');
 
-      final userCredential = await _firebaseAuth.signInWithProvider(appleProvider);
+      final userCredential = await _firebaseAuth.signInWithProvider(
+        appleProvider,
+      );
       final fbUser = userCredential.user;
       if (fbUser != null) {
+        await _syncToken(fbUser);
         _currentUser = UserModel(
           id: fbUser.uid,
           name: fbUser.displayName ?? 'User',
@@ -177,7 +196,7 @@ class AuthService {
           streak: 0,
           createdAt: DateTime.now(),
         );
-        await _syncToken(fbUser);
+        await _syncWithBackend();
         await _saveUser();
         AnalyticsService.instance.logLogin(method: 'apple');
         return true;
@@ -222,9 +241,30 @@ class AuthService {
     _isGuest = false;
     _api.clearToken();
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('current_user');
+    await prefs.remove('lexi_user_profile');
     await prefs.remove('auth_token');
     await prefs.remove('is_guest');
+  }
+
+  Future<UserModel?> _syncWithBackend() async {
+    final result = await _api.getProfile();
+    if (result.isSuccess && result.data != null) {
+      final profile = UserModel.fromJson(result.data!);
+      _currentUser = _currentUser?.copyWith(
+        id: profile.id,
+        name: profile.name,
+        email: profile.email,
+        xp: profile.xp,
+        level: profile.level,
+        streak: profile.streak,
+        totalXp: profile.totalXp,
+        dailyXp: profile.dailyXp,
+        dailyGoal: profile.dailyGoal,
+      );
+      await _saveUser();
+      return _currentUser;
+    }
+    return null;
   }
 
   Future<void> _syncToken(fb.User fbUser) async {
@@ -242,19 +282,7 @@ class AuthService {
 
   Future<void> updateProfile({String? name, String? level, int? xp}) async {
     if (_currentUser == null) return;
-    _currentUser = _currentUser!.copyWith(
-      name: name,
-      level: level,
-      xp: xp,
-    );
-    await _saveUser();
-  }
-
-  Future<void> addXp(int amount) async {
-    if (_currentUser == null) return;
-    _currentUser = _currentUser!.copyWith(
-      xp: (_currentUser!.xp) + amount,
-    );
+    _currentUser = _currentUser!.copyWith(name: name, level: level, xp: xp);
     await _saveUser();
   }
 
@@ -305,6 +333,6 @@ class AuthService {
   Future<void> _saveUser() async {
     if (_currentUser == null) return;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('current_user', jsonEncode(_currentUser!.toJson()));
+    await prefs.setString('lexi_user_profile', jsonEncode(_currentUser!.toJson()));
   }
 }

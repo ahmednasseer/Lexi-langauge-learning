@@ -1,19 +1,16 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/services/api_service.dart';
-import 'models/speaking_exercise.dart';
-import 'models/pronunciation_result.dart';
-import 'models/listening_question.dart';
+import 'package:lexi/features/speaking/models/speaking_exercise.dart';
+import 'package:lexi/features/speaking/models/pronunciation_result.dart';
+import 'package:lexi/features/speaking/models/listening_question.dart';
 
 class SpeakingRepository {
   static const String _pronunciationKey = 'pronunciation_results';
   static const String _listeningKey = 'listening_progress';
-
   final SharedPreferences _prefs;
   final ApiService _api = ApiService();
-
   SpeakingRepository(this._prefs);
-
   List<SpeakingExercise> getExercises(String level) {
     return SpeakingExercise.getExercisesByLevel(level);
   }
@@ -23,27 +20,41 @@ class SpeakingRepository {
   }
 
   Future<List<SpeakingExercise>> getExercisesFromApi(String level) async {
-    try {
-      final result = await _api.getSpeakingExercises(level);
-      if (result.isSuccess && result.data != null) {
-        return (result.data as List)
-            .map((e) => SpeakingExercise.fromJson(e as Map<String, dynamic>))
-            .toList();
-      }
-    } catch (_) {}
-    return getExercises(level);
+    final result = await _api.getSpeakingExercises(level);
+    if (!result.isSuccess) {
+      throw Exception(result.error ?? 'Failed to load speaking exercises');
+    }
+    if (result.data == null) return getExercises(level);
+    return (result.data as List)
+        .map((e) => SpeakingExercise.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<List<ListeningQuestion>> getListeningFromApi(String level) async {
-    try {
-      final result = await _api.getListeningQuestions(level);
-      if (result.isSuccess && result.data != null) {
-        return (result.data as List)
-            .map((e) => ListeningQuestion.fromJson(e as Map<String, dynamic>))
-            .toList();
-      }
-    } catch (_) {}
-    return getListeningQuestions(level);
+    final result = await _api.getListeningQuestions(level);
+    if (!result.isSuccess) {
+      throw Exception(result.error ?? 'Failed to load listening questions');
+    }
+    if (result.data == null) return getListeningQuestions(level);
+    return (result.data as List)
+        .map((e) => ListeningQuestion.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<Map<String, dynamic>> analyzePronunciation({
+    required String spokenText,
+    required String targetText,
+    required String level,
+  }) async {
+    final result = await _api.analyzePronunciation(
+      spokenText: spokenText,
+      targetText: targetText,
+      level: level,
+    );
+    if (result.isSuccess && result.data != null) {
+      return result.data!;
+    }
+    throw Exception(result.error ?? 'Failed to analyze pronunciation');
   }
 
   Future<void> savePronunciationResult(PronunciationResult result) async {
@@ -57,7 +68,9 @@ class SpeakingRepository {
     final jsonString = _prefs.getString(_pronunciationKey);
     if (jsonString == null) return [];
     final jsonList = jsonDecode(jsonString) as List;
-    return jsonList.map((j) => PronunciationResult.fromJson(j as Map<String, dynamic>)).toList();
+    return jsonList
+        .map((j) => PronunciationResult.fromJson(j as Map<String, dynamic>))
+        .toList();
   }
 
   Map<String, dynamic> getPronunciationStats() {
@@ -70,11 +83,12 @@ class SpeakingRepository {
         'totalXp': 0,
       };
     }
-
-    final totalScore = results.fold<double>(0.0, (sum, r) => sum + r.overallScore);
+    final totalScore = results.fold<double>(
+      0.0,
+      (sum, r) => sum + r.overallScore,
+    );
     final perfectCount = results.where((r) => r.isPerfect).length;
     final totalXp = results.fold<int>(0, (sum, r) => sum + r.xpEarned);
-
     return {
       'totalAttempts': results.length,
       'averageScore': totalScore / results.length,
@@ -83,7 +97,11 @@ class SpeakingRepository {
     };
   }
 
-  Future<void> saveListeningProgress(String questionId, bool isCorrect, int score) async {
+  Future<void> saveListeningProgress(
+    String questionId,
+    bool isCorrect,
+    int score,
+  ) async {
     final progress = getListeningProgress();
     progress[questionId] = {
       'completed': true,
@@ -104,7 +122,6 @@ class SpeakingRepository {
     final progress = getListeningProgress();
     final completed = progress.length;
     final correct = progress.values.where((p) => p['correct'] == true).length;
-
     return {
       'totalCompleted': completed,
       'correctAnswers': correct,

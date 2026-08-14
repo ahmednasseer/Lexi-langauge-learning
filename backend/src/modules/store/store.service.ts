@@ -23,24 +23,31 @@ export class StoreService {
   }
 
   async purchase(userId: string, itemId: string) {
-    const item = await this.prisma.storeItem.findUnique({ where: { id: itemId } });
-    if (!item) throw new NotFoundException('Item not found');
-    if (!item.isActive) throw new BadRequestException('Item not available');
-
-    const wallet = await this.prisma.gemsWallet.findUnique({ where: { userId } });
-    if (!wallet) throw new NotFoundException('Wallet not found');
-    if (wallet.gems < item.price) throw new BadRequestException('Not enough gems');
-
-    const alreadyOwned = await this.prisma.userInventory.findUnique({
-      where: { userId_itemId: { userId, itemId } },
-    });
-    if (alreadyOwned) throw new BadRequestException('Item already owned');
-
     return this.prisma.$transaction(async (tx) => {
-      await tx.gemsWallet.update({
+      // 1) Validate item with server-authoritative price — never trust client input.
+      const item = await tx.storeItem.findUnique({ where: { id: itemId } });
+      if (!item) throw new NotFoundException('Item not found');
+      if (!item.isActive) throw new BadRequestException('Item not available');
+
+      // 2) Ensure wallet exists (welcome bonus path is idempotent).
+      const wallet = await tx.gemsWallet.upsert({
         where: { userId },
-        data: { gems: { decrement: item.price }, totalSpent: { increment: item.price } },
+        create: { userId },
+        update: {},
       });
+
+      // 3) Atomic conditional deduction — fails when balance is insufficient.
+      const deducted = await tx.gemsWallet.updateMany({
+        where: { id: wallet.id, gems: { gte: item.price } },
+        data: {
+          gems: { decrement: item.price },
+          totalSpent: { increment: item.price },
+        },
+      });
+      if (deducted.count === 0) {
+        throw new BadRequestException('Not enough gems');
+      }
+
       await tx.transaction.create({
         data: {
           userId,
@@ -49,10 +56,23 @@ export class StoreService {
           description: `Purchased ${item.name}`,
         },
       });
-      const inventory = await tx.userInventory.create({
-        data: { userId, itemId },
-      });
-      return { data: inventory, gems: wallet.gems - item.price };
+
+      // 4) Inventory creation relies on the @@unique([userId, itemId]) constraint;
+      //    a concurrent duplicate raises P2002 and rolls the whole transaction back.
+      let inventory;
+      try {
+        inventory = await tx.userInventory.create({
+          data: { userId, itemId },
+        });
+      } catch (e: any) {
+        if (e?.code === 'P2002') {
+          throw new BadRequestException('Item already owned');
+        }
+        throw e;
+      }
+
+      const updatedWallet = await tx.gemsWallet.findUnique({ where: { id: wallet.id } });
+      return { data: inventory, gems: updatedWallet?.gems ?? 0 };
     });
   }
 

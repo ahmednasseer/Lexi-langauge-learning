@@ -1,14 +1,6 @@
-enum ABTestStatus {
-  draft,
-  running,
-  paused,
-  completed,
-}
+enum ABTestStatus { draft, running, paused, completed }
 
-enum ABTestVariant {
-  a,
-  b,
-}
+enum ABTestVariant { a, b }
 
 class ABTest {
   final String id;
@@ -82,10 +74,14 @@ class ABTest {
       (s) => s.name == json['status'],
       orElse: () => ABTestStatus.draft,
     ),
-    variants: (json['variants'] as List?)
-        ?.map((v) => ABTestVariantConfig.fromJson(v))
-        .toList() ?? [],
-    startDate: DateTime.parse(json['startDate'] ?? DateTime.now().toIso8601String()),
+    variants:
+        (json['variants'] as List?)
+            ?.map((v) => ABTestVariantConfig.fromJson(v))
+            .toList() ??
+        [],
+    startDate: DateTime.parse(
+      json['startDate'] ?? DateTime.now().toIso8601String(),
+    ),
     endDate: json['endDate'] != null ? DateTime.parse(json['endDate']) : null,
     targetMetric: Map<String, dynamic>.from(json['targetMetric'] ?? {}),
     minSampleSize: json['minSampleSize'] ?? 1000,
@@ -137,12 +133,13 @@ class ABTestVariantConfig {
     'config': config,
   };
 
-  factory ABTestVariantConfig.fromJson(Map<String, dynamic> json) => ABTestVariantConfig(
-    id: json['id'] ?? '',
-    name: json['name'] ?? '',
-    weight: json['weight'] ?? 50,
-    config: Map<String, dynamic>.from(json['config'] ?? {}),
-  );
+  factory ABTestVariantConfig.fromJson(Map<String, dynamic> json) =>
+      ABTestVariantConfig(
+        id: json['id'] ?? '',
+        name: json['name'] ?? '',
+        weight: json['weight'] ?? 50,
+        config: Map<String, dynamic>.from(json['config'] ?? {}),
+      );
 }
 
 class ABTestResult {
@@ -167,8 +164,11 @@ class ABTestResult {
 
   factory ABTestResult.fromJson(Map<String, dynamic> json) => ABTestResult(
     testId: json['testId'] ?? '',
-    variantResults: (json['variantResults'] as Map<String, dynamic>?)
-        ?.map((k, v) => MapEntry(k, ABTestVariantResult.fromJson(v))) ?? {},
+    variantResults:
+        (json['variantResults'] as Map<String, dynamic>?)?.map(
+          (k, v) => MapEntry(k, ABTestVariantResult.fromJson(v)),
+        ) ??
+        {},
     winnerId: json['winnerId'],
     confidenceLevel: (json['confidenceLevel'] ?? 0).toDouble(),
   );
@@ -197,11 +197,12 @@ class ABTestVariantResult {
     'averageTime': averageTime,
   };
 
-  factory ABTestVariantResult.fromJson(Map<String, dynamic> json) => ABTestVariantResult(
-    variantId: json['variantId'] ?? '',
-    impressions: json['impressions'] ?? 0,
-    conversions: json['conversions'] ?? 0,
-    conversionRate: (json['conversionRate'] ?? 0).toDouble(),
-    averageTime: (json['averageTime'] ?? 0).toDouble(),
-  );
+  factory ABTestVariantResult.fromJson(Map<String, dynamic> json) =>
+      ABTestVariantResult(
+        variantId: json['variantId'] ?? '',
+        impressions: json['impressions'] ?? 0,
+        conversions: json['conversions'] ?? 0,
+        conversionRate: (json['conversionRate'] ?? 0).toDouble(),
+        averageTime: (json['averageTime'] ?? 0).toDouble(),
+      );
 }

@@ -1,8 +1,16 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
     id("com.google.gms.google-services")
+}
+
+val keyProperties = Properties()
+val keyPropertiesFile = rootProject.file("key.properties")
+if (keyPropertiesFile.exists()) {
+    keyProperties.load(keyPropertiesFile.inputStream())
 }
 
 android {
@@ -31,11 +39,28 @@ android {
         multiDexEnabled = true
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = if (keyPropertiesFile.exists()) {
+                rootProject.file(keyProperties.getProperty("storeFile"))
+            } else {
+                rootProject.file("app/debug.keystore")
+            }
+            storePassword = keyProperties.getProperty("storePassword") ?: ""
+            keyAlias = keyProperties.getProperty("keyAlias") ?: ""
+            keyPassword = keyProperties.getProperty("keyPassword") ?: ""
+        }
+    }
+
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("debug")
-            isMinifyEnabled = false
-            isShrinkResources = false
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     dependencies {
@@ -45,4 +70,21 @@ android {
 
 flutter {
     source = "../.."
+}
+
+gradle.projectsEvaluated {
+    tasks.findByName("bundleRelease")?.doLast {
+        val aabFile = file("${layout.buildDirectory.get()}/outputs/bundle/release/app-release.aab")
+        val destDir = file("../../build/app/outputs/bundle/release")
+        if (aabFile.exists()) {
+            destDir.mkdirs()
+            project.copy {
+                from(aabFile)
+                into(destDir)
+            }
+            println("[LEXi] Copied .aab to ${destDir.absolutePath}")
+        } else {
+            println("[LEXi] .aab not found at ${aabFile.absolutePath}")
+        }
+    }
 }

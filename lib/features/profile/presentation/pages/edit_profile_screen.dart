@@ -35,6 +35,12 @@ class _EditProfileViewState extends State<_EditProfileView> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    super.initState();
+    context.read<ProfileCubit>().loadProfile();
+  }
+
+  @override
   void dispose() {
     _nameController.dispose();
     _bioController.dispose();
@@ -51,9 +57,9 @@ class _EditProfileViewState extends State<_EditProfileView> {
           );
           Navigator.pop(context);
         } else if (state is ProfileError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
         }
       },
       builder: (context, state) {
@@ -70,7 +76,10 @@ class _EditProfileViewState extends State<_EditProfileView> {
             backgroundColor: AppColors.surface,
             title: Text(
               'Edit Profile',
-              style: GoogleFonts.poppins(fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
             ),
             iconTheme: const IconThemeData(color: AppColors.textPrimary),
             actions: [
@@ -100,12 +109,15 @@ class _EditProfileViewState extends State<_EditProfileView> {
                         if (avatarState is AvatarUploaded) {
                           // Update profile with new avatar URL
                           final profileCubit = context.read<ProfileCubit>();
-                          final currentProfile = profileCubit.state is ProfileLoaded
+                          final currentProfile =
+                              profileCubit.state is ProfileLoaded
                               ? (profileCubit.state as ProfileLoaded).profile
                               : null;
                           if (currentProfile != null) {
                             profileCubit.updateProfile(
-                              currentProfile.copyWith(photoUrl: avatarState.downloadUrl),
+                              currentProfile.copyWith(
+                                photoUrl: avatarState.downloadUrl,
+                              ),
                             );
                           }
                         }
@@ -114,7 +126,8 @@ class _EditProfileViewState extends State<_EditProfileView> {
                         String? photoUrl;
                         if (avatarState is AvatarUploaded) {
                           photoUrl = avatarState.downloadUrl;
-                        } else if (state is ProfileLoaded && state.profile.photoUrl != null) {
+                        } else if (state is ProfileLoaded &&
+                            state.profile.photoUrl != null) {
                           photoUrl = state.profile.photoUrl;
                         }
 
@@ -125,9 +138,15 @@ class _EditProfileViewState extends State<_EditProfileView> {
                                 CircleAvatar(
                                   radius: 50,
                                   backgroundColor: AppColors.surface,
-                                  backgroundImage: photoUrl != null ? NetworkImage(photoUrl) : null,
+                                  backgroundImage: photoUrl != null
+                                      ? NetworkImage(photoUrl)
+                                      : null,
                                   child: photoUrl == null
-                                      ? const Icon(Icons.person, size: 50, color: AppColors.textHint)
+                                      ? const Icon(
+                                          Icons.person,
+                                          size: 50,
+                                          color: AppColors.textHint,
+                                        )
                                       : null,
                                 ),
                                 if (avatarState is AvatarUploading)
@@ -138,11 +157,13 @@ class _EditProfileViewState extends State<_EditProfileView> {
                             ),
                             const SizedBox(height: 8),
                             TextButton.icon(
-                              onPressed: avatarState is AvatarPicking ||
+                              onPressed:
+                                  avatarState is AvatarPicking ||
                                       avatarState is AvatarCropping ||
                                       avatarState is AvatarUploading
                                   ? null
-                                  : () => context.read<AvatarCubit>().pickImage(),
+                                  : () =>
+                                        context.read<AvatarCubit>().pickImage(),
                               icon: const Icon(Icons.camera_alt),
                               label: const Text('Change Photo'),
                             ),
@@ -151,7 +172,10 @@ class _EditProfileViewState extends State<_EditProfileView> {
                                 padding: const EdgeInsets.only(top: 4),
                                 child: Text(
                                   avatarState.message,
-                                  style: GoogleFonts.poppins(fontSize: 12, color: AppColors.error),
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 12,
+                                    color: AppColors.error,
+                                  ),
                                 ),
                               ),
                           ],
@@ -194,7 +218,10 @@ class _EditProfileViewState extends State<_EditProfileView> {
                           ? const SizedBox(
                               width: 24,
                               height: 24,
-                              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
                             )
                           : Text(
                               'Save Changes',

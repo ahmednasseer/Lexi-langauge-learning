@@ -5,6 +5,7 @@ import 'models/learning_memory.dart';
 import '../../core/services/api_service.dart';
 import '../../core/services/auth_service.dart';
 
+
 class AiCoachRepository {
   final ApiService _api = ApiService();
   final List<CoachMessage> _localHistory = [];
@@ -16,7 +17,8 @@ class AiCoachRepository {
   List<LearningMemory> get memories => List.unmodifiable(_memories);
   int get remainingMessages => _remainingMessages;
   int get dailyLimit => _dailyLimit;
-  bool get canSendMessages => _remainingMessages > 0 || _remainingMessages == -1;
+  bool get canSendMessages =>
+      _remainingMessages > 0 || _remainingMessages == -1;
 
   Future<void> init() async {
     await _loadLocalHistory();
@@ -38,7 +40,9 @@ class AiCoachRepository {
 
   Future<void> _saveLocalHistory() async {
     final prefs = await SharedPreferences.getInstance();
-    final historyJson = _localHistory.map((m) => jsonEncode(m.toJson())).toList();
+    final historyJson = _localHistory
+        .map((m) => jsonEncode(m.toJson()))
+        .toList();
     await prefs.setStringList('ai_coach_history', historyJson);
   }
 
@@ -83,14 +87,17 @@ class AiCoachRepository {
       // Build context with learning memory
       _buildContext(level, userName);
 
-      final result = await _api.aiCoachChat(message, category: category, level: level);
+      final result = await _api.aiCoachChat(
+        message,
+        category: category,
+        level: level,
+      );
 
       if (!result.isSuccess) {
-        // Offline fallback with local AI simulation
-        final fallback = _generateLocalResponse(message, category, level);
-        _localHistory.add(fallback);
-        await _saveLocalHistory();
-        return fallback;
+        throw ApiException(
+          message: result.error ?? 'Failed to get AI response from the server',
+          statusCode: result.statusCode ?? 0,
+        );
       }
 
       final response = result.data!;
@@ -106,22 +113,25 @@ class AiCoachRepository {
 
       if (response['correction'] != null || response['corrected'] == true) {
         originalSentence = response['original'] ?? message;
-        correctSentence = response['correctedSentence'] ?? response['correction'] ?? '';
+        correctSentence =
+            response['correctedSentence'] ?? response['correction'] ?? '';
         explanation = response['explanation'] ?? response['tip'] ?? '';
         betterAlternative = response['betterAlternative'];
         xpEarned = 10;
 
         // Save to learning memory
-        _memories.add(LearningMemory(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
-          userId: user?.id ?? '',
-          mistakeType: response['mistakeType'] ?? 'grammar',
-          wrongSentence: originalSentence ?? message,
-          correctSentence: correctSentence ?? '',
-          explanation: explanation ?? '',
-          languageLevel: level,
-          createdAt: DateTime.now(),
-        ));
+        _memories.add(
+          LearningMemory(
+            id: DateTime.now().millisecondsSinceEpoch.toString(),
+            userId: user?.id ?? '',
+            mistakeType: response['mistakeType'] ?? 'grammar',
+            wrongSentence: originalSentence ?? message,
+            correctSentence: correctSentence ?? '',
+            explanation: explanation ?? '',
+            languageLevel: level,
+            createdAt: DateTime.now(),
+          ),
+        );
         await _saveMemories();
       } else {
         xpEarned = 5;
@@ -129,7 +139,8 @@ class AiCoachRepository {
 
       final aiMsg = CoachMessage(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
-        content: response['response'] ?? response['message'] ?? 'I understand. Keep practicing!',
+        content:
+             response['response'] ?? response['message'] ?? '',
         isUser: false,
         timestamp: DateTime.now(),
         correction: correction,
@@ -145,61 +156,12 @@ class AiCoachRepository {
       await _saveLocalHistory();
       return aiMsg;
     } catch (e) {
-      // Offline fallback with local AI simulation
-      final fallback = _generateLocalResponse(message, category, level);
-      _localHistory.add(fallback);
-      await _saveLocalHistory();
-      return fallback;
-    }
-  }
-
-  CoachMessage _generateLocalResponse(String message, String category, String level) {
-    final msgLower = message.toLowerCase();
-
-    // Check for common mistakes and provide corrections
-    if (msgLower.contains('ich habe gehen') || msgLower.contains('ich habe gehe')) {
-      return CoachMessage(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        content: 'Good attempt! Let me help you with that. 🎯',
-        isUser: false,
-        timestamp: DateTime.now(),
-        originalSentence: message,
-        correctSentence: 'Ich bin gegangen',
-        explanation: 'When using "gehen" (to go), use "sein" (not "haben") as the auxiliary verb in Perfekt.',
-        betterAlternative: 'Ich bin nach Hause gegangen.',
-        xpEarned: 10,
-        messageType: 'correction',
+      if (e is ApiException) rethrow;
+      throw ApiException(
+        message: 'Failed to get AI response: $e',
+        statusCode: 0,
       );
     }
-
-    if (msgLower.contains('ich bin gut') || msgLower.contains('mir geht')) {
-      return CoachMessage(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        content: 'Sehr gut! 👏 That\'s correct!',
-        isUser: false,
-        timestamp: DateTime.now(),
-        xpEarned: 5,
-        messageType: 'text',
-      );
-    }
-
-    // Default encouraging response
-    final responses = [
-      'Interesting! Can you tell me more about that? 🤔',
-      'Great vocabulary! Try using a longer sentence next time. 💪',
-      'I understand! Let\'s practice with a new topic. What do you think about daily routines?',
-      'Nice try! Remember to pay attention to article genders (der, die, das). 📚',
-      'That\'s a good sentence structure! Keep practicing! 🌟',
-    ];
-
-    return CoachMessage(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      content: responses[DateTime.now().millisecond % responses.length],
-      isUser: false,
-      timestamp: DateTime.now(),
-      xpEarned: 5,
-      messageType: 'text',
-    );
   }
 
   String _buildContext(String level, String userName) {

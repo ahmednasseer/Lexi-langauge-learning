@@ -15,7 +15,9 @@ class HomeController extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
     try {
-      _user = await StorageService.read<UserModel>('current_user') ?? UserModel.empty();
+      _user =
+          await StorageService.read<UserModel>('lexi_user_profile') ??
+          UserModel.empty();
     } catch (e) {
       debugPrint('Error loading user: $e');
       _user = UserModel.empty();
@@ -26,17 +28,7 @@ class HomeController extends ChangeNotifier {
 
   void setUser(UserModel user) {
     _user = user;
-    StorageService.save('current_user', user.toJson());
-    notifyListeners();
-  }
-
-  void addXp(int amount) {
-    _user = _user.copyWith(
-      xp: _user.xp + amount,
-      totalXp: _user.totalXp + amount,
-      dailyXp: _user.dailyXp + amount,
-    );
-    StorageService.save('current_user', user.toJson());
+    StorageService.save('lexi_user_profile', user.toJson());
     notifyListeners();
   }
 

@@ -6,11 +6,7 @@ class MissionCard extends StatelessWidget {
   final DailyMission mission;
   final VoidCallback? onClaim;
 
-  const MissionCard({
-    super.key,
-    required this.mission,
-    this.onClaim,
-  });
+  const MissionCard({super.key, required this.mission, this.onClaim});
 
   Color _getDifficultyColor() {
     switch (mission.difficulty) {
@@ -46,10 +42,7 @@ class MissionCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text(
-                mission.icon,
-                style: const TextStyle(fontSize: 28),
-              ),
+              Text(mission.icon, style: const TextStyle(fontSize: 28)),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -60,7 +53,9 @@ class MissionCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: mission.isCompleted ? AppColors.success : AppColors.textPrimary,
+                        color: mission.isCompleted
+                            ? AppColors.success
+                            : AppColors.textPrimary,
                       ),
                     ),
                     Text(
@@ -113,7 +108,9 @@ class MissionCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
-                  color: mission.isCompleted ? Colors.green : Colors.grey.shade600,
+                  color: mission.isCompleted
+                      ? Colors.green
+                      : Colors.grey.shade600,
                 ),
               ),
             ],
@@ -146,7 +143,10 @@ class MissionCard extends StatelessWidget {
               if (mission.rewardGems > 0) ...[
                 const SizedBox(width: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.purple.shade100,
                     borderRadius: BorderRadius.circular(8),
@@ -174,7 +174,10 @@ class MissionCard extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -183,7 +186,10 @@ class MissionCard extends StatelessWidget {
                 )
               else if (mission.isClaimed)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.border,
                     borderRadius: BorderRadius.circular(8),

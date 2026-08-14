@@ -8,7 +8,8 @@ class ConnectivityService {
   ConnectivityService._();
 
   final Connectivity _connectivity = Connectivity();
-  final StreamController<bool> _offlineController = StreamController<bool>.broadcast();
+  final StreamController<bool> _offlineController =
+      StreamController<bool>.broadcast();
   bool _isOffline = false;
   StreamSubscription<List<ConnectivityResult>>? _subscription;
 
@@ -25,7 +26,9 @@ class ConnectivityService {
         _isOffline = results.contains(ConnectivityResult.none);
         if (wasOffline != _isOffline) {
           _offlineController.add(_isOffline);
-          debugPrint('Connectivity changed: ${_isOffline ? "offline" : "online"}');
+          debugPrint(
+            'Connectivity changed: ${_isOffline ? "offline" : "online"}',
+          );
         }
       });
     } catch (e) {

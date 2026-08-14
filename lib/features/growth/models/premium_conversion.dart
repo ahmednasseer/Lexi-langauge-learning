@@ -1,15 +1,6 @@
-enum PaywallType {
-  standard,
-  smart,
-  trial,
-  exit,
-}
+enum PaywallType { standard, smart, trial, exit }
 
-enum PremiumPlan {
-  monthly,
-  yearly,
-  lifetime,
-}
+enum PremiumPlan { monthly, yearly, lifetime }
 
 extension PremiumPlanExtension on PremiumPlan {
   String get displayName {
@@ -199,7 +190,8 @@ class FreeTrial {
     required this.planAfterTrial,
   });
 
-  int get daysRemaining => endDate.difference(DateTime.now()).inDays.clamp(0, durationDays);
+  int get daysRemaining =>
+      endDate.difference(DateTime.now()).inDays.clamp(0, durationDays);
   bool get isExpiringSoon => daysRemaining <= 2;
 
   FreeTrial copyWith({
@@ -235,8 +227,13 @@ class FreeTrial {
   factory FreeTrial.fromJson(Map<String, dynamic> json) => FreeTrial(
     id: json['id'] ?? '',
     durationDays: json['durationDays'] ?? 7,
-    startDate: DateTime.parse(json['startDate'] ?? DateTime.now().toIso8601String()),
-    endDate: DateTime.parse(json['endDate'] ?? DateTime.now().add(const Duration(days: 7)).toIso8601String()),
+    startDate: DateTime.parse(
+      json['startDate'] ?? DateTime.now().toIso8601String(),
+    ),
+    endDate: DateTime.parse(
+      json['endDate'] ??
+          DateTime.now().add(const Duration(days: 7)).toIso8601String(),
+    ),
     isActive: json['isActive'] ?? true,
     isExpired: json['isExpired'] ?? false,
     planAfterTrial: PremiumPlan.values.firstWhere(

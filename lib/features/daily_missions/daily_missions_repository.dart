@@ -1,17 +1,14 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'models/daily_mission.dart';
-import 'models/mission_reward.dart';
+import 'package:lexi/features/daily_missions/models/daily_mission.dart';
+import 'package:lexi/features/daily_missions/models/mission_reward.dart';
 
 class DailyMissionsRepository {
   static const String _missionsKey = 'daily_missions';
   static const String _lastResetKey = 'missions_last_reset';
   static const String _completedDaysKey = 'completed_mission_days';
-
   final SharedPreferences _prefs;
-
   DailyMissionsRepository(this._prefs);
-
   Future<List<DailyMission>> getTodayMissions() async {
     await _checkAndReset();
     final jsonString = _prefs.getString(_missionsKey);
@@ -27,7 +24,6 @@ class DailyMissionsRepository {
   Future<void> updateProgress(MissionType type, int amount) async {
     final missions = await getTodayMissions();
     bool updated = false;
-
     for (int i = 0; i < missions.length; i++) {
       if (missions[i].type == type && !missions[i].isCompleted) {
         final newProgress = missions[i].progress + amount;
@@ -39,7 +35,6 @@ class DailyMissionsRepository {
         updated = true;
       }
     }
-
     if (updated) {
       await _saveMissions(missions);
     }
@@ -48,7 +43,6 @@ class DailyMissionsRepository {
   Future<MissionReward?> claimReward(String missionId) async {
     final missions = await getTodayMissions();
     MissionReward? reward;
-
     for (int i = 0; i < missions.length; i++) {
       if (missions[i].id == missionId && missions[i].canClaim) {
         reward = MissionReward(
@@ -59,11 +53,9 @@ class DailyMissionsRepository {
         break;
       }
     }
-
     if (reward != null) {
       await _saveMissions(missions);
     }
-
     return reward;
   }
 
@@ -87,7 +79,6 @@ class DailyMissionsRepository {
     final lastReset = _prefs.getString(_lastResetKey);
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-
     if (lastReset == null || DateTime.parse(lastReset).isBefore(today)) {
       final oldMissions = await getTodayMissions();
       if (oldMissions.every((m) => m.isCompleted)) {

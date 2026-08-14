@@ -1,6 +1,17 @@
 enum ExamLevel { a1, a2, b1, b2 }
+
 enum ExamSectionType { reading, listening, writing, speaking }
-enum QuestionType { multipleChoice, fillBlank, matching, trueFalse, shortAnswer, essay, audioResponse }
+
+enum QuestionType {
+  multipleChoice,
+  fillBlank,
+  matching,
+  trueFalse,
+  shortAnswer,
+  essay,
+  audioResponse,
+}
+
 enum DifficultyLevel { easy, medium, hard }
 
 class ExamLevelModel {
@@ -43,7 +54,9 @@ class ExamLevelModel {
     totalQuestions: json['totalQuestions'] ?? 0,
     passingScore: json['passingScore'] ?? 60,
     timeLimitMinutes: json['timeLimitMinutes'] ?? 60,
-    sections: (json['sections'] as List? ?? []).map((s) => ExamSection.fromJson(s)).toList(),
+    sections: (json['sections'] as List? ?? [])
+        .map((s) => ExamSection.fromJson(s))
+        .toList(),
   );
 
   static List<ExamLevelModel> getDefaultLevels() {
@@ -126,21 +139,30 @@ class ExamSection {
 
   factory ExamSection.fromJson(Map<String, dynamic> json) => ExamSection(
     id: json['id'] ?? '',
-    type: ExamSectionType.values.firstWhere((e) => e.name == json['type'], orElse: () => ExamSectionType.reading),
+    type: ExamSectionType.values.firstWhere(
+      (e) => e.name == json['type'],
+      orElse: () => ExamSectionType.reading,
+    ),
     name: json['name'] ?? '',
     description: json['description'] ?? '',
     questionCount: json['questionCount'] ?? 0,
     timeLimitMinutes: json['timeLimitMinutes'] ?? 0,
     totalPoints: json['totalPoints'] ?? 0,
-    questions: (json['questions'] as List? ?? []).map((q) => ExamQuestion.fromJson(q)).toList(),
+    questions: (json['questions'] as List? ?? [])
+        .map((q) => ExamQuestion.fromJson(q))
+        .toList(),
   );
 
   String get typeEmoji {
     switch (type) {
-      case ExamSectionType.reading: return '📖';
-      case ExamSectionType.listening: return '🎧';
-      case ExamSectionType.writing: return '✍️';
-      case ExamSectionType.speaking: return '🎤';
+      case ExamSectionType.reading:
+        return '📖';
+      case ExamSectionType.listening:
+        return '🎧';
+      case ExamSectionType.writing:
+        return '✍️';
+      case ExamSectionType.speaking:
+        return '🎤';
     }
   }
 }
@@ -192,23 +214,34 @@ class ExamQuestion {
   factory ExamQuestion.fromJson(Map<String, dynamic> json) => ExamQuestion(
     id: json['id'] ?? '',
     sectionId: json['sectionId'] ?? '',
-    type: QuestionType.values.firstWhere((e) => e.name == json['type'], orElse: () => QuestionType.multipleChoice),
+    type: QuestionType.values.firstWhere(
+      (e) => e.name == json['type'],
+      orElse: () => QuestionType.multipleChoice,
+    ),
     question: json['question'] ?? '',
     passage: json['passage'],
     options: List<String>.from(json['options'] ?? []),
     correctAnswer: json['correctAnswer'] ?? '',
     explanation: json['explanation'] ?? '',
     audioUrl: json['audioUrl'],
-    difficulty: DifficultyLevel.values.firstWhere((e) => e.name == json['difficulty'], orElse: () => DifficultyLevel.medium),
+    difficulty: DifficultyLevel.values.firstWhere(
+      (e) => e.name == json['difficulty'],
+      orElse: () => DifficultyLevel.medium,
+    ),
     points: json['points'] ?? 1,
-    matchingPairs: json['matchingPairs'] != null ? Map<String, String>.from(json['matchingPairs']) : null,
+    matchingPairs: json['matchingPairs'] != null
+        ? Map<String, String>.from(json['matchingPairs'])
+        : null,
   );
 
   String get difficultyText {
     switch (difficulty) {
-      case DifficultyLevel.easy: return 'Easy';
-      case DifficultyLevel.medium: return 'Medium';
-      case DifficultyLevel.hard: return 'Hard';
+      case DifficultyLevel.easy:
+        return 'Easy';
+      case DifficultyLevel.medium:
+        return 'Medium';
+      case DifficultyLevel.hard:
+        return 'Hard';
     }
   }
 }
@@ -254,17 +287,53 @@ class MockExam {
   factory MockExam.fromJson(Map<String, dynamic> json) => MockExam(
     id: json['id'] ?? '',
     userId: json['userId'] ?? '',
-    level: ExamLevel.values.firstWhere((e) => e.name == json['level'], orElse: () => ExamLevel.a1),
+    level: ExamLevel.values.firstWhere(
+      (e) => e.name == json['level'],
+      orElse: () => ExamLevel.a1,
+    ),
     score: json['score'] ?? 0,
     totalPoints: json['totalPoints'] ?? 0,
     timeSpentSeconds: json['timeSpentSeconds'] ?? 0,
-    completedSections: (json['completedSections'] as List? ?? []).map((s) => SectionResult.fromJson(s)).toList(),
+    completedSections: (json['completedSections'] as List? ?? [])
+        .map((s) => SectionResult.fromJson(s))
+        .toList(),
     result: ExamResult.fromJson(json['result'] ?? {}),
-    startedAt: json['startedAt'] != null ? DateTime.parse(json['startedAt']) : DateTime.now(),
-    completedAt: json['completedAt'] != null ? DateTime.parse(json['completedAt']) : DateTime.now(),
+    startedAt: json['startedAt'] != null
+        ? DateTime.parse(json['startedAt'])
+        : DateTime.now(),
+    completedAt: json['completedAt'] != null
+        ? DateTime.parse(json['completedAt'])
+        : DateTime.now(),
   );
 
-  double get scorePercentage => totalPoints > 0 ? (score / totalPoints * 100) : 0;
+  double get scorePercentage =>
+      totalPoints > 0 ? (score / totalPoints * 100) : 0;
+
+  MockExam copyWith({
+    String? id,
+    String? userId,
+    ExamLevel? level,
+    int? score,
+    int? totalPoints,
+    int? timeSpentSeconds,
+    List<SectionResult>? completedSections,
+    ExamResult? result,
+    DateTime? startedAt,
+    DateTime? completedAt,
+  }) {
+    return MockExam(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      level: level ?? this.level,
+      score: score ?? this.score,
+      totalPoints: totalPoints ?? this.totalPoints,
+      timeSpentSeconds: timeSpentSeconds ?? this.timeSpentSeconds,
+      completedSections: completedSections ?? this.completedSections,
+      result: result ?? this.result,
+      startedAt: startedAt ?? this.startedAt,
+      completedAt: completedAt ?? this.completedAt,
+    );
+  }
   bool get passed => scorePercentage >= 60;
 }
 
@@ -295,7 +364,10 @@ class SectionResult {
   };
 
   factory SectionResult.fromJson(Map<String, dynamic> json) => SectionResult(
-    type: ExamSectionType.values.firstWhere((e) => e.name == json['type'], orElse: () => ExamSectionType.reading),
+    type: ExamSectionType.values.firstWhere(
+      (e) => e.name == json['type'],
+      orElse: () => ExamSectionType.reading,
+    ),
     score: json['score'] ?? 0,
     totalPoints: json['totalPoints'] ?? 0,
     timeSpentSeconds: json['timeSpentSeconds'] ?? 0,
@@ -375,15 +447,23 @@ class WritingSubmission {
     'submittedAt': submittedAt.toIso8601String(),
   };
 
-  factory WritingSubmission.fromJson(Map<String, dynamic> json) => WritingSubmission(
-    id: json['id'] ?? '',
-    userId: json['userId'] ?? '',
-    level: ExamLevel.values.firstWhere((e) => e.name == json['level'], orElse: () => ExamLevel.a1),
-    prompt: json['prompt'] ?? '',
-    userText: json['userText'] ?? '',
-    evaluation: json['evaluation'] != null ? WritingEvaluation.fromJson(json['evaluation']) : null,
-    submittedAt: json['submittedAt'] != null ? DateTime.parse(json['submittedAt']) : DateTime.now(),
-  );
+  factory WritingSubmission.fromJson(Map<String, dynamic> json) =>
+      WritingSubmission(
+        id: json['id'] ?? '',
+        userId: json['userId'] ?? '',
+        level: ExamLevel.values.firstWhere(
+          (e) => e.name == json['level'],
+          orElse: () => ExamLevel.a1,
+        ),
+        prompt: json['prompt'] ?? '',
+        userText: json['userText'] ?? '',
+        evaluation: json['evaluation'] != null
+            ? WritingEvaluation.fromJson(json['evaluation'])
+            : null,
+        submittedAt: json['submittedAt'] != null
+            ? DateTime.parse(json['submittedAt'])
+            : DateTime.now(),
+      );
 }
 
 class WritingEvaluation {
@@ -415,15 +495,16 @@ class WritingEvaluation {
     'feedback': feedback,
   };
 
-  factory WritingEvaluation.fromJson(Map<String, dynamic> json) => WritingEvaluation(
-    grammarScore: (json['grammarScore'] ?? 0).toDouble(),
-    vocabularyScore: (json['vocabularyScore'] ?? 0).toDouble(),
-    structureScore: (json['structureScore'] ?? 0).toDouble(),
-    overallScore: (json['overallScore'] ?? 0).toDouble(),
-    corrections: List<String>.from(json['corrections'] ?? []),
-    suggestions: List<String>.from(json['suggestions'] ?? []),
-    feedback: json['feedback'] ?? '',
-  );
+  factory WritingEvaluation.fromJson(Map<String, dynamic> json) =>
+      WritingEvaluation(
+        grammarScore: (json['grammarScore'] ?? 0).toDouble(),
+        vocabularyScore: (json['vocabularyScore'] ?? 0).toDouble(),
+        structureScore: (json['structureScore'] ?? 0).toDouble(),
+        overallScore: (json['overallScore'] ?? 0).toDouble(),
+        corrections: List<String>.from(json['corrections'] ?? []),
+        suggestions: List<String>.from(json['suggestions'] ?? []),
+        feedback: json['feedback'] ?? '',
+      );
 
   String get grade {
     if (overallScore >= 90) return 'A';
@@ -466,16 +547,17 @@ class SpeakingEvaluation {
     'feedback': feedback,
   };
 
-  factory SpeakingEvaluation.fromJson(Map<String, dynamic> json) => SpeakingEvaluation(
-    pronunciationScore: (json['pronunciationScore'] ?? 0).toDouble(),
-    fluencyScore: (json['fluencyScore'] ?? 0).toDouble(),
-    grammarScore: (json['grammarScore'] ?? 0).toDouble(),
-    vocabularyScore: (json['vocabularyScore'] ?? 0).toDouble(),
-    overallScore: (json['overallScore'] ?? 0).toDouble(),
-    mistakes: List<String>.from(json['mistakes'] ?? []),
-    suggestions: List<String>.from(json['suggestions'] ?? []),
-    feedback: json['feedback'] ?? '',
-  );
+  factory SpeakingEvaluation.fromJson(Map<String, dynamic> json) =>
+      SpeakingEvaluation(
+        pronunciationScore: (json['pronunciationScore'] ?? 0).toDouble(),
+        fluencyScore: (json['fluencyScore'] ?? 0).toDouble(),
+        grammarScore: (json['grammarScore'] ?? 0).toDouble(),
+        vocabularyScore: (json['vocabularyScore'] ?? 0).toDouble(),
+        overallScore: (json['overallScore'] ?? 0).toDouble(),
+        mistakes: List<String>.from(json['mistakes'] ?? []),
+        suggestions: List<String>.from(json['suggestions'] ?? []),
+        feedback: json['feedback'] ?? '',
+      );
 }
 
 class UserExamProgress {
@@ -504,19 +586,25 @@ class UserExamProgress {
     'lastExamDate': lastExamDate.toIso8601String(),
   };
 
-  factory UserExamProgress.fromJson(Map<String, dynamic> json) => UserExamProgress(
-    userId: json['userId'] ?? '',
-    levelProgress: (json['levelProgress'] as Map? ?? {}).map(
-      (k, v) => MapEntry(
-        ExamLevel.values.firstWhere((e) => e.name == k, orElse: () => ExamLevel.a1),
-        LevelProgress.fromJson(v),
-      ),
-    ),
-    totalExamsTaken: json['totalExamsTaken'] ?? 0,
-    examsPassed: json['examsPassed'] ?? 0,
-    averageScore: (json['averageScore'] ?? 0).toDouble(),
-    lastExamDate: json['lastExamDate'] != null ? DateTime.parse(json['lastExamDate']) : DateTime.now(),
-  );
+  factory UserExamProgress.fromJson(Map<String, dynamic> json) =>
+      UserExamProgress(
+        userId: json['userId'] ?? '',
+        levelProgress: (json['levelProgress'] as Map? ?? {}).map(
+          (k, v) => MapEntry(
+            ExamLevel.values.firstWhere(
+              (e) => e.name == k,
+              orElse: () => ExamLevel.a1,
+            ),
+            LevelProgress.fromJson(v),
+          ),
+        ),
+        totalExamsTaken: json['totalExamsTaken'] ?? 0,
+        examsPassed: json['examsPassed'] ?? 0,
+        averageScore: (json['averageScore'] ?? 0).toDouble(),
+        lastExamDate: json['lastExamDate'] != null
+            ? DateTime.parse(json['lastExamDate'])
+            : DateTime.now(),
+      );
 }
 
 class LevelProgress {

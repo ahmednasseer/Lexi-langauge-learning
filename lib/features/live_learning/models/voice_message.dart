@@ -1,9 +1,4 @@
-enum VoiceMessageStatus {
-  recording,
-  sent,
-  played,
-  failed,
-}
+enum VoiceMessageStatus { recording, sent, played, failed }
 
 class VoiceMessage {
   final String id;
@@ -118,9 +113,13 @@ class VoiceMessage {
       (s) => s.name == json['status'],
       orElse: () => VoiceMessageStatus.sent,
     ),
-    createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
+    createdAt: DateTime.parse(
+      json['createdAt'] ?? DateTime.now().toIso8601String(),
+    ),
     isPlayed: json['isPlayed'] ?? false,
-    playedAt: json['playedAt'] != null ? DateTime.parse(json['playedAt']) : null,
+    playedAt: json['playedAt'] != null
+        ? DateTime.parse(json['playedAt'])
+        : null,
     transcription: json['transcription'],
     fileSize: json['fileSize'] ?? 0,
   );

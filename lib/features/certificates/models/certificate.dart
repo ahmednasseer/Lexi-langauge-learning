@@ -49,7 +49,9 @@ class Certificate {
     lessonsCompleted: json['lessonsCompleted'] ?? 0,
     vocabularyLearned: json['vocabularyLearned'] ?? 0,
     averageScore: (json['averageScore'] ?? 0).toDouble(),
-    issuedAt: json['issuedAt'] != null ? DateTime.parse(json['issuedAt']) : DateTime.now(),
+    issuedAt: json['issuedAt'] != null
+        ? DateTime.parse(json['issuedAt'])
+        : DateTime.now(),
     certificateCode: json['certificateCode'] ?? '',
   );
 
@@ -63,7 +65,8 @@ class Certificate {
     required int vocabularyLearned,
     required double averageScore,
   }) {
-    final code = 'LEXI-$level-${DateTime.now().millisecondsSinceEpoch.toRadixString(36).toUpperCase()}';
+    final code =
+        'LEXI-$level-${DateTime.now().millisecondsSinceEpoch.toRadixString(36).toUpperCase()}';
     return Certificate(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       userId: userId,
@@ -79,6 +82,7 @@ class Certificate {
     );
   }
 
-  String get formattedDate => '${issuedAt.day}/${issuedAt.month}/${issuedAt.year}';
+  String get formattedDate =>
+      '${issuedAt.day}/${issuedAt.month}/${issuedAt.year}';
   String get levelDisplay => '$level - $levelTitle';
 }

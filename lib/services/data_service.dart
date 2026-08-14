@@ -20,10 +20,14 @@ class DataService {
 
   Future<void> _loadLocalData() async {
     try {
-      final curriculumJson = await rootBundle.loadString('assets/data/curriculum_a1.json');
+      final curriculumJson = await rootBundle.loadString(
+        'assets/data/curriculum_a1.json',
+      );
       _curriculum = Curriculum.fromJson(jsonDecode(curriculumJson));
 
-      final questionsJson = await rootBundle.loadString('assets/data/questions_a1.json');
+      final questionsJson = await rootBundle.loadString(
+        'assets/data/questions_a1.json',
+      );
       _questionBank = QuestionBank.fromJson(jsonDecode(questionsJson));
     } catch (e) {
       // ignore: avoid_print
@@ -34,17 +38,19 @@ class DataService {
   List<Unit> get units => _curriculum?.units ?? [];
 
   List<Lesson> getLessonsForUnit(String unitId) {
-    return units.firstWhere(
-      (u) => u.id == unitId,
-      orElse: () => Unit(
-        id: '',
-        title: '',
-        titleArabic: '',
-        description: '',
-        order: 0,
-        lessons: [],
-      ),
-    ).lessons;
+    return units
+        .firstWhere(
+          (u) => u.id == unitId,
+          orElse: () => Unit(
+            id: '',
+            title: '',
+            titleArabic: '',
+            description: '',
+            order: 0,
+            lessons: [],
+          ),
+        )
+        .lessons;
   }
 
   Lesson? getLesson(String lessonId) {

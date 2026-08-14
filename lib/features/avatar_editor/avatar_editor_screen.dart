@@ -22,7 +22,13 @@ class _AvatarEditorScreenState extends State<AvatarEditorScreen>
   int _selectedShirt = 0;
   int _selectedAccessory = 0;
 
-  final List<String> _tabs = ['الجسم', 'العيون', 'الشعر', 'القميص', 'الإكسسوارات'];
+  final List<String> _tabs = [
+    'الجسم',
+    'العيون',
+    'الشعر',
+    'القميص',
+    'الإكسسوارات',
+  ];
 
   final List<Color> _skinColors = [
     const Color(0xFFD4A574),
@@ -37,7 +43,13 @@ class _AvatarEditorScreenState extends State<AvatarEditorScreen>
 
   final List<String> _eyeStyles = ['عادي', 'كبير', 'صغير', 'ناعم', 'سعيد'];
   final List<String> _hairStyles = ['قصير', 'طويل', 'مجعد', 'ذيل حصان', 'أصلع'];
-  final List<String> _shirtStyles = ['تيشيرت', 'بولو', 'هودي', 'بذلة', 'قميص رياضي'];
+  final List<String> _shirtStyles = [
+    'تيشيرت',
+    'بولو',
+    'هودي',
+    'بذلة',
+    'قميص رياضي',
+  ];
   final List<String> _accessories = ['قبعة', 'نظارات', 'قلادة', 'لا شيء'];
 
   @override
@@ -121,95 +133,94 @@ class _AvatarEditorScreenState extends State<AvatarEditorScreen>
 
   Widget _buildAvatarPreview() {
     return AnimatedBuilder(
-      animation: _glowAnimation,
-      builder: (context, child) {
-        return Container(
-          width: double.infinity,
-          height: 220,
-          margin: const EdgeInsets.symmetric(horizontal: 20),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                AppColors.surface,
-                AppColors.surfaceLight,
-              ],
-            ),
-            borderRadius: BorderRadius.circular(28),
-            border: Border.all(
-              color: AppColors.primary.withValues(alpha: 0.2),
-              width: 1,
-            ),
-          ),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Container(
-                width: 160,
-                height: 160,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withValues(
-                        alpha: _glowAnimation.value * 0.4,
+          animation: _glowAnimation,
+          builder: (context, child) {
+            return Container(
+              width: double.infinity,
+              height: 220,
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [AppColors.surface, AppColors.surfaceLight],
+                ),
+                borderRadius: BorderRadius.circular(28),
+                border: Border.all(
+                  color: AppColors.primary.withValues(alpha: 0.2),
+                  width: 1,
+                ),
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    width: 160,
+                    height: 160,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withValues(
+                            alpha: _glowAnimation.value * 0.4,
+                          ),
+                          blurRadius: 40,
+                          spreadRadius: 8,
+                        ),
+                        BoxShadow(
+                          color: AppColors.secondary.withValues(
+                            alpha: _glowAnimation.value * 0.2,
+                          ),
+                          blurRadius: 60,
+                          spreadRadius: 15,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: 130,
+                    height: 130,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(
+                        colors: [
+                          AppColors.primary.withValues(alpha: 0.15),
+                          Colors.transparent,
+                        ],
                       ),
-                      blurRadius: 40,
-                      spreadRadius: 8,
                     ),
-                    BoxShadow(
-                      color: AppColors.secondary.withValues(
-                        alpha: _glowAnimation.value * 0.2,
+                  ),
+                  _buildAvatarCharacter(),
+                  Positioned(
+                    bottom: 16,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 7,
                       ),
-                      blurRadius: 60,
-                      spreadRadius: 15,
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                width: 130,
-                height: 130,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      AppColors.primary.withValues(alpha: 0.15),
-                      Colors.transparent,
-                    ],
-                  ),
-                ),
-              ),
-              _buildAvatarCharacter(),
-              Positioned(
-                bottom: 16,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-                  decoration: BoxDecoration(
-                    color: AppColors.surface.withValues(alpha: 0.9),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.border),
-                  ),
-                  child: Text(
-                    _tabs[_selectedTab],
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary,
+                      decoration: BoxDecoration(
+                        color: AppColors.surface.withValues(alpha: 0.9),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.border),
+                      ),
+                      child: Text(
+                        _tabs[_selectedTab],
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
-        );
-      },
-    ).animate().fadeIn(duration: 600.ms, delay: 200.ms).scale(
-          begin: const Offset(0.9, 0.9),
-          duration: 500.ms,
-          delay: 200.ms,
-        );
+            );
+          },
+        )
+        .animate()
+        .fadeIn(duration: 600.ms, delay: 200.ms)
+        .scale(begin: const Offset(0.9, 0.9), duration: 500.ms, delay: 200.ms);
   }
 
   Widget _buildAvatarCharacter() {
@@ -261,15 +272,10 @@ class _AvatarEditorScreenState extends State<AvatarEditorScreen>
               ],
             ),
           ),
-          Positioned(
-            top: 0,
-            child: _buildHairOverlay(),
-          ),
-          Positioned(
-            bottom: 0,
-            child: _buildShirtOverlay(),
-          ),
-          if (_selectedAccessory > 0 && _selectedAccessory < _accessories.length)
+          Positioned(top: 0, child: _buildHairOverlay()),
+          Positioned(bottom: 0, child: _buildShirtOverlay()),
+          if (_selectedAccessory > 0 &&
+              _selectedAccessory < _accessories.length)
             Positioned(
               top: _selectedAccessory == 1 ? -4 : 30,
               child: _buildAccessoryOverlay(),
@@ -333,7 +339,8 @@ class _AvatarEditorScreenState extends State<AvatarEditorScreen>
       AppColors.gold,
       AppColors.accent,
     ];
-    final shirtColor = shirtColors[_selectedShirt.clamp(0, shirtColors.length - 1)];
+    final shirtColor =
+        shirtColors[_selectedShirt.clamp(0, shirtColors.length - 1)];
 
     return Container(
       width: 100,
@@ -369,7 +376,10 @@ class _AvatarEditorScreenState extends State<AvatarEditorScreen>
               decoration: BoxDecoration(
                 color: AppColors.gold,
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white.withValues(alpha: 0.5), width: 1),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.5),
+                  width: 1,
+                ),
               ),
             ),
             const SizedBox(width: 26),
@@ -379,7 +389,10 @@ class _AvatarEditorScreenState extends State<AvatarEditorScreen>
               decoration: BoxDecoration(
                 color: AppColors.gold,
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white.withValues(alpha: 0.5), width: 1),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.5),
+                  width: 1,
+                ),
               ),
             ),
           ],
@@ -441,7 +454,9 @@ class _AvatarEditorScreenState extends State<AvatarEditorScreen>
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: isSelected ? Colors.white : AppColors.textSecondary,
+                      color: isSelected
+                          ? Colors.white
+                          : AppColors.textSecondary,
                     ),
                   ),
                 ),
@@ -540,9 +555,9 @@ class _AvatarEditorScreenState extends State<AvatarEditorScreen>
                         : null,
                   ),
                 ).animate().fadeIn(
-                      duration: 300.ms,
-                      delay: Duration(milliseconds: 50 * index),
-                    );
+                  duration: 300.ms,
+                  delay: Duration(milliseconds: 50 * index),
+                );
               },
             ),
           ),
@@ -591,7 +606,9 @@ class _AvatarEditorScreenState extends State<AvatarEditorScreen>
                       color: isSelected ? null : AppColors.surface,
                       borderRadius: BorderRadius.circular(18),
                       border: Border.all(
-                        color: isSelected ? AppColors.primary : AppColors.border,
+                        color: isSelected
+                            ? AppColors.primary
+                            : AppColors.border,
                         width: isSelected ? 2 : 1,
                       ),
                       boxShadow: isSelected
@@ -611,7 +628,9 @@ class _AvatarEditorScreenState extends State<AvatarEditorScreen>
                           Icon(
                             _getTabIcon(_selectedTab, index),
                             size: 28,
-                            color: isSelected ? Colors.white : AppColors.textSecondary,
+                            color: isSelected
+                                ? Colors.white
+                                : AppColors.textSecondary,
                           ),
                           const SizedBox(height: 6),
                           Text(
@@ -619,7 +638,9 @@ class _AvatarEditorScreenState extends State<AvatarEditorScreen>
                             style: GoogleFonts.poppins(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                              color: isSelected ? Colors.white : AppColors.textSecondary,
+                              color: isSelected
+                                  ? Colors.white
+                                  : AppColors.textSecondary,
                             ),
                           ),
                         ],
@@ -627,9 +648,9 @@ class _AvatarEditorScreenState extends State<AvatarEditorScreen>
                     ),
                   ),
                 ).animate().fadeIn(
-                      duration: 300.ms,
-                      delay: Duration(milliseconds: 60 * index),
-                    );
+                  duration: 300.ms,
+                  delay: Duration(milliseconds: 60 * index),
+                );
               },
             ),
           ),
@@ -680,7 +701,9 @@ class _AvatarEditorScreenState extends State<AvatarEditorScreen>
                       color: isSelected ? null : AppColors.surface,
                       borderRadius: BorderRadius.circular(18),
                       border: Border.all(
-                        color: isSelected ? AppColors.primary : AppColors.border,
+                        color: isSelected
+                            ? AppColors.primary
+                            : AppColors.border,
                         width: isSelected ? 2 : 1,
                       ),
                       boxShadow: isSelected
@@ -700,7 +723,9 @@ class _AvatarEditorScreenState extends State<AvatarEditorScreen>
                           Icon(
                             accessoryIcons[index],
                             size: 28,
-                            color: isSelected ? Colors.white : AppColors.textSecondary,
+                            color: isSelected
+                                ? Colors.white
+                                : AppColors.textSecondary,
                           ),
                           const SizedBox(height: 6),
                           Text(
@@ -708,7 +733,9 @@ class _AvatarEditorScreenState extends State<AvatarEditorScreen>
                             style: GoogleFonts.poppins(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                              color: isSelected ? Colors.white : AppColors.textSecondary,
+                              color: isSelected
+                                  ? Colors.white
+                                  : AppColors.textSecondary,
                             ),
                           ),
                         ],
@@ -716,9 +743,9 @@ class _AvatarEditorScreenState extends State<AvatarEditorScreen>
                     ),
                   ),
                 ).animate().fadeIn(
-                      duration: 300.ms,
-                      delay: Duration(milliseconds: 60 * index),
-                    );
+                  duration: 300.ms,
+                  delay: Duration(milliseconds: 60 * index),
+                );
               },
             ),
           ),
@@ -791,10 +818,7 @@ class _AvatarEditorScreenState extends State<AvatarEditorScreen>
             ),
           ),
         ),
-      )
-          .animate()
-          .fadeIn(duration: 500.ms, delay: 600.ms)
-          .slideY(begin: 0.3),
+      ).animate().fadeIn(duration: 500.ms, delay: 600.ms).slideY(begin: 0.3),
     );
   }
 }

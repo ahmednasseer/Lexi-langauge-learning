@@ -1,6 +1,9 @@
 enum MessageRequestStatus { pending, accepted, rejected, blocked }
+
 enum PrivacySetting { everyone, friendsOnly, groupMembersOnly, disabled }
+
 enum ReportReason { spam, harassment, inappropriateContent, other }
+
 enum ReportStatus { pending, reviewed, resolved, dismissed }
 
 class MessageRequest {
@@ -38,8 +41,13 @@ class MessageRequest {
     senderName: json['senderName'] ?? '',
     senderAvatar: json['senderAvatar'],
     receiverId: json['receiverId'] ?? '',
-    status: MessageRequestStatus.values.firstWhere((e) => e.name == json['status'], orElse: () => MessageRequestStatus.pending),
-    createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
+    status: MessageRequestStatus.values.firstWhere(
+      (e) => e.name == json['status'],
+      orElse: () => MessageRequestStatus.pending,
+    ),
+    createdAt: json['createdAt'] != null
+        ? DateTime.parse(json['createdAt'])
+        : DateTime.now(),
   );
 }
 
@@ -75,7 +83,9 @@ class Message {
     receiverId: json['receiverId'] ?? '',
     content: json['content'] ?? '',
     isRead: json['isRead'] ?? false,
-    createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
+    createdAt: json['createdAt'] != null
+        ? DateTime.parse(json['createdAt'])
+        : DateTime.now(),
   );
 }
 
@@ -110,7 +120,9 @@ class Conversation {
     otherUserId: json['otherUserId'] ?? '',
     otherUserName: json['otherUserName'] ?? '',
     otherUserAvatar: json['otherUserAvatar'],
-    lastMessage: json['lastMessage'] != null ? Message.fromJson(json['lastMessage']) : null,
+    lastMessage: json['lastMessage'] != null
+        ? Message.fromJson(json['lastMessage'])
+        : null,
     unreadCount: json['unreadCount'] ?? 0,
   );
 }
@@ -167,7 +179,10 @@ class UserProfile {
     xp: json['xp'] ?? 0,
     streak: json['streak'] ?? 0,
     isPremium: json['isPremium'] ?? false,
-    privacySetting: PrivacySetting.values.firstWhere((e) => e.name == json['privacySetting'], orElse: () => PrivacySetting.friendsOnly),
+    privacySetting: PrivacySetting.values.firstWhere(
+      (e) => e.name == json['privacySetting'],
+      orElse: () => PrivacySetting.friendsOnly,
+    ),
     isFriend: json['isFriend'] ?? false,
     hasPendingRequest: json['hasPendingRequest'] ?? false,
     isBlocked: json['isBlocked'] ?? false,
@@ -234,11 +249,21 @@ class UserReport {
     reporterId: json['reporterId'] ?? '',
     reportedUserId: json['reportedUserId'] ?? '',
     messageId: json['messageId'],
-    reason: ReportReason.values.firstWhere((e) => e.name == json['reason'], orElse: () => ReportReason.other),
+    reason: ReportReason.values.firstWhere(
+      (e) => e.name == json['reason'],
+      orElse: () => ReportReason.other,
+    ),
     description: json['description'],
-    status: ReportStatus.values.firstWhere((e) => e.name == json['status'], orElse: () => ReportStatus.pending),
-    createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
-    reviewedAt: json['reviewedAt'] != null ? DateTime.parse(json['reviewedAt']) : null,
+    status: ReportStatus.values.firstWhere(
+      (e) => e.name == json['status'],
+      orElse: () => ReportStatus.pending,
+    ),
+    createdAt: json['createdAt'] != null
+        ? DateTime.parse(json['createdAt'])
+        : DateTime.now(),
+    reviewedAt: json['reviewedAt'] != null
+        ? DateTime.parse(json['reviewedAt'])
+        : null,
   );
 }
 
@@ -266,6 +291,8 @@ class BlockedUser {
     id: json['id'] ?? '',
     blockerId: json['blockerId'] ?? '',
     blockedId: json['blockedId'] ?? '',
-    createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
+    createdAt: json['createdAt'] != null
+        ? DateTime.parse(json['createdAt'])
+        : DateTime.now(),
   );
 }

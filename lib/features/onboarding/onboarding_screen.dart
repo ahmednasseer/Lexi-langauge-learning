@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/constants/app_assets.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/services/api_service.dart';
 import '../../shared/widgets/widgets.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -17,7 +18,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   int _selectedGoalIndex = -1;
-  int _selectedOptionIndex = -1;
+  int _currentQuestionIndex = -1;
+  final Map<int, int> _selectedAnswers = {};
+  String _determinedLevel = 'A1';
+  double _accuracy = 0.0;
 
   final List<Map<String, dynamic>> _goals = [
     {
@@ -52,7 +56,35 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     },
   ];
 
-  final List<String> _options = ['gehe', 'gehst', 'geht', 'gehen'];
+  List<LevelTestQuestion> _levelTestQuestions = [];
+  bool _questionsLoading = true;
+  String _questionsError = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPlacementQuestions();
+  }
+
+  Future<void> _loadPlacementQuestions() async {
+    final api = ApiService();
+    final result = await api.getQuestionsForLevel('A1');
+    if (result.isSuccess && result.data != null) {
+      final questions = (result.data as List)
+          .where((e) => (e as Map<String, dynamic>)['type'] == 'multipleChoice')
+          .map((e) => LevelTestQuestion.fromJson(Map<String, dynamic>.from(e)))
+          .toList();
+      setState(() {
+        _levelTestQuestions = questions.take(5).toList();
+        _questionsLoading = false;
+      });
+    } else {
+      setState(() {
+        _questionsError = result.error ?? 'Failed to load placement questions';
+        _questionsLoading = false;
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -62,10 +94,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void _nextPage() {
     if (_currentPage < 3) {
-      _pageController.nextPage(
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeInOut,
-      );
+      if (_currentPage == 2) {
+        _pageController.jumpToPage(3);
+      } else {
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeInOut,
+        );
+      }
     } else {
       _finish();
     }
@@ -80,7 +116,38 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
   }
 
+  LevelTestQuestion get _currentQuestion =>
+      _levelTestQuestions[_currentQuestionIndex.clamp(0, _levelTestQuestions.length - 1)];
+
+  void _nextQuestion() {
+    final correctCount = _selectedAnswers.entries
+        .where((e) => e.value == _levelTestQuestions[e.key].selectedAnswerIndex).length;
+    final total = _levelTestQuestions.length;
+    _accuracy = total > 0 ? correctCount / total : 0.0;
+
+    if (_levelTestQuestions.length < 2) {
+      _determinedLevel = 'A1';
+    } else if (correctCount >= (total * 0.8).ceil()) {
+      _determinedLevel = 'A2';
+    } else {
+      _determinedLevel = 'A1';
+    }
+
+    if (_currentQuestionIndex < _levelTestQuestions.length - 1) {
+      setState(() => _currentQuestionIndex++);
+    } else {
+      _pageController.animateToPage(
+        3,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
   void _goToPage(int page) {
+    if (page == 2) {
+      _currentQuestionIndex = 0;
+    }
     _pageController.animateToPage(
       page,
       duration: const Duration(milliseconds: 400),
@@ -89,9 +156,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Future<void> _finish() async {
+    final goals = ['conversation', 'exam', 'travel', 'work', 'culture'];
+    final selectedGoal = _selectedGoalIndex >= 0 && _selectedGoalIndex < goals.length
+        ? goals[_selectedGoalIndex]
+        : 'conversation';
     await AuthService.instance.setOnboarded();
+    await AuthService.instance.updateProfile(
+      name: AuthService.instance.currentUser?.name,
+      level: _determinedLevel,
+    );
+    final api = ApiService();
+    await api.updateProfile({
+      'learningGoal': selectedGoal,
+      'level': _determinedLevel,
+      'dailyGoal': 30,
+    });
     if (mounted) {
-      Navigator.of(context).pushReplacementNamed('/auth');
+      Navigator.of(context).pushReplacementNamed('/home');
     }
   }
 
@@ -173,7 +254,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             height: 8,
             decoration: BoxDecoration(
               gradient: isActive ? AppColors.primaryGradient : null,
-              color: isActive ? null : AppColors.textHint.withValues(alpha: 0.3),
+              color: isActive
+                  ? null
+                  : AppColors.textHint.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(4),
               boxShadow: isActive
                   ? [
@@ -202,7 +285,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         text: isLastPage ? 'ابدأ رحلتك' : 'التالي',
         onPressed: isLastPage ? _finish : _nextPage,
         width: double.infinity,
-        gradient: isLastPage ? AppColors.successGradient : AppColors.primaryGradient,
+        gradient: isLastPage
+            ? AppColors.successGradient
+            : AppColors.primaryGradient,
         height: 56,
       ).animate().fadeIn().slideY(begin: 0.2),
     );
@@ -240,9 +325,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                     child: Column(
                       children: [
-                        Expanded(flex: 1, child: Container(color: const Color(0xFF000000))),
-                        Expanded(flex: 1, child: Container(color: Color(0xFFDD0000))),
-                        Expanded(flex: 1, child: Container(color: Color(0xFFFFCC00))),
+                        Expanded(
+                          flex: 1,
+                          child: Container(color: const Color(0xFF000000)),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Container(color: Color(0xFFDD0000)),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Container(color: Color(0xFFFFCC00)),
+                        ),
                       ],
                     ),
                   ),
@@ -262,7 +356,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           const SizedBox(height: 24),
           // Lexi character
           ClipOval(
-            child: Image.asset(AppAssets.lexiHappy, width: 180, height: 180, fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) => Icon(Icons.broken_image, size: 180)),
+            child: Image.asset(
+              AppAssets.lexiHappy,
+              width: 180,
+              height: 180,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) =>
+                  Icon(Icons.broken_image, size: 180),
+            ),
           ).animate().scale(begin: const Offset(0.5, 0.5), duration: 500.ms),
           const SizedBox(height: 32),
           // Speech bubble
@@ -271,10 +372,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             decoration: BoxDecoration(
               color: AppColors.surface,
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(
-                color: AppColors.border,
-                width: 1,
-              ),
+              border: Border.all(color: AppColors.border, width: 1),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.primary.withValues(alpha: 0.1),
@@ -283,7 +381,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ],
             ),
             child: Text(
-              'مرحباً بك',
+              'Willkommen bei Lexi!',
               style: GoogleFonts.poppins(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -314,7 +412,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           const SizedBox(height: 12),
           // Subtitle
           Text(
-            'تعلم الألمانية بطريقة ممتعة ومباشرة',
+            'Lernen Sie Deutsch auf spaßliche Weise',
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
               fontSize: 17,
@@ -365,9 +463,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: GlowCard(
-                    glowColor: isSelected ? goal['color'] as Color : AppColors.border,
+                    glowColor: isSelected
+                        ? goal['color'] as Color
+                        : AppColors.border,
                     borderRadius: 16,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
                     onTap: () {
                       setState(() => _selectedGoalIndex = index);
                       _nextPage();
@@ -379,10 +482,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           width: 52,
                           height: 52,
                           decoration: BoxDecoration(
-                            color: (goal['color'] as Color).withValues(alpha: 0.12),
+                            color: (goal['color'] as Color).withValues(
+                              alpha: 0.12,
+                            ),
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: (goal['color'] as Color).withValues(alpha: 0.25),
+                              color: (goal['color'] as Color).withValues(
+                                alpha: 0.25,
+                              ),
                               width: 1,
                             ),
                           ),
@@ -434,7 +541,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ],
                     ),
                   ),
-                ).animate().fadeIn(delay: Duration(milliseconds: 150 + index * 80));
+                ).animate().fadeIn(
+                  delay: Duration(milliseconds: 150 + index * 80),
+                );
               },
             ),
           ),
@@ -446,7 +555,39 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   // ═══════════════════════════════════════════
   // PAGE 3: LEVEL TEST (اختبار تحديد المستوى)
   // ═══════════════════════════════════════════
-  Widget _buildLevelTestPage() {
+   Widget _buildLevelTestPage() {
+    if (_questionsLoading) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text('Loading placement questions...'),
+          ],
+        ),
+      );
+    }
+    if (_questionsError.isNotEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error, color: AppColors.error, size: 40),
+            const SizedBox(height: 16),
+            Text(
+              'Failed to load questions',
+              style: GoogleFonts.poppins(color: AppColors.textPrimary),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _loadPlacementQuestions,
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
@@ -486,7 +627,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               const Spacer(),
               // Counter badge
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   gradient: AppColors.primaryGradient,
                   borderRadius: BorderRadius.circular(20),
@@ -498,7 +642,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ],
                 ),
                 child: Text(
-                  '8/20',
+                  '${_currentQuestionIndex + 1}/${_levelTestQuestions.length}',
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -511,14 +655,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           const SizedBox(height: 24),
           // Progress bar
           ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: LinearProgressIndicator(
-              value: 0.4,
-              backgroundColor: AppColors.border,
-              valueColor: const AlwaysStoppedAnimation(AppColors.primary),
-              minHeight: 8,
-            ),
-          ).animate().fadeIn(delay: 100.ms).scaleX(begin: 0, alignment: Alignment.centerLeft),
+                borderRadius: BorderRadius.circular(10),
+                child: LinearProgressIndicator(
+                  value: (_currentQuestionIndex + 1) / _levelTestQuestions.length,
+                  backgroundColor: AppColors.border,
+                  valueColor: const AlwaysStoppedAnimation(AppColors.primary),
+                  minHeight: 8,
+                ),
+              )
+              .animate()
+              .fadeIn(delay: 100.ms)
+              .scaleX(begin: 0, alignment: Alignment.centerLeft),
           const SizedBox(height: 24),
           // Question instruction
           Text(
@@ -538,7 +685,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Ich ___ jeden Tag zur Arbeit.',
+                  _currentQuestion.question,
                   style: GoogleFonts.poppins(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
@@ -553,41 +700,41 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           // Options
           Expanded(
             child: ListView.builder(
-              itemCount: _options.length,
+              itemCount: _currentQuestion.options.length,
               itemBuilder: (context, index) {
-                final option = _options[index];
-                final isCorrect = index == 0;
-                final isSelected = _selectedOptionIndex == index;
+                final option = _currentQuestion.options[index];
+                final isCorrect = index == _currentQuestion.selectedAnswerIndex;
+                final isSelected = _selectedAnswers[_currentQuestionIndex] == index;
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: GlowCard(
-                    glowColor: isCorrect && isSelected
-                        ? AppColors.success
-                        : isSelected
-                            ? AppColors.error
-                            : AppColors.border,
+                    glowColor: isSelected
+                        ? (isCorrect ? AppColors.success : AppColors.error)
+                        : AppColors.border,
                     borderRadius: 14,
-                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 14,
+                    ),
                     onTap: () {
-                      setState(() => _selectedOptionIndex = index);
+                      setState(() => _selectedAnswers[_currentQuestionIndex] = index);
                     },
                     child: Row(
                       children: [
-                        // Number circle
                         Container(
                           width: 36,
                           height: 36,
                           decoration: BoxDecoration(
-                            color: isCorrect && isSelected
-                                ? AppColors.success.withValues(alpha: 0.15)
+                            color: isSelected
+                                ? (isCorrect
+                                    ? AppColors.success.withValues(alpha: 0.15)
+                                    : AppColors.error.withValues(alpha: 0.15))
                                 : AppColors.surfaceLight,
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: isCorrect && isSelected
-                                  ? AppColors.success
-                                  : isSelected
-                                      ? AppColors.error
-                                      : AppColors.border,
+                              color: isSelected
+                                  ? (isCorrect ? AppColors.success : AppColors.error)
+                                  : AppColors.border,
                               width: 1,
                             ),
                           ),
@@ -597,15 +744,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               style: GoogleFonts.poppins(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
-                                color: isCorrect && isSelected
-                                    ? AppColors.success
+                                color: isSelected
+                                    ? (isCorrect ? AppColors.success : AppColors.error)
                                     : AppColors.textSecondary,
                               ),
                             ),
                           ),
                         ),
                         const SizedBox(width: 16),
-                        // Option text
                         Text(
                           option,
                           style: GoogleFonts.poppins(
@@ -624,8 +770,39 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ],
                     ),
                   ),
-                ).animate().fadeIn(delay: Duration(milliseconds: 250 + index * 80));
+                ).animate().fadeIn(
+                  delay: Duration(milliseconds: 250 + index * 80),
+                );
               },
+            ),
+          ),
+          // Next button
+          Padding(
+            padding: const EdgeInsets.only(top: 16, bottom: 8),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _selectedAnswers[_currentQuestionIndex] != null
+                    ? _nextQuestion
+                    : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: Text(
+                  _currentQuestionIndex < _levelTestQuestions.length - 1
+                      ? 'التالي'
+                      : 'إنهاء الاختبار',
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
           ),
         ],
@@ -681,98 +858,116 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ),
                 ),
                 // Trophy emoji
-                const Text(
-                  '🏆',
-                  style: TextStyle(fontSize: 60),
-                ),
+                const Text('🏆', style: TextStyle(fontSize: 60)),
                 // Celebration particles
                 Positioned(
                   top: 5,
                   right: 15,
-                  child: Container(
-                    width: 12,
-                    height: 12,
-                    decoration: BoxDecoration(
-                      color: AppColors.success,
-                      shape: BoxShape.circle,
-                    ),
-                  ).animate(
-                    onPlay: (controller) => controller.repeat(reverse: true),
-                  ).scale(
-                    begin: const Offset(0.5, 0.5),
-                    end: const Offset(1.2, 1.2),
-                    duration: 800.ms,
-                  ),
+                  child:
+                      Container(
+                            width: 12,
+                            height: 12,
+                            decoration: BoxDecoration(
+                              color: AppColors.success,
+                              shape: BoxShape.circle,
+                            ),
+                          )
+                          .animate(
+                            onPlay: (controller) =>
+                                controller.repeat(reverse: true),
+                          )
+                          .scale(
+                            begin: const Offset(0.5, 0.5),
+                            end: const Offset(1.2, 1.2),
+                            duration: 800.ms,
+                          ),
                 ),
                 Positioned(
                   top: 20,
                   left: 10,
-                  child: Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: AppColors.accent,
-                      shape: BoxShape.circle,
-                    ),
-                  ).animate(
-                    onPlay: (controller) => controller.repeat(reverse: true),
-                  ).scale(
-                    begin: const Offset(0.8, 0.8),
-                    end: const Offset(1.5, 1.5),
-                    duration: 1000.ms,
-                  ),
+                  child:
+                      Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: AppColors.accent,
+                              shape: BoxShape.circle,
+                            ),
+                          )
+                          .animate(
+                            onPlay: (controller) =>
+                                controller.repeat(reverse: true),
+                          )
+                          .scale(
+                            begin: const Offset(0.8, 0.8),
+                            end: const Offset(1.5, 1.5),
+                            duration: 1000.ms,
+                          ),
                 ),
               ],
             ),
           ).animate().scale(begin: const Offset(0.3, 0.3), duration: 600.ms),
           const SizedBox(height: 32),
-          // Level badge B1
+          // Level badge
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-            decoration: BoxDecoration(
-              gradient: AppColors.getLevelGradient('B1'),
-              borderRadius: BorderRadius.circular(30),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.levelB1.withValues(alpha: 0.5),
-                  blurRadius: 25,
-                  spreadRadius: 2,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 14,
                 ),
-                BoxShadow(
-                  color: AppColors.gold.withValues(alpha: 0.3),
-                  blurRadius: 40,
-                  spreadRadius: 5,
+                decoration: BoxDecoration(
+                  gradient: AppColors.getLevelGradient(_determinedLevel),
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.getLevelColor(_determinedLevel).withValues(alpha: 0.5),
+                      blurRadius: 25,
+                      spreadRadius: 2,
+                    ),
+                    BoxShadow(
+                      color: AppColors.gold.withValues(alpha: 0.3),
+                      blurRadius: 40,
+                      spreadRadius: 5,
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ClipOval(
-                  child: Image.asset(AppAssets.badgeB1, width: 48, height: 48, fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) => Icon(Icons.broken_image, size: 48)),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  'B1',
-                  style: GoogleFonts.poppins(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black.withValues(alpha: 0.3),
-                        blurRadius: 10,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ClipOval(
+                      child: Image.asset(
+                        AppAssets.badgeForLevel(_determinedLevel),
+                        width: 48,
+                        height: 48,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            Icon(Icons.broken_image, size: 48),
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      _determinedLevel,
+                      style: GoogleFonts.poppins(
+                        fontSize: 36,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black.withValues(alpha: 0.3),
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ).animate().fadeIn(delay: 300.ms).scale(begin: const Offset(0.5, 0.5)),
+              )
+              .animate()
+              .fadeIn(delay: 300.ms)
+              .scale(begin: const Offset(0.5, 0.5)),
           const SizedBox(height: 16),
           // Level label
-          Text(
-            'متوسط',
+           Text(
+            AppColors.getLevelLabel(_determinedLevel),
             style: GoogleFonts.poppins(
               fontSize: 22,
               fontWeight: FontWeight.w600,
@@ -782,7 +977,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           const SizedBox(height: 8),
           // Level description
           Text(
-            'مستواك B1 - Intermediate',
+            '${_accuracy * 100}% - ${_levelTestQuestions.length} Fragen beantwortet',
             style: GoogleFonts.poppins(
               fontSize: 15,
               color: AppColors.textSecondary,
@@ -806,12 +1001,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildStatItem('85%', 'الإجابات', AppColors.success),
+               children: [
+                _buildStatItem('${(_accuracy * 100).toInt()}%', 'الإجابات', AppColors.success),
                 _buildDivider(),
-                _buildStatItem('120', 'السؤال', AppColors.primary),
+                _buildStatItem(_levelTestQuestions.length.toString(), 'السؤال', AppColors.primary),
                 _buildDivider(),
-                _buildStatItem('15', 'دقيقة', AppColors.warning),
+                _buildStatItem(_determinedLevel, 'المستوى', AppColors.warning),
               ],
             ),
           ).animate().fadeIn(delay: 600.ms).slideY(begin: 0.2),
@@ -845,10 +1040,36 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Widget _buildDivider() {
-    return Container(
-      width: 1,
-      height: 40,
-      color: AppColors.border,
+    return Container(width: 1, height: 40, color: AppColors.border);
+  }
+}
+
+class LevelTestQuestion {
+  final String question;
+  final List<String> options;
+  final String correctAnswer;
+  final String? explanation;
+
+  const LevelTestQuestion({
+    required this.question,
+    required this.options,
+    required this.correctAnswer,
+    this.explanation,
+  });
+
+  int get selectedAnswerIndex => options.indexOf(correctAnswer);
+
+  factory LevelTestQuestion.fromJson(Map<String, dynamic> json) {
+    final optionsList = List<String>.from(json['options'] ?? []);
+    final correctAnswer = json['correctAnswer'] ?? '';
+    if (optionsList.isNotEmpty && !optionsList.contains(correctAnswer)) {
+      optionsList.add(correctAnswer);
+    }
+    return LevelTestQuestion(
+      question: json['question'] ?? '',
+      options: optionsList,
+      correctAnswer: correctAnswer,
+      explanation: json['explanation'],
     );
   }
 }

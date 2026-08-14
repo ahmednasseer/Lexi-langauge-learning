@@ -9,12 +9,7 @@ enum NotificationType {
   personal,
 }
 
-enum NotificationPriority {
-  low,
-  medium,
-  high,
-  urgent,
-}
+enum NotificationPriority { low, medium, high, urgent }
 
 class PushNotification {
   final String id;
@@ -80,24 +75,27 @@ class PushNotification {
     'imageUrl': imageUrl,
   };
 
-  factory PushNotification.fromJson(Map<String, dynamic> json) => PushNotification(
-    id: json['id'] ?? '',
-    title: json['title'] ?? '',
-    body: json['body'] ?? '',
-    type: NotificationType.values.firstWhere(
-      (t) => t.name == json['type'],
-      orElse: () => NotificationType.reminder,
-    ),
-    priority: NotificationPriority.values.firstWhere(
-      (p) => p.name == json['priority'],
-      orElse: () => NotificationPriority.medium,
-    ),
-    scheduledAt: DateTime.parse(json['scheduledAt'] ?? DateTime.now().toIso8601String()),
-    sentAt: json['sentAt'] != null ? DateTime.parse(json['sentAt']) : null,
-    isRead: json['isRead'] ?? false,
-    data: json['data'],
-    imageUrl: json['imageUrl'],
-  );
+  factory PushNotification.fromJson(Map<String, dynamic> json) =>
+      PushNotification(
+        id: json['id'] ?? '',
+        title: json['title'] ?? '',
+        body: json['body'] ?? '',
+        type: NotificationType.values.firstWhere(
+          (t) => t.name == json['type'],
+          orElse: () => NotificationType.reminder,
+        ),
+        priority: NotificationPriority.values.firstWhere(
+          (p) => p.name == json['priority'],
+          orElse: () => NotificationPriority.medium,
+        ),
+        scheduledAt: DateTime.parse(
+          json['scheduledAt'] ?? DateTime.now().toIso8601String(),
+        ),
+        sentAt: json['sentAt'] != null ? DateTime.parse(json['sentAt']) : null,
+        isRead: json['isRead'] ?? false,
+        data: json['data'],
+        imageUrl: json['imageUrl'],
+      );
 }
 
 class NotificationTemplate {
@@ -128,7 +126,7 @@ class NotificationTemplate {
       renderedBody = renderedBody.replaceAll('{${entry.key}}', entry.value);
     }
 
-    return '$renderedTitle\n$renderedBody';
+    return '$renderedTitle/n$renderedBody';
   }
 
   Map<String, dynamic> toJson() => {
@@ -141,21 +139,22 @@ class NotificationTemplate {
     'condition': condition,
   };
 
-  factory NotificationTemplate.fromJson(Map<String, dynamic> json) => NotificationTemplate(
-    id: json['id'] ?? '',
-    title: json['title'] ?? '',
-    body: json['body'] ?? '',
-    type: NotificationType.values.firstWhere(
-      (t) => t.name == json['type'],
-      orElse: () => NotificationType.reminder,
-    ),
-    priority: NotificationPriority.values.firstWhere(
-      (p) => p.name == json['priority'],
-      orElse: () => NotificationPriority.medium,
-    ),
-    variables: List<String>.from(json['variables'] ?? []),
-    condition: json['condition'] ?? '',
-  );
+  factory NotificationTemplate.fromJson(Map<String, dynamic> json) =>
+      NotificationTemplate(
+        id: json['id'] ?? '',
+        title: json['title'] ?? '',
+        body: json['body'] ?? '',
+        type: NotificationType.values.firstWhere(
+          (t) => t.name == json['type'],
+          orElse: () => NotificationType.reminder,
+        ),
+        priority: NotificationPriority.values.firstWhere(
+          (p) => p.name == json['priority'],
+          orElse: () => NotificationPriority.medium,
+        ),
+        variables: List<String>.from(json['variables'] ?? []),
+        condition: json['condition'] ?? '',
+      );
 }
 
 class UserEngagement {
@@ -228,7 +227,9 @@ class UserEngagement {
 
   factory UserEngagement.fromJson(Map<String, dynamic> json) => UserEngagement(
     userId: json['userId'] ?? '',
-    lastActiveAt: DateTime.parse(json['lastActiveAt'] ?? DateTime.now().toIso8601String()),
+    lastActiveAt: DateTime.parse(
+      json['lastActiveAt'] ?? DateTime.now().toIso8601String(),
+    ),
     currentStreak: json['currentStreak'] ?? 0,
     longestStreak: json['longestStreak'] ?? 0,
     totalMinutes: json['totalMinutes'] ?? 0,

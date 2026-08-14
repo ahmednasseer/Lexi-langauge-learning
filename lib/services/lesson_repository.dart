@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class LessonRepository {
   static final LessonRepository _instance = LessonRepository._internal();
@@ -11,7 +12,8 @@ class LessonRepository {
     try {
       final snapshot = await _db.collection('lessons').get();
       return snapshot.docs.map((d) => d.data()).toList();
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Failed to load lessons: $e');
       return [];
     }
   }
@@ -23,7 +25,8 @@ class LessonRepository {
           .where('unitId', isEqualTo: unitId)
           .get();
       return snapshot.docs.map((d) => d.data()).toList();
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Failed to load lessons by unit: $e');
       return [];
     }
   }
@@ -32,7 +35,8 @@ class LessonRepository {
     try {
       final doc = await _db.collection('lessons').doc(lessonId).get();
       return doc.data() ?? {};
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Failed to load lesson: $e');
       return {};
     }
   }

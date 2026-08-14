@@ -56,9 +56,10 @@ class _AnimatedAvatarState extends State<AnimatedAvatar>
       duration: const Duration(milliseconds: 200),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.95,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -69,10 +70,8 @@ class _AnimatedAvatarState extends State<AnimatedAvatar>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveBorder = widget.border ?? Border.all(
-      color: AppColors.border,
-      width: 2,
-    );
+    final effectiveBorder =
+        widget.border ?? Border.all(color: AppColors.border, width: 2);
 
     return GestureDetector(
       onTapDown: (_) => _controller.forward(),
@@ -82,10 +81,7 @@ class _AnimatedAvatarState extends State<AnimatedAvatar>
       child: AnimatedBuilder(
         animation: _scaleAnimation,
         builder: (context, child) {
-          return Transform.scale(
-            scale: _scaleAnimation.value,
-            child: child,
-          );
+          return Transform.scale(scale: _scaleAnimation.value, child: child);
         },
         child: SizedBox(
           width: widget.size,
@@ -117,13 +113,19 @@ class _AnimatedAvatarState extends State<AnimatedAvatar>
       return [widget.background!];
     }
     if (widget.backgroundId != null) {
-      final path =
-          BackgroundArtworkResolver.instance.resolve(widget.backgroundId);
+      final path = BackgroundArtworkResolver.instance.resolve(
+        widget.backgroundId,
+      );
       if (path != null) {
         return [
           Positioned.fill(
             child: ClipOval(
-              child: Image.asset(path, fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) => Container(color: Colors.grey[200])),
+              child: Image.asset(
+                path,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) =>
+                    Container(color: Colors.grey[200]),
+              ),
             ),
           ),
         ];
@@ -196,7 +198,12 @@ class _AnimatedAvatarState extends State<AnimatedAvatar>
       if (path != null) {
         return [
           Positioned.fill(
-            child: Image.asset(path, fit: BoxFit.contain, errorBuilder: (context, error, stackTrace) => Container(color: Colors.grey[200])),
+            child: Image.asset(
+              path,
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) =>
+                  Container(color: Colors.grey[200]),
+            ),
           ),
         ];
       }
@@ -216,10 +223,7 @@ class _AnimatedAvatarState extends State<AnimatedAvatar>
           decoration: BoxDecoration(
             color: AppColors.success,
             shape: BoxShape.circle,
-            border: Border.all(
-              color: AppColors.background,
-              width: 2,
-            ),
+            border: Border.all(color: AppColors.background, width: 2),
           ),
         ),
       ),
@@ -228,13 +232,7 @@ class _AnimatedAvatarState extends State<AnimatedAvatar>
 
   List<Widget> _buildBadgeList() {
     if (widget.badge == null) return const [];
-    return [
-      Positioned(
-        right: 0,
-        top: 0,
-        child: widget.badge!,
-      ),
-    ];
+    return [Positioned(right: 0, top: 0, child: widget.badge!)];
   }
 
   Widget _buildInitials() {

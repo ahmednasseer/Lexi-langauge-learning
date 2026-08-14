@@ -31,9 +31,10 @@ class _AudioPlayerCardState extends State<AudioPlayerCard>
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    _animation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _animation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     if (widget.isPlaying) {
       _controller.repeat(reverse: true);
@@ -66,16 +67,10 @@ class _AudioPlayerCardState extends State<AudioPlayerCard>
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Colors.blue.shade50,
-            Colors.purple.shade50,
-          ],
+          colors: [Colors.blue.shade50, Colors.purple.shade50],
         ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Colors.blue.shade200,
-          width: 2,
-        ),
+        border: Border.all(color: Colors.blue.shade200, width: 2),
         boxShadow: [
           BoxShadow(
             color: Colors.blue.withValues(alpha: 0.1),
@@ -99,10 +94,7 @@ class _AudioPlayerCardState extends State<AudioPlayerCard>
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [
-                        Colors.blue.shade400,
-                        Colors.purple.shade400,
-                      ],
+                      colors: [Colors.blue.shade400, Colors.purple.shade400],
                     ),
                     boxShadow: widget.isPlaying
                         ? [
@@ -155,7 +147,9 @@ class _AudioPlayerCardState extends State<AudioPlayerCard>
                   children: List.generate(5, (index) {
                     final delay = index * 0.2;
                     final height =
-                        20 + (10 * math.sin((_animation.value * 2 * math.pi) + delay));
+                        20 +
+                        (10 *
+                            math.sin((_animation.value * 2 * math.pi) + delay));
                     return Container(
                       margin: const EdgeInsets.symmetric(horizontal: 3),
                       width: 4,

@@ -1,25 +1,192 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Users - only authenticated users can read/write their own document
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isVerifiedUser() {
+      return isAuthenticated() && request.auth.token.email_verified == true;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isNotSuspended() {
+      return !exists(/databases/$(database)/documents/suspended_users/$(request.auth.uid));
+    }
+    
+    function isValidUsername(username) {
+      return username is string && username.size() >= 1 && username.size() <= 30;
+    }
+    
+    function isValidBio(bio) {
+      return bio is string && bio.size() <= 200;
+    }
+    
+    function isValidContent(content) {
+      return content is string && content.size() >= 1 && content.size() <= 1000;
+    }
+    
+    // Users collection
     match /users/{userId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null && request.auth.uid == userId;
+      allow read: if isAuthenticated();
+      allow create: if isOwner(userId);
+      allow update: if isVerifiedUser() && isOwner(userId)
+        && request.resource.data.keys().hasOnly(['name', 'email', 'photoUrl', 'bio', 'nativeLanguage', 'learningLanguage', 'level', 'updatedAt'])
+        && isValidUsername(request.resource.data.name)
+        && isValidBio(request.resource.data.bio);
+      allow delete: if false;
+      
+      // Progress subcollection
+      match /progress/{docId} {
+        allow read: if isOwner(userId);
+        allow write: if false; // Only server/cloud functions can write progress
+      }
+      
+      // Wallet subcollection
+      match /wallet/{docId} {
+        allow read: if isOwner(userId);
+        allow write: if false; // Only server/cloud functions can modify wallet
+        
+        match /transactions/{transactionId} {
+          allow read: if isOwner(userId);
+          allow create: if false; // Only server/cloud functions
+          allow update: if false;
+          allow delete: if false;
+        }
+      }
+      
+      // Inventory subcollection
+      match /inventory/{docId} {
+        allow read: if isOwner(userId);
+        allow write: if false; // Only server/cloud functions
+        
+        match /items/{itemId} {
+          allow read: if isOwner(userId);
+          allow write: if false; // Only server/cloud functions
+        }
+      }
+      
+      // Achievements subcollection
+      match /achievements/{docId} {
+        allow read: if isOwner(userId);
+        allow write: if false; // Only server/cloud functions
+      }
+      
+      // Streaks subcollection
+      match /streaks/{docId} {
+        allow read: if isOwner(userId);
+        allow write: if false; // Only server/cloud functions
+      }
+      
+      // Missions subcollection
+      match /missions/{docId} {
+        allow read: if isOwner(userId);
+        allow write: if false; // Only server/cloud functions
+      }
+      
+      // Premium subcollection
+      match /premium/{docId} {
+        allow read: if isOwner(userId);
+        allow write: if false; // Only server/cloud functions
+      }
+      
+      // Friend requests subcollection
+      match /friendRequests/{docId} {
+        allow read: if isOwner(userId);
+        allow create: if isAuthenticated()
+          && request.resource.data.senderId == request.auth.uid
+          && request.resource.data.status == 'pending';
+        allow update: if isOwner(userId)
+          && request.resource.data.keys().hasOnly(['status'])
+          && (request.resource.data.status == 'accepted' || request.resource.data.status == 'rejected');
+        allow delete: if false;
+      }
+      
+      // Friends subcollection
+      match /friends/{docId} {
+        allow read: if isOwner(userId);
+        allow write: if false; // Only server/cloud functions
+      }
     }
-
-    // Curriculum data - readable by authenticated users, writable only by admins
-    match /curriculum/{document=**} {
-      allow read: if request.auth != null;
-      allow write: if false; // Only via Admin SDK or Cloud Functions
+    
+    // Posts collection
+    match /posts/{postId} {
+      allow read: if isAuthenticated();
+      allow create: if isVerifiedUser()
+        && request.resource.data.authorId == request.auth.uid
+        && isValidContent(request.resource.data.content)
+        && request.resource.data.likesCount == 0
+        && request.resource.data.commentsCount == 0;
+      allow update: if isVerifiedUser()
+        && resource.data.authorId == request.auth.uid
+        && request.resource.data.keys().hasOnly(['content'])
+        && isValidContent(request.resource.data.content);
+      allow delete: if isVerifiedUser() && resource.data.authorId == request.auth.uid;
+      
+      // Likes subcollection
+      match /likes/{userId} {
+        allow read: if isAuthenticated();
+        allow create: if isAuthenticated() && request.auth.uid == userId;
+        allow delete: if isAuthenticated() && request.auth.uid == userId;
+        allow update: if false;
+      }
+      
+      // Comments subcollection
+      match /comments/{commentId} {
+        allow read: if isAuthenticated();
+        allow create: if isVerifiedUser()
+          && request.resource.data.userId == request.auth.uid
+          && isValidContent(request.resource.data.text);
+        allow update: if isVerifiedUser()
+          && resource.data.userId == request.auth.uid
+          && request.resource.data.keys().hasOnly(['text'])
+          && isValidContent(request.resource.data.text);
+        allow delete: if isVerifiedUser() && resource.data.userId == request.auth.uid;
+      }
     }
-
-    // Questions - readable by authenticated users
-    match /questions/{document=**} {
-      allow read: if request.auth != null;
-      allow write: if false;
+    
+    // Store items collection (admin only write, all authenticated read)
+    match /store/items/all/{itemId} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Only admin/cloud functions
     }
-
-    // Default deny
+    
+    // Achievements definitions (admin only write)
+    match /achievements/{achievementId} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Only admin/cloud functions
+    }
+    
+    // Curriculum collection
+    match /curriculum/{level}/units/{unitId}/lessons/{lessonId} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Only admin/cloud functions
+    }
+    
+    // Questions collection
+    match /questions/{level}/questions/{questionId} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Only admin/cloud functions
+    }
+    
+    // Audio collection
+    match /audio/{audioId} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Only admin/cloud functions
+    }
+    
+    // Pronunciation collection
+    match /pronunciation/{pronunciationId} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Only admin/cloud functions
+    }
+    
+    // Deny all other access
     match /{document=**} {
       allow read, write: if false;
     }

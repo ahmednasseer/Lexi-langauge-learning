@@ -5,11 +5,7 @@ class RewardAnimation extends StatefulWidget {
   final MissionReward reward;
   final VoidCallback? onComplete;
 
-  const RewardAnimation({
-    super.key,
-    required this.reward,
-    this.onComplete,
-  });
+  const RewardAnimation({super.key, required this.reward, this.onComplete});
 
   @override
   State<RewardAnimation> createState() => _RewardAnimationState();
@@ -85,10 +81,7 @@ class _RewardAnimationState extends State<RewardAnimation>
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [
-                        Colors.amber.shade400,
-                        Colors.orange.shade400,
-                      ],
+                      colors: [Colors.amber.shade400, Colors.orange.shade400],
                     ),
                     boxShadow: [
                       BoxShadow(
@@ -122,13 +115,13 @@ class _RewardAnimationState extends State<RewardAnimation>
               FadeTransition(
                 opacity: _fadeAnimation,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [
-                        Colors.amber.shade400,
-                        Colors.orange.shade400,
-                      ],
+                      colors: [Colors.amber.shade400, Colors.orange.shade400],
                     ),
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -154,20 +147,24 @@ class _RewardAnimationState extends State<RewardAnimation>
                 FadeTransition(
                   opacity: _fadeAnimation,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [
-                          Colors.purple.shade400,
-                          Colors.pink.shade400,
-                        ],
+                        colors: [Colors.purple.shade400, Colors.pink.shade400],
                       ),
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.diamond, color: Colors.white, size: 24),
+                        const Icon(
+                          Icons.diamond,
+                          color: Colors.white,
+                          size: 24,
+                        ),
                         const SizedBox(width: 8),
                         Text(
                           '+${widget.reward.gems} Gems',

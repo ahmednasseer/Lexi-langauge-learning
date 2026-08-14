@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../shared/widgets/widgets.dart';
+import '../../core/services/api_service.dart';
 
 class GamificationScreen extends StatefulWidget {
   const GamificationScreen({super.key});
@@ -22,100 +23,19 @@ class _GamificationScreenState extends State<GamificationScreen>
   final List<String> _badgeTabs = ['الإنجازات', 'المفضلة', 'الشارات'];
   final List<String> _leaderboardTabs = ['الأعضاء', 'الأسبوع', 'الشهر'];
 
-  final _badges = [
-    _BadgeData(
-      icon: '🌟',
-      name: 'أول خطوة',
-      description: 'أكمل درسك الأول',
-      isUnlocked: true,
-    ),
-    _BadgeData(
-      icon: '🔥',
-      name: '7 أيام متتالية',
-      description: 'حافظ على سلسلة 7 أيام',
-      isUnlocked: true,
-    ),
-    _BadgeData(
-      icon: '👩‍🏫',
-      name: 'معلمة أول',
-      description: 'ساعد زميلك في التعلم',
-      isUnlocked: true,
-    ),
-    _BadgeData(
-      icon: '📚',
-      name: 'جامع الكلمات',
-      description: 'تعلم 50 كلمة',
-      isUnlocked: false,
-    ),
-    _BadgeData(
-      icon: '🏆',
-      name: 'بطل الاختبارات',
-      description: 'احصل على درجة كاملة',
-      isUnlocked: false,
-    ),
-    _BadgeData(
-      icon: '💬',
-      name: 'محادثة نشطة',
-      description: 'أكمل 10 محادثات',
-      isUnlocked: false,
-    ),
-    _BadgeData(
-      icon: '🎤',
-      name: 'نطق مثالي',
-      description: 'احصل على 90%+ في النطق',
-      isUnlocked: false,
-    ),
-    _BadgeData(
-      icon: '⚡',
-      name: 'سريع البرق',
-      description: 'أكمل اختبار في دقيقة',
-      isUnlocked: false,
-    ),
-  ];
-
-  final _leaderboard = [
-    _LeaderData(
-      name: 'Lena',
-      xp: 1580,
-      gems: 150,
-      rank: 1,
-      avatar: '👩',
-    ),
-    _LeaderData(
-      name: 'Ahmed',
-      xp: 1250,
-      gems: 0,
-      rank: 2,
-      avatar: '👨',
-    ),
-    _LeaderData(
-      name: 'Paul',
-      xp: 1100,
-      gems: 0,
-      rank: 3,
-      avatar: '👦',
-    ),
-    _LeaderData(
-      name: 'Anna',
-      xp: 980,
-      gems: 0,
-      rank: 4,
-      avatar: '👧',
-    ),
-    _LeaderData(
-      name: 'Max',
-      xp: 860,
-      gems: 0,
-      rank: 5,
-      avatar: '🧑',
-    ),
-  ];
+  final ApiService _api = ApiService();
+  List<dynamic> _badges = [];
+  List<dynamic> _leaderboard = [];
+  int _streak = 0;
+  bool _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
     super.initState();
     _badgeTabController = TabController(length: 3, vsync: this);
     _leaderboardTabController = TabController(length: 3, vsync: this);
+    _loadData();
   }
 
   @override
@@ -123,6 +43,35 @@ class _GamificationScreenState extends State<GamificationScreen>
     _badgeTabController.dispose();
     _leaderboardTabController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadData() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      final profileResult = await _api.getProfile();
+      final achievementsResult = await _api.getAchievements();
+      final leaderboardResult = await _api.getLeaderboard(period: 'weekly');
+
+      if (profileResult.isSuccess && profileResult.data != null) {
+        _streak = profileResult.data!['streak'] ?? 0;
+      }
+      if (achievementsResult.isSuccess && achievementsResult.data != null) {
+        _badges = achievementsResult.data!;
+      }
+      if (leaderboardResult.isSuccess && leaderboardResult.data != null) {
+        _leaderboard = leaderboardResult.data!;
+      }
+    } catch (e) {
+      _error = e.toString();
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -163,10 +112,51 @@ class _GamificationScreenState extends State<GamificationScreen>
     );
   }
 
+  Widget _buildLoadingOverlay() {
+    return const Center(
+      child: Padding(
+        padding: EdgeInsets.all(40),
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+
+  Widget _buildErrorOverlay() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(40),
+        child: Column(
+          children: [
+            const Icon(Icons.error_outline, size: 48, color: AppColors.error),
+            const SizedBox(height: 16),
+            Text(
+              _error ?? 'Failed to load gamification data',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(color: AppColors.textSecondary),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: _loadData,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   // ═══════════════════════════════════════════
   // BADGES SECTION
   // ═══════════════════════════════════════════
   Widget _buildBadgesSection() {
+    if (_isLoading) {
+      return _buildLoadingOverlay();
+    }
+    if (_error != null && _badges.isEmpty) {
+      return _buildErrorOverlay();
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -217,8 +207,9 @@ class _GamificationScreenState extends State<GamificationScreen>
                     _badgeTabs[index],
                     style: GoogleFonts.poppins(
                       fontSize: 13,
-                      fontWeight:
-                          isSelected ? FontWeight.w600 : FontWeight.w500,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.w500,
                       color: isSelected
                           ? Colors.white
                           : AppColors.textSecondary,
@@ -234,6 +225,18 @@ class _GamificationScreenState extends State<GamificationScreen>
   }
 
   Widget _buildBadgeGrid() {
+    if (_badges.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Text(
+            'No achievements yet',
+            style: GoogleFonts.poppins(color: AppColors.textHint),
+          ),
+        ),
+      );
+    }
+
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -246,125 +249,140 @@ class _GamificationScreenState extends State<GamificationScreen>
       ),
       itemCount: _badges.length,
       itemBuilder: (context, index) {
-        return _buildBadgeCard(_badges[index], index);
+        final achievement = _badges[index];
+        return _buildBadgeCard(achievement, index);
       },
     );
   }
 
-  Widget _buildBadgeCard(_BadgeData badge, int index) {
+  Widget _buildBadgeCard(Map<String, dynamic> achievement, int index) {
+    final isUnlocked = achievement['unlocked'] == true ||
+        achievement['isUnlocked'] == true ||
+        achievement['status'] == 'completed';
+    final icon = achievement['icon'] ?? achievement['emoji'] ?? '🏆';
+    final name = achievement['name'] ?? achievement['title'] ?? 'Achievement';
+    final description = achievement['description'] ?? '';
+
     return GlowCard(
-      glowColor: badge.isUnlocked ? AppColors.gold : AppColors.border,
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Stack(
-            alignment: Alignment.center,
+          glowColor: isUnlocked ? AppColors.gold : AppColors.border,
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: badge.isUnlocked
-                      ? AppColors.gold.withValues(alpha: 0.15)
-                      : AppColors.surfaceLight,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color:
-                        badge.isUnlocked ? AppColors.gold : AppColors.border,
-                  ),
-                ),
-                child: Center(
-                  child: Text(
-                    badge.icon,
-                    style: TextStyle(
-                      fontSize: 28,
-                      color: badge.isUnlocked ? null : AppColors.textHint,
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: isUnlocked
+                          ? AppColors.gold.withValues(alpha: 0.15)
+                          : AppColors.surfaceLight,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: isUnlocked
+                            ? AppColors.gold
+                            : AppColors.border,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        icon is String ? icon : '🏆',
+                        style: TextStyle(
+                          fontSize: 28,
+                          color: isUnlocked ? null : AppColors.textHint,
+                        ),
+                      ),
                     ),
                   ),
+                  if (!isUnlocked)
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        width: 22,
+                        height: 22,
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceLight,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: AppColors.border),
+                        ),
+                        child: const Icon(
+                          Icons.lock,
+                          size: 12,
+                          color: AppColors.textHint,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Text(
+                name is String ? name : 'Achievement',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: isUnlocked
+                      ? AppColors.textPrimary
+                      : AppColors.textHint,
                 ),
               ),
-              if (!badge.isUnlocked)
-                Positioned(
-                  right: 0,
-                  bottom: 0,
-                  child: Container(
-                    width: 22,
-                    height: 22,
-                    decoration: BoxDecoration(
-                      color: AppColors.surfaceLight,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.border),
+              const SizedBox(height: 4),
+              Text(
+                description is String ? description : '',
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.poppins(
+                  fontSize: 9,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 8),
+              if (isUnlocked)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    gradient: AppColors.successGradient,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    'مكتمل',
+                    style: GoogleFonts.poppins(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
                     ),
-                    child: const Icon(
-                      Icons.lock,
-                      size: 12,
+                  ),
+                )
+              else
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceLight,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: Text(
+                    'مقفل',
+                    style: GoogleFonts.poppins(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w500,
                       color: AppColors.textHint,
                     ),
                   ),
                 ),
             ],
           ),
-          const SizedBox(height: 10),
-          Text(
-            badge.name,
-            textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: badge.isUnlocked
-                  ? AppColors.textPrimary
-                  : AppColors.textHint,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            badge.description,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.poppins(
-              fontSize: 9,
-              color: AppColors.textSecondary,
-            ),
-          ),
-          const SizedBox(height: 8),
-          if (badge.isUnlocked)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                gradient: AppColors.successGradient,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                'مكتمل',
-                style: GoogleFonts.poppins(
-                  fontSize: 9,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
-            )
-          else
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: AppColors.surfaceLight,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.border),
-              ),
-              child: Text(
-                'مقفل',
-                style: GoogleFonts.poppins(
-                  fontSize: 9,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textHint,
-                ),
-              ),
-            ),
-        ],
-      ),
-    )
+        )
         .animate()
         .fadeIn(delay: Duration(milliseconds: 200 + index * 80))
         .scale(begin: const Offset(0.9, 0.9));
@@ -374,6 +392,13 @@ class _GamificationScreenState extends State<GamificationScreen>
   // LEADERBOARD SECTION
   // ═══════════════════════════════════════════
   Widget _buildLeaderboardSection() {
+    if (_isLoading) {
+      return _buildLoadingOverlay();
+    }
+    if (_error != null && _leaderboard.isEmpty) {
+      return _buildErrorOverlay();
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -430,8 +455,9 @@ class _GamificationScreenState extends State<GamificationScreen>
                     _leaderboardTabs[index],
                     style: GoogleFonts.poppins(
                       fontSize: 13,
-                      fontWeight:
-                          isSelected ? FontWeight.w600 : FontWeight.w500,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.w500,
                       color: isSelected
                           ? Colors.white
                           : AppColors.textSecondary,
@@ -447,143 +473,163 @@ class _GamificationScreenState extends State<GamificationScreen>
   }
 
   Widget _buildLeaderboardList() {
+    if (_leaderboard.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Text(
+            'No leaderboard data available',
+            style: GoogleFonts.poppins(color: AppColors.textHint),
+          ),
+        ),
+      );
+    }
+
     return Column(
       children: List.generate(_leaderboard.length, (index) {
-        return _buildLeaderboardItem(_leaderboard[index], index);
+        final entry = _leaderboard[index];
+        return _buildLeaderboardItem(entry, index);
       }),
     );
   }
 
-  Widget _buildLeaderboardItem(_LeaderData leader, int index) {
+  Widget _buildLeaderboardItem(Map<String, dynamic> entry, int index) {
+    final rank = entry['rank'] ?? entry['position'] ?? index + 1;
+    final name = entry['name'] ?? entry['userName'] ?? 'User';
+    final xp = entry['xp'] ?? entry['totalXp'] ?? 0;
+    final gems = entry['gems'] ?? 0;
+    final avatar = entry['avatar'] ?? entry['emoji'] ?? '👤';
+    final rankInt = rank is int ? rank : int.tryParse(rank.toString()) ?? index + 1;
+
     final rankColors = {
       1: AppColors.gold,
       2: AppColors.textSecondary,
       3: const Color(0xFFCD7F32),
     };
-    final rankColor = rankColors[leader.rank] ?? AppColors.textHint;
+    final rankColor = rankColors[rankInt] ?? AppColors.textHint;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: GlowCard(
-        glowColor: leader.rank == 1 ? AppColors.gold : AppColors.border,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        child: Row(
-          children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                gradient: leader.rank <= 3
-                    ? LinearGradient(
-                        colors: [
-                          rankColor,
-                          rankColor.withValues(alpha: 0.7),
-                        ],
-                      )
-                    : null,
-                color: leader.rank <= 3 ? null : AppColors.surfaceLight,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: rankColor,
-                  width: leader.rank <= 3 ? 2 : 1,
-                ),
-              ),
-              child: Center(
-                child: leader.rank <= 3
-                    ? Icon(
-                        Icons.emoji_events,
-                        size: 16,
-                        color: Colors.white,
-                      )
-                    : Text(
-                        '${leader.rank}',
-                        style: GoogleFonts.poppins(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                gradient: leader.rank == 1
-                    ? AppColors.goldGradient
-                    : AppColors.primaryGradient,
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Text(
-                  leader.avatar,
-                  style: const TextStyle(fontSize: 22),
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    leader.name,
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
+          padding: const EdgeInsets.only(bottom: 10),
+          child: GlowCard(
+            glowColor: rankInt == 1 ? AppColors.gold : AppColors.border,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    gradient: rankInt <= 3
+                        ? LinearGradient(
+                            colors: [
+                              rankColor,
+                              rankColor.withValues(alpha: 0.7),
+                            ],
+                          )
+                        : null,
+                    color: rankInt <= 3 ? null : AppColors.surfaceLight,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: rankColor,
+                      width: rankInt <= 3 ? 2 : 1,
                     ),
                   ),
-                  const SizedBox(height: 2),
-                  Row(
+                  child: Center(
+                    child: rankInt <= 3
+                        ? const Icon(
+                            Icons.emoji_events,
+                            size: 16,
+                            color: Colors.white,
+                          )
+                        : Text(
+                            '$rankInt',
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    gradient: rankInt == 1
+                        ? AppColors.goldGradient
+                        : AppColors.primaryGradient,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Text(
+                      avatar is String ? avatar : '👤',
+                      style: const TextStyle(fontSize: 22),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${leader.xp} XP',
+                        name is String ? name : 'User',
                         style: GoogleFonts.poppins(
-                          fontSize: 12,
+                          fontSize: 15,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.primary,
+                          color: AppColors.textPrimary,
                         ),
                       ),
-                      if (leader.gems > 0) ...[
-                        const SizedBox(width: 8),
-                        Text(
-                          '${leader.gems} 💎',
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.gem,
+                      const SizedBox(height: 2),
+                      Row(
+                        children: [
+                          Text(
+                            '$xp XP',
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.primary,
+                            ),
                           ),
-                        ),
-                      ],
+                          if (gems > 0) ...[
+                            const SizedBox(width: 8),
+                            Text(
+                              '$gems 💎',
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.gem,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
                     ],
                   ),
-                ],
-              ),
+                ),
+                if (rankInt == 1)
+                  const Icon(
+                    Icons.workspace_premium,
+                    color: AppColors.gold,
+                    size: 24,
+                  )
+                else if (rankInt == 2)
+                  const Icon(
+                    Icons.workspace_premium,
+                    color: AppColors.textSecondary,
+                    size: 22,
+                  )
+                else if (rankInt == 3)
+                  const Icon(
+                    Icons.workspace_premium,
+                    color: Color(0xFFCD7F32),
+                    size: 20,
+                  ),
+              ],
             ),
-            if (leader.rank == 1)
-              const Icon(
-                Icons.workspace_premium,
-                color: AppColors.gold,
-                size: 24,
-              )
-            else if (leader.rank == 2)
-              const Icon(
-                Icons.workspace_premium,
-                color: AppColors.textSecondary,
-                size: 22,
-              )
-            else if (leader.rank == 3)
-              const Icon(
-                Icons.workspace_premium,
-                color: Color(0xFFCD7F32),
-                size: 20,
-              ),
-          ],
-        ),
-      ),
-    )
+          ),
+        )
         .animate()
         .fadeIn(delay: Duration(milliseconds: 400 + index * 100))
         .slideX(begin: 0.15);
@@ -610,6 +656,10 @@ class _GamificationScreenState extends State<GamificationScreen>
   // STREAK SECTION
   // ═══════════════════════════════════════════
   Widget _buildStreakSection() {
+    if (_isLoading) {
+      return _buildLoadingOverlay();
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -635,6 +685,8 @@ class _GamificationScreenState extends State<GamificationScreen>
   }
 
   Widget _buildStreakCard() {
+    final streakText = _streak > 0 ? '$_streak يوم متتالي' : '0 يوم متتالي';
+
     return GlowCard(
       glowColor: AppColors.streak,
       gradient: AppColors.orangeGradient,
@@ -642,13 +694,10 @@ class _GamificationScreenState extends State<GamificationScreen>
       child: Center(
         child: Column(
           children: [
-            const Text(
-              '🔥',
-              style: TextStyle(fontSize: 56),
-            ),
+            const Text('🔥', style: TextStyle(fontSize: 56)),
             const SizedBox(height: 12),
             Text(
-              '45 يوم متتالي',
+              streakText,
               style: GoogleFonts.poppins(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -697,8 +746,7 @@ class _GamificationScreenState extends State<GamificationScreen>
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      gradient:
-                          day.isActive ? AppColors.orangeGradient : null,
+                      gradient: day.isActive ? AppColors.orangeGradient : null,
                       color: day.isActive ? null : AppColors.surfaceLight,
                       shape: BoxShape.circle,
                       border: Border.all(
@@ -710,8 +758,7 @@ class _GamificationScreenState extends State<GamificationScreen>
                       boxShadow: day.isActive
                           ? [
                               BoxShadow(
-                                color: AppColors.streak
-                                    .withValues(alpha: 0.3),
+                                color: AppColors.streak.withValues(alpha: 0.3),
                                 blurRadius: 8,
                               ),
                             ]
@@ -771,39 +818,6 @@ class _GamificationScreenState extends State<GamificationScreen>
       ),
     ).animate().fadeIn(delay: 1200.ms);
   }
-}
-
-// ═══════════════════════════════════════════
-// DATA MODELS
-// ═══════════════════════════════════════════
-class _BadgeData {
-  final String icon;
-  final String name;
-  final String description;
-  final bool isUnlocked;
-
-  const _BadgeData({
-    required this.icon,
-    required this.name,
-    required this.description,
-    required this.isUnlocked,
-  });
-}
-
-class _LeaderData {
-  final String name;
-  final int xp;
-  final int gems;
-  final int rank;
-  final String avatar;
-
-  const _LeaderData({
-    required this.name,
-    required this.xp,
-    required this.gems,
-    required this.rank,
-    required this.avatar,
-  });
 }
 
 class _DayData {

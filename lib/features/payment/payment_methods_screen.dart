@@ -149,9 +149,12 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
           final index = entry.key;
           final method = entry.value;
           return Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: _buildPaymentOption(method),
-          ).animate().fadeIn(delay: Duration(milliseconds: 300 + index * 80)).slideX(begin: 0.05);
+                padding: const EdgeInsets.only(bottom: 10),
+                child: _buildPaymentOption(method),
+              )
+              .animate()
+              .fadeIn(delay: Duration(milliseconds: 300 + index * 80))
+              .slideX(begin: 0.05);
         }),
       ],
     );

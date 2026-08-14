@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/services/api_service.dart';
 import 'models/community_post.dart';
@@ -11,118 +12,136 @@ class CommunityRepository {
   final ApiService _api = ApiService();
 
   Future<List<CommunityPost>> getFeed({int page = 1, int limit = 20}) async {
-    try {
-      final result = await _api.getCommunityFeed(page: page, limit: limit);
-      if (result.isSuccess && result.data!.isNotEmpty) {
-        final posts = result.data!.map((e) => CommunityPost.fromJson(e as Map<String, dynamic>)).toList();
-        await _cache('community_feed', posts.map((p) => p.toJson()).toList());
-        return posts;
-      }
-    } catch (_) {}
-    return (await _cachedPosts()) ?? [];
+    final result = await _api.getCommunityFeed(page: page, limit: limit);
+    if (!result.isSuccess || result.data == null) {
+      throw Exception(result.error ?? 'Failed to load community feed');
+    }
+    final posts = result.data!
+        .map((e) => CommunityPost.fromJson(e as Map<String, dynamic>))
+        .toList();
+    await _cache('community_feed', posts.map((p) => p.toJson()).toList());
+    return posts;
   }
 
   Future<List<CommunityGroup>> getGroups() async {
-    try {
-      final result = await _api.getCommunityGroups();
-      if (result.isSuccess && result.data!.isNotEmpty) {
-        final groups = result.data!.map((e) => CommunityGroup.fromJson(e as Map<String, dynamic>)).toList();
-        await _cache('community_groups', groups.map((g) => g.toJson()).toList());
-        return groups;
-      }
-    } catch (_) {}
-    return (await _cachedGroups()) ?? [];
+    final result = await _api.getCommunityGroups();
+    if (!result.isSuccess || result.data == null) {
+      throw Exception(result.error ?? 'Failed to load community groups');
+    }
+    final groups = result.data!
+        .map((e) => CommunityGroup.fromJson(e as Map<String, dynamic>))
+        .toList();
+    await _cache(
+      'community_groups',
+      groups.map((g) => g.toJson()).toList(),
+    );
+    return groups;
   }
 
   Future<List<Challenge>> getChallenges() async {
-    try {
-      final result = await _api.getChallenges();
-      if (result.isSuccess && result.data!.isNotEmpty) {
-        final challenges = result.data!.map((e) => Challenge.fromJson(e as Map<String, dynamic>)).toList();
-        await _cache('community_challenges', challenges.map((c) => c.toJson()).toList());
-        return challenges;
-      }
-    } catch (_) {}
-    return (await _cachedChallenges()) ?? [];
+    final result = await _api.getChallenges();
+    if (!result.isSuccess || result.data == null) {
+      throw Exception(result.error ?? 'Failed to load challenges');
+    }
+    final challenges = result.data!
+        .map((e) => Challenge.fromJson(e as Map<String, dynamic>))
+        .toList();
+    await _cache(
+      'community_challenges',
+      challenges.map((c) => c.toJson()).toList(),
+    );
+    return challenges;
   }
 
   Future<List<CommunityComment>> getComments(String postId) async {
-    try {
-      final result = await _api.getComments(postId);
-      if (result.isSuccess) {
-        return result.data!.map((e) => CommunityComment.fromJson(e as Map<String, dynamic>)).toList();
-      }
-    } catch (_) {}
-    return [];
+    final result = await _api.getComments(postId);
+    if (!result.isSuccess || result.data == null) {
+      throw Exception(result.error ?? 'Failed to load comments');
+    }
+    return result.data!
+        .map((e) => CommunityComment.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
-  Future<void> createPost(String content, String type, {String? groupId}) async {
-    try {
-      await _api.createPost(content, type, groupId: groupId);
-    } catch (_) {}
+  Future<void> createPost(
+    String content,
+    String type, {
+    String? groupId,
+  }) async {
+    final result = await _api.createPost(content, type, groupId: groupId);
+    if (!result.isSuccess) {
+      throw Exception(result.error ?? 'Failed to create post');
+    }
   }
 
   Future<void> toggleLike(String postId, bool isLiked) async {
-    try {
-      await _api.likePost(postId);
-    } catch (_) {}
+    final result = await _api.likePost(postId);
+    if (!result.isSuccess) {
+      throw Exception(result.error ?? 'Failed to toggle like');
+    }
   }
 
   Future<void> addComment(String postId, String text) async {
-    try {
-      await _api.addComment(postId, text);
-    } catch (_) {}
+    final result = await _api.addComment(postId, text);
+    if (!result.isSuccess) {
+      throw Exception(result.error ?? 'Failed to add comment');
+    }
   }
 
   Future<void> joinGroup(String groupId) async {
-    try {
-      await _api.joinCommunityGroup(groupId);
-    } catch (_) {}
+    final result = await _api.joinCommunityGroup(groupId);
+    if (!result.isSuccess) {
+      throw Exception(result.error ?? 'Failed to join group');
+    }
   }
 
   Future<void> leaveGroup(String groupId) async {
-    try {
-      await _api.joinCommunityGroup(groupId);
-    } catch (_) {}
+    final result = await _api.joinCommunityGroup(groupId);
+    if (!result.isSuccess) {
+      throw Exception(result.error ?? 'Failed to leave group');
+    }
   }
 
   Future<void> joinChallenge(String challengeId) async {
-    try {
-      await _api.joinChallenge(challengeId);
-    } catch (_) {}
+    final result = await _api.joinChallenge(challengeId);
+    if (!result.isSuccess) {
+      throw Exception(result.error ?? 'Failed to join challenge');
+    }
   }
 
   // ==================== MESSAGES ====================
   Future<List<Conversation>> getConversations() async {
-    try {
-      final result = await _api.getConversations();
-      if (result.isSuccess && result.data!.isNotEmpty) {
-        return result.data!.map((e) => Conversation.fromJson(e as Map<String, dynamic>)).toList();
-      }
-    } catch (_) {}
-    return [];
+    final result = await _api.getConversations();
+    if (!result.isSuccess || result.data == null) {
+      throw Exception(result.error ?? 'Failed to load conversations');
+    }
+    return result.data!
+        .map((e) => Conversation.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<List<Message>> getMessages(String conversationId) async {
-    try {
-      final result = await _api.getMessages(conversationId);
-      if (result.isSuccess) {
-        return result.data!.map((e) => Message.fromJson(e as Map<String, dynamic>)).toList();
-      }
-    } catch (_) {}
-    return [];
+    final result = await _api.getMessages(conversationId);
+    if (!result.isSuccess || result.data == null) {
+      throw Exception(result.error ?? 'Failed to load messages');
+    }
+    return result.data!
+        .map((e) => Message.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<void> sendMessage(String receiverId, String content) async {
-    try {
-      await _api.sendMessage(receiverId, content);
-    } catch (_) {}
+    final result = await _api.sendMessage(receiverId, content);
+    if (!result.isSuccess) {
+      throw Exception(result.error ?? 'Failed to send message');
+    }
   }
 
   Future<void> sendMessageRequest(String receiverId) async {
-    try {
-      await _api.sendMessageRequest(receiverId);
-    } catch (_) {}
+    final result = await _api.sendMessageRequest(receiverId);
+    if (!result.isSuccess) {
+      throw Exception(result.error ?? 'Failed to send message request');
+    }
   }
 
   // ==================== LOCAL CACHE ====================
@@ -130,7 +149,9 @@ class CommunityRepository {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(key, jsonEncode(data));
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('Failed to cache $key: $e');
+    }
   }
 
   Future<List<Map<String, dynamic>>?> _readCache(String key) async {
@@ -142,7 +163,9 @@ class CommunityRepository {
       if (decoded is List) {
         return decoded.map((e) => e as Map<String, dynamic>).toList();
       }
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('Failed to read cache $key: $e');
+    }
     return null;
   }
 

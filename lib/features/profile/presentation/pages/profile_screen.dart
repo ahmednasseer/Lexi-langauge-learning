@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/di/injection_container.dart';
 import '../../../../shared/widgets/widgets.dart';
+import '../../../../features/learning_progress/presentation/bloc/progress_cubit.dart';
 import '../bloc/profile_cubit.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -12,8 +13,11 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<ProfileCubit>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => getIt<ProfileCubit>()..loadProfile()),
+        BlocProvider(create: (_) => getIt<ProgressCubit>()),
+      ],
       child: const _ProfileView(),
     );
   }
@@ -32,19 +36,41 @@ class _ProfileView extends StatelessWidget {
 
         if (state is ProfileError) {
           return Center(
-            child: Text(
-              state.message,
-              style: GoogleFonts.poppins(color: Colors.white),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  state.message,
+                  style: GoogleFonts.poppins(color: Colors.white),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => context.read<ProfileCubit>().loadProfile(),
+                  child: const Text('Retry'),
+                ),
+              ],
             ),
           );
         }
 
-        final profile = state is ProfileLoaded ? state.profile : null;
+        final profile = state is ProfileLoaded || state is ProfileSaved
+            ? (state is ProfileLoaded
+                  ? state.profile
+                  : (state as ProfileSaved).profile)
+            : null;
         final userName = profile?.name ?? 'Guest';
-        final userLevel = _getLevelFromXp(profile?.xp ?? 0);
-        final userXp = profile?.xp ?? 0;
-        final streak = profile?.streak ?? 0;
-        final lessons = 12;
+        final photoUrl = profile?.photoUrl;
+        final bio = profile?.bio;
+
+        int userXp = profile?.xp ?? 0;
+        String userLevel = _getLevelFromXp(userXp);
+        int streak = profile?.streak ?? 0;
+
+        final progressState = context.read<ProgressCubit>().state;
+        if (progressState is ProgressLoaded) {
+          userXp = progressState.progress.totalXp;
+          userLevel = progressState.progress.levelLabel;
+        }
 
         return Scaffold(
           backgroundColor: AppColors.background,
@@ -55,11 +81,17 @@ class _ProfileView extends StatelessWidget {
               child: Column(
                 children: [
                   const SizedBox(height: 20),
-                  _buildProfileHeader(context, userName, userLevel),
+                  _buildProfileHeader(context, userName, userLevel, photoUrl),
                   const SizedBox(height: 24),
-                  _buildStatsRow(lessons, userXp, streak),
+                  _buildStatsRow(userXp, streak),
                   const SizedBox(height: 28),
                   _buildMenuItems(context),
+                  const SizedBox(height: 24),
+                  if (bio != null && bio.isNotEmpty) ...[
+                    _buildBioCard(bio),
+                    const SizedBox(height: 24),
+                  ],
+                  _buildEditProfileButton(context),
                   const SizedBox(height: 24),
                 ],
               ),
@@ -78,7 +110,12 @@ class _ProfileView extends StatelessWidget {
     return 'A1';
   }
 
-  Widget _buildProfileHeader(BuildContext context, String name, String level) {
+  Widget _buildProfileHeader(
+    BuildContext context,
+    String name,
+    String level,
+    String? photoUrl,
+  ) {
     return Column(
       children: [
         Stack(
@@ -95,15 +132,49 @@ class _ProfileView extends StatelessWidget {
                   width: 3,
                 ),
               ),
-              child: Center(
-                child: Text(
-                  name.isNotEmpty ? name[0].toUpperCase() : 'L',
-                  style: GoogleFonts.poppins(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
+              child: ClipOval(
+                child: photoUrl != null && photoUrl.isNotEmpty
+                    ? Image.network(
+                        photoUrl,
+                        width: 110,
+                        height: 110,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Center(
+                            child: Text(
+                              name.isNotEmpty ? name[0].toUpperCase() : 'L',
+                              style: GoogleFonts.poppins(
+                                fontSize: 40,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          );
+                        },
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                  : null,
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          );
+                        },
+                      )
+                    : Center(
+                        child: Text(
+                          name.isNotEmpty ? name[0].toUpperCase() : 'L',
+                          style: GoogleFonts.poppins(
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
               ),
             ).animate().fadeIn().scale(
               begin: const Offset(0.9, 0.9),
@@ -120,7 +191,9 @@ class _ProfileView extends StatelessWidget {
                   color: AppColors.background,
                   border: Border.all(color: AppColors.border, width: 1),
                 ),
-                child: const Center(child: Text('🇩🇪', style: TextStyle(fontSize: 18))),
+                child: const Center(
+                  child: Text('🇩🇪', style: TextStyle(fontSize: 18)),
+                ),
               ),
             ),
           ],
@@ -141,7 +214,7 @@ class _ProfileView extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                gradient: AppColors.primaryGradient,
+                gradient: AppColors.getLevelGradient(level),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
@@ -158,24 +231,18 @@ class _ProfileView extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           '🇩🇪 ألماني',
-          style: GoogleFonts.poppins(fontSize: 14, color: AppColors.textSecondary),
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: AppColors.textSecondary,
+          ),
         ).animate().fadeIn(delay: 200.ms),
       ],
     );
   }
 
-  Widget _buildStatsRow(int lessons, int points, int streak) {
+  Widget _buildStatsRow(int points, int streak) {
     return Row(
       children: [
-        Expanded(
-          child: _buildStatItem(
-            icon: Icons.menu_book_rounded,
-            value: '$lessons',
-            label: 'الدروس',
-            gradient: AppColors.blueGradient,
-          ),
-        ),
-        const SizedBox(width: 12),
         Expanded(
           child: _buildStatItem(
             icon: Icons.star_rounded,
@@ -195,6 +262,65 @@ class _ProfileView extends StatelessWidget {
         ),
       ],
     ).animate().fadeIn(delay: 200.ms);
+  }
+
+  Widget _buildBioCard(String bio) {
+    return GlassCard(
+      glowColor: AppColors.primary,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'About',
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.primary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            bio,
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              color: AppColors.textSecondary,
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn(delay: 250.ms);
+  }
+
+  Widget _buildEditProfileButton(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 56,
+      child: ElevatedButton.icon(
+        onPressed: () async {
+          await Navigator.pushNamed(context, '/profile-edit');
+          if (context.mounted) {
+            context.read<ProfileCubit>().loadProfile();
+          }
+        },
+        icon: const Icon(Icons.edit, color: Colors.white),
+        label: Text(
+          'Edit Profile',
+          style: GoogleFonts.poppins(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+      ),
+    ).animate().fadeIn(delay: 350.ms);
   }
 
   Widget _buildStatItem({
@@ -278,16 +404,30 @@ class _ProfileView extends StatelessWidget {
                     color: AppColors.primary.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(item['icon'] as IconData, color: AppColors.primary, size: 22),
+                  child: Icon(
+                    item['icon'] as IconData,
+                    color: AppColors.primary,
+                    size: 22,
+                  ),
                 ),
                 title: Text(
                   item['title'] as String,
-                  style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
+                  style: GoogleFonts.poppins(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
-                trailing: Icon(Icons.arrow_forward_ios_rounded, size: 16, color: AppColors.textHint),
-                onTap: () => Navigator.pushNamed(context, item['route'] as String),
+                trailing: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 16,
+                  color: AppColors.textHint,
+                ),
+                onTap: () =>
+                    Navigator.pushNamed(context, item['route'] as String),
               ),
-              if (!isLast) Divider(height: 1, indent: 74, color: AppColors.divider),
+              if (!isLast)
+                Divider(height: 1, indent: 74, color: AppColors.divider),
             ],
           );
         }),

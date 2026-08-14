@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'models/live_room.dart';
-import 'models/language_partner.dart';
-import 'models/learning_group.dart';
-import 'models/community_event.dart';
-import 'models/voice_message.dart';
+import 'package:lexi/core/services/auth_service.dart';
+import 'package:lexi/features/live_learning/models/live_room.dart';
+import 'package:lexi/features/live_learning/models/language_partner.dart';
+import 'package:lexi/features/live_learning/models/learning_group.dart';
+import 'package:lexi/features/live_learning/models/community_event.dart';
+import 'package:lexi/features/live_learning/models/voice_message.dart';
 import 'services/live_learning_service.dart';
 
 class LiveLearningController extends ChangeNotifier {
   final LiveLearningService _service = LiveLearningService();
-
   List<LiveRoom> _rooms = [];
   List<LanguagePartner> _partners = [];
   List<LearningGroup> _groups = [];
@@ -17,7 +17,6 @@ class LiveLearningController extends ChangeNotifier {
   LiveRoom? _currentRoom;
   bool _isLoading = false;
   String _error = '';
-
   List<LiveRoom> get rooms => _rooms;
   List<LanguagePartner> get partners => _partners;
   List<LearningGroup> get groups => _groups;
@@ -26,21 +25,18 @@ class LiveLearningController extends ChangeNotifier {
   LiveRoom? get currentRoom => _currentRoom;
   bool get isLoading => _isLoading;
   String get error => _error;
-
   Future<void> initialize() async {
     _isLoading = true;
     notifyListeners();
-
     try {
       _rooms = await _service.getRooms();
       _partners = await _service.getPartners();
       _groups = await _service.getGroups();
       _events = await _service.getEvents();
-      _voiceMessages = await _service.getVoiceMessages('current_user');
+      _voiceMessages = await _service.getVoiceMessages(AuthService.instance.currentUser?.id ?? '');
     } catch (e) {
       _error = e.toString();
     }
-
     _isLoading = false;
     notifyListeners();
   }
@@ -58,7 +54,6 @@ class LiveLearningController extends ChangeNotifier {
   }) async {
     _isLoading = true;
     notifyListeners();
-
     try {
       final room = await _service.createRoom(
         hostId: hostId,
@@ -86,7 +81,6 @@ class LiveLearningController extends ChangeNotifier {
   Future<void> joinRoom(String roomId, String userId, String userName) async {
     _isLoading = true;
     notifyListeners();
-
     try {
       final room = await _service.joinRoom(roomId, userId, userName);
       if (room != null) {
@@ -100,7 +94,6 @@ class LiveLearningController extends ChangeNotifier {
       debugPrint('Error joining room: $e');
       _error = e.toString();
     }
-
     _isLoading = false;
     notifyListeners();
   }
@@ -108,7 +101,6 @@ class LiveLearningController extends ChangeNotifier {
   Future<void> leaveRoom(String roomId, String userId) async {
     _isLoading = true;
     notifyListeners();
-
     try {
       final room = await _service.leaveRoom(roomId, userId);
       if (room != null) {
@@ -123,7 +115,6 @@ class LiveLearningController extends ChangeNotifier {
     } catch (e) {
       debugPrint('Error leaving room: $e');
     }
-
     _isLoading = false;
     notifyListeners();
   }
@@ -137,7 +128,6 @@ class LiveLearningController extends ChangeNotifier {
   }) async {
     _isLoading = true;
     notifyListeners();
-
     try {
       final match = await _service.findMatch(
         userId: userId,
@@ -160,7 +150,6 @@ class LiveLearningController extends ChangeNotifier {
   Future<void> joinGroup(String groupId, String userId, String userName) async {
     _isLoading = true;
     notifyListeners();
-
     try {
       final group = await _service.joinGroup(groupId, userId, userName);
       if (group != null) {
@@ -172,7 +161,6 @@ class LiveLearningController extends ChangeNotifier {
     } catch (e) {
       debugPrint('Error joining group: $e');
     }
-
     _isLoading = false;
     notifyListeners();
   }
@@ -180,7 +168,6 @@ class LiveLearningController extends ChangeNotifier {
   Future<void> joinEvent(String eventId, String userId, String userName) async {
     _isLoading = true;
     notifyListeners();
-
     try {
       final event = await _service.joinEvent(eventId, userId, userName);
       if (event != null) {
@@ -192,7 +179,6 @@ class LiveLearningController extends ChangeNotifier {
     } catch (e) {
       debugPrint('Error joining event: $e');
     }
-
     _isLoading = false;
     notifyListeners();
   }

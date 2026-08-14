@@ -1,3 +1,10 @@
+﻿===============================================================================
+                            HISTORICAL REFERENCE
+===============================================================================
+Status: SUPERSEDED — DO NOT USE AS CURRENT STATE REFERENCE
+Current State Audit: See LEXI_CURRENT_STATE_AUDIT.md
+===============================================================================
+
 ================================================================================
               LEXI PRODUCT GAP ANALYSIS
 ================================================================================
@@ -17,7 +24,7 @@ Expected: Email/Password, Social Login, Guest, Email Verification, Password Rese
 Actual: Guest Mode only
 Missing: Email/Password Registration, Social Login, Email Verification, Password Reset, Biometric, Session Management
 Incomplete: Guest Mode (limited)
-Broken Flow: Register → [broken: no real auth] → Profile Setup → Home
+Broken Flow: Register â†’ [broken: no real auth] â†’ Profile Setup â†’ Home
 User Impact: Users cannot save progress across devices
 Blocks Launch: YES
 
@@ -25,7 +32,7 @@ FUNCTION: Login
 Expected: Email/Password, Social, Remember Me, Forgot Password, Biometric, Session
 Actual: None (fake)
 Missing: All login methods
-Broken Flow: Enter Credentials → [broken: no auth] → Home
+Broken Flow: Enter Credentials â†’ [broken: no auth] â†’ Home
 User Impact: No user accounts
 Blocks Launch: YES
 
@@ -33,7 +40,7 @@ FUNCTION: Logout
 Expected: Clear session, return to login, clear cache
 Actual: None
 Missing: All logout functionality
-Broken Flow: Settings → [broken: no logout option]
+Broken Flow: Settings â†’ [broken: no logout option]
 User Impact: Users can't switch accounts
 Blocks Launch: NO (but important)
 
@@ -66,7 +73,7 @@ FUNCTION: View Profile
 Expected: Display user info, stats, avatar, level, achievements
 Actual: Displays hardcoded data
 Missing: Real user data
-Broken Flow: View Profile → [broken: data is fake]
+Broken Flow: View Profile â†’ [broken: data is fake]
 User Impact: Users can't see real progress
 Blocks Launch: NO
 
@@ -74,7 +81,7 @@ FUNCTION: Edit Profile
 Expected: Change name, email, bio, avatar
 Actual: None
 Missing: All edit functionality
-Broken Flow: Profile → [broken: no edit button]
+Broken Flow: Profile â†’ [broken: no edit button]
 User Impact: Users can't customize profile
 Blocks Launch: YES
 
@@ -82,7 +89,7 @@ FUNCTION: Upload Avatar
 Expected: Camera/Gallery selection, crop, upload, preview
 Actual: None
 Missing: ImagePicker, Cropper, Firebase Storage
-Broken Flow: Edit Profile → [broken: no upload]
+Broken Flow: Edit Profile â†’ [broken: no upload]
 User Impact: Users can't set profile picture
 Blocks Launch: YES
 
@@ -143,7 +150,7 @@ FUNCTION: View Learning Path
 Expected: Visual roadmap, progress indicators, locked/unlocked states
 Actual: Basic display, no progress
 Missing: Progress tracking, visual indicators
-Broken Flow: View Path → [broken: no progress shown]
+Broken Flow: View Path â†’ [broken: no progress shown]
 User Impact: Users can't see their journey
 Blocks Launch: NO
 
@@ -151,7 +158,7 @@ FUNCTION: Track Progress
 Expected: XP, time, completion percentage, streak
 Actual: None
 Missing: All progress tracking
-Broken Flow: Complete Lesson → [broken: no progress update]
+Broken Flow: Complete Lesson â†’ [broken: no progress update]
 User Impact: Users can't see improvement
 Blocks Launch: YES
 
@@ -159,7 +166,7 @@ FUNCTION: Unlock Content
 Expected: Lessons unlock after prerequisites
 Actual: All content visible
 Missing: Unlock logic
-Broken Flow: Complete Lesson 1 → [broken: Lesson 2 not unlocked]
+Broken Flow: Complete Lesson 1 â†’ [broken: Lesson 2 not unlocked]
 User Impact: No progression feeling
 Blocks Launch: NO
 
@@ -192,7 +199,7 @@ FUNCTION: Browse Lessons
 Expected: By level, category, difficulty, duration
 Actual: Basic tabs, no filtering
 Missing: Advanced filtering, search, sorting
-Broken Flow: Browse → [broken: can't filter]
+Broken Flow: Browse â†’ [broken: can't filter]
 User Impact: Hard to find specific lessons
 Blocks Launch: NO
 
@@ -207,7 +214,7 @@ FUNCTION: Study Vocabulary
 Expected: Flashcards, audio, examples, images
 Actual: Text only
 Missing: Audio, images, flashcards
-Broken Flow: Study Vocab → [broken: can't hear pronunciation]
+Broken Flow: Study Vocab â†’ [broken: can't hear pronunciation]
 User Impact: Can't learn pronunciation
 Blocks Launch: YES
 
@@ -215,7 +222,7 @@ FUNCTION: Play Audio
 Expected: Play, pause, stop, seek, speed control
 Actual: None
 Missing: All audio functionality
-Broken Flow: Audio Lesson → [broken: can't play]
+Broken Flow: Audio Lesson â†’ [broken: can't play]
 User Impact: Can't practice listening
 Blocks Launch: YES
 
@@ -223,7 +230,7 @@ FUNCTION: Take Quiz
 Expected: Multiple choice, true/false, fill blank, matching
 Actual: Multiple choice, true/false only
 Missing: Fill blank, matching, timer
-Broken Flow: Quiz → [broken: limited question types]
+Broken Flow: Quiz â†’ [broken: limited question types]
 User Impact: Boring quiz experience
 Blocks Launch: NO
 
@@ -231,7 +238,7 @@ FUNCTION: Complete Lesson
 Expected: Mark complete, earn XP, unlock next
 Actual: None
 Missing: All completion logic
-Broken Flow: Finish Lesson → [broken: nothing happens]
+Broken Flow: Finish Lesson â†’ [broken: nothing happens]
 User Impact: No sense of achievement
 Blocks Launch: YES
 
@@ -271,7 +278,7 @@ FUNCTION: View Decks
 Expected: List of decks, progress per deck
 Actual: Basic display
 Missing: Progress indicators
-Broken Flow: View Deck → [broken: no progress]
+Broken Flow: View Deck â†’ [broken: no progress]
 User Impact: Can't see mastery level
 Blocks Launch: NO
 
@@ -293,7 +300,7 @@ FUNCTION: Mark as Learned
 Expected: Yes/No/Maybe buttons, progress tracking
 Actual: None
 Missing: All marking functionality
-Broken Flow: Study Card → [broken: no progress saved]
+Broken Flow: Study Card â†’ [broken: no progress saved]
 User Impact: Cards don't get easier/harder
 Blocks Launch: YES
 
@@ -326,7 +333,7 @@ FUNCTION: Play Audio
 Expected: Play, pause, stop, seek, speed
 Actual: None
 Missing: All playback controls
-Broken Flow: Select Audio → [broken: can't play]
+Broken Flow: Select Audio â†’ [broken: can't play]
 User Impact: Can't practice listening
 Blocks Launch: YES
 
@@ -373,7 +380,7 @@ FUNCTION: Record Voice
 Expected: Start/stop recording, waveform
 Actual: None
 Missing: All recording functionality
-Broken Flow: Exercise → [broken: can't record]
+Broken Flow: Exercise â†’ [broken: can't record]
 User Impact: Can't practice speaking
 Blocks Launch: YES
 
@@ -413,7 +420,7 @@ FUNCTION: Send Message
 Expected: Text input, send, receive response
 Actual: Text input only, static responses
 Missing: Real AI responses
-Broken Flow: Send Message → [broken: static response]
+Broken Flow: Send Message â†’ [broken: static response]
 User Impact: No real AI interaction
 Blocks Launch: YES
 
@@ -481,7 +488,7 @@ FUNCTION: View Feed
 Expected: Posts from friends, trending, latest
 Actual: Fake data
 Missing: Real posts
-Broken Flow: Open Feed → [broken: fake data]
+Broken Flow: Open Feed â†’ [broken: fake data]
 User Impact: No real community
 Blocks Launch: YES
 
@@ -489,7 +496,7 @@ FUNCTION: Create Post
 Expected: Text, image, video, poll
 Actual: UI only, not saved
 Missing: All post creation
-Broken Flow: Create Post → [broken: not saved]
+Broken Flow: Create Post â†’ [broken: not saved]
 User Impact: Can't share
 Blocks Launch: YES
 
@@ -504,7 +511,7 @@ FUNCTION: Like Post
 Expected: Like, unlike, count display
 Actual: UI only
 Missing: Like persistence
-Broken Flow: Like → [broken: not saved]
+Broken Flow: Like â†’ [broken: not saved]
 User Impact: No engagement
 Blocks Launch: YES
 
@@ -512,7 +519,7 @@ FUNCTION: Comment
 Expected: Text, image, replies, mentions
 Actual: UI only
 Missing: All comment functionality
-Broken Flow: Comment → [broken: not saved]
+Broken Flow: Comment â†’ [broken: not saved]
 User Impact: No interaction
 Blocks Launch: YES
 
@@ -647,7 +654,7 @@ FUNCTION: Create Room
 Expected: Set topic, privacy, max participants
 Actual: None
 Missing: All room creation
-Broken Flow: Create Room → [broken: no Agora]
+Broken Flow: Create Room â†’ [broken: no Agora]
 User Impact: Can't host sessions
 Blocks Launch: YES
 
@@ -729,7 +736,7 @@ FUNCTION: View Balance
 Expected: Show current balance, currency
 Actual: Hardcoded display
 Missing: Real balance
-Broken Flow: View Balance → [broken: fake data]
+Broken Flow: View Balance â†’ [broken: fake data]
 User Impact: Can't see real balance
 Blocks Launch: YES
 
@@ -797,7 +804,7 @@ FUNCTION: Purchase Item
 Expected: Buy with gems, confirmation
 Actual: None
 Missing: All purchasing
-Broken Flow: Buy Item → [broken: no deduction]
+Broken Flow: Buy Item â†’ [broken: no deduction]
 User Impact: Can't buy
 Blocks Launch: CRITICAL
 
@@ -805,7 +812,7 @@ FUNCTION: Use Gems
 Expected: Check balance, deduct, add to inventory
 Actual: None
 Missing: All usage
-Broken Flow: Buy → [broken: no deduction]
+Broken Flow: Buy â†’ [broken: no deduction]
 User Impact: Can't complete purchase
 Blocks Launch: CRITICAL
 
@@ -859,7 +866,7 @@ FUNCTION: Add Item
 Expected: Add purchased item to inventory
 Actual: None
 Missing: All adding
-Broken Flow: Purchase → [broken: not added]
+Broken Flow: Purchase â†’ [broken: not added]
 User Impact: Can't use purchases
 Blocks Launch: CRITICAL
 
@@ -874,7 +881,7 @@ FUNCTION: Equip Item
 Expected: Equip avatar, frame, background
 Actual: None
 Missing: All equipping
-Broken Flow: Own Item → [broken: can't equip]
+Broken Flow: Own Item â†’ [broken: can't equip]
 User Impact: Can't use items
 Blocks Launch: CRITICAL
 
@@ -907,7 +914,7 @@ FUNCTION: Upload Avatar
 Expected: Camera/gallery, crop, upload
 Actual: None
 Missing: All upload
-Broken Flow: Edit Profile → [broken: no upload]
+Broken Flow: Edit Profile â†’ [broken: no upload]
 User Impact: Can't set photo
 Blocks Launch: YES
 
@@ -929,7 +936,7 @@ FUNCTION: Select Frame
 Expected: Choose from owned frames
 Actual: None
 Missing: All frame selection
-Broken Flow: Own Frame → [broken: can't select]
+Broken Flow: Own Frame â†’ [broken: can't select]
 User Impact: Can't customize
 Blocks Launch: YES
 
@@ -976,7 +983,7 @@ FUNCTION: Subscribe
 Expected: Start subscription
 Actual: None
 Missing: All subscribing
-Broken Flow: Select Plan → [broken: can't subscribe]
+Broken Flow: Select Plan â†’ [broken: can't subscribe]
 User Impact: Can't get premium
 Blocks Launch: CRITICAL
 
@@ -1044,7 +1051,7 @@ FUNCTION: Register Device
 Expected: Register FCM token
 Actual: None
 Missing: All registration
-Broken Flow: App Open → [broken: no token]
+Broken Flow: App Open â†’ [broken: no token]
 User Impact: No notifications
 Blocks Launch: YES
 
@@ -1392,3 +1399,4 @@ SECTION 20: TOP 100 MISSING FUNCTIONS
 ================================================================================
                     END OF PRODUCT GAP ANALYSIS
 ================================================================================
+

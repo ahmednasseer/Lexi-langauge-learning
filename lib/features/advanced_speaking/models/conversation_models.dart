@@ -136,18 +136,21 @@ class ConversationMessage {
     'pronunciationAnalysis': pronunciationAnalysis?.toJson(),
   };
 
-  factory ConversationMessage.fromJson(Map<String, dynamic> json) => ConversationMessage(
-    id: json['id'] ?? '',
-    role: json['role'] ?? '',
-    content: json['content'] ?? '',
-    germanText: json['germanText'],
-    timestamp: DateTime.parse(json['timestamp'] ?? DateTime.now().toIso8601String()),
-    isCorrected: json['isCorrected'] ?? false,
-    correction: json['correction'],
-    pronunciationAnalysis: json['pronunciationAnalysis'] != null
-        ? PronunciationAnalysis.fromJson(json['pronunciationAnalysis'])
-        : null,
-  );
+  factory ConversationMessage.fromJson(Map<String, dynamic> json) =>
+      ConversationMessage(
+        id: json['id'] ?? '',
+        role: json['role'] ?? '',
+        content: json['content'] ?? '',
+        germanText: json['germanText'],
+        timestamp: DateTime.parse(
+          json['timestamp'] ?? DateTime.now().toIso8601String(),
+        ),
+        isCorrected: json['isCorrected'] ?? false,
+        correction: json['correction'],
+        pronunciationAnalysis: json['pronunciationAnalysis'] != null
+            ? PronunciationAnalysis.fromJson(json['pronunciationAnalysis'])
+            : null,
+      );
 }
 
 class PronunciationAnalysis {
@@ -172,7 +175,13 @@ class PronunciationAnalysis {
   });
 
   double get overallScore =>
-      (pronunciation + accent + speakingSpeed + pauses + confidence + wordAccuracy) / 6;
+      (pronunciation +
+          accent +
+          speakingSpeed +
+          pauses +
+          confidence +
+          wordAccuracy) /
+      6;
 
   Map<String, dynamic> toJson() => {
     'pronunciation': pronunciation,
@@ -185,16 +194,17 @@ class PronunciationAnalysis {
     'suggestions': suggestions,
   };
 
-  factory PronunciationAnalysis.fromJson(Map<String, dynamic> json) => PronunciationAnalysis(
-    pronunciation: (json['pronunciation'] ?? 0).toDouble(),
-    accent: (json['accent'] ?? 0).toDouble(),
-    speakingSpeed: (json['speakingSpeed'] ?? 0).toDouble(),
-    pauses: (json['pauses'] ?? 0).toDouble(),
-    confidence: (json['confidence'] ?? 0).toDouble(),
-    wordAccuracy: (json['wordAccuracy'] ?? 0).toDouble(),
-    mispronouncedWords: List<String>.from(json['mispronouncedWords'] ?? []),
-    suggestions: List<String>.from(json['suggestions'] ?? []),
-  );
+  factory PronunciationAnalysis.fromJson(Map<String, dynamic> json) =>
+      PronunciationAnalysis(
+        pronunciation: (json['pronunciation'] ?? 0).toDouble(),
+        accent: (json['accent'] ?? 0).toDouble(),
+        speakingSpeed: (json['speakingSpeed'] ?? 0).toDouble(),
+        pauses: (json['pauses'] ?? 0).toDouble(),
+        confidence: (json['confidence'] ?? 0).toDouble(),
+        wordAccuracy: (json['wordAccuracy'] ?? 0).toDouble(),
+        mispronouncedWords: List<String>.from(json['mispronouncedWords'] ?? []),
+        suggestions: List<String>.from(json['suggestions'] ?? []),
+      );
 }
 
 class ConversationSession {
@@ -261,26 +271,33 @@ class ConversationSession {
     'durationSeconds': durationSeconds,
   };
 
-  factory ConversationSession.fromJson(Map<String, dynamic> json) => ConversationSession(
-    id: json['id'] ?? '',
-    scenario: ConversationScenario.values.firstWhere(
-      (s) => s.name == json['scenario'],
-      orElse: () => ConversationScenario.dailyLife,
-    ),
-    messages: (json['messages'] as List?)
-        ?.map((m) => ConversationMessage.fromJson(m))
-        .toList() ?? [],
-    startedAt: DateTime.parse(json['startedAt'] ?? DateTime.now().toIso8601String()),
-    endedAt: json['endedAt'] != null ? DateTime.parse(json['endedAt']) : null,
-    state: ConversationState.values.firstWhere(
-      (s) => s.name == json['state'],
-      orElse: () => ConversationState.idle,
-    ),
-    totalScore: json['totalScore'] ?? 0,
-    xpEarned: json['xpEarned'] ?? 0,
-    wordsSpoken: json['wordsSpoken'] ?? 0,
-    durationSeconds: json['durationSeconds'] ?? 0,
-  );
+  factory ConversationSession.fromJson(Map<String, dynamic> json) =>
+      ConversationSession(
+        id: json['id'] ?? '',
+        scenario: ConversationScenario.values.firstWhere(
+          (s) => s.name == json['scenario'],
+          orElse: () => ConversationScenario.dailyLife,
+        ),
+        messages:
+            (json['messages'] as List?)
+                ?.map((m) => ConversationMessage.fromJson(m))
+                .toList() ??
+            [],
+        startedAt: DateTime.parse(
+          json['startedAt'] ?? DateTime.now().toIso8601String(),
+        ),
+        endedAt: json['endedAt'] != null
+            ? DateTime.parse(json['endedAt'])
+            : null,
+        state: ConversationState.values.firstWhere(
+          (s) => s.name == json['state'],
+          orElse: () => ConversationState.idle,
+        ),
+        totalScore: json['totalScore'] ?? 0,
+        xpEarned: json['xpEarned'] ?? 0,
+        wordsSpoken: json['wordsSpoken'] ?? 0,
+        durationSeconds: json['durationSeconds'] ?? 0,
+      );
 }
 
 class ConversationFeedback {
@@ -312,13 +329,14 @@ class ConversationFeedback {
     'xpEarned': xpEarned,
   };
 
-  factory ConversationFeedback.fromJson(Map<String, dynamic> json) => ConversationFeedback(
-    sessionId: json['sessionId'] ?? '',
-    whatYouDidWell: List<String>.from(json['whatYouDidWell'] ?? []),
-    mistakes: List<String>.from(json['mistakes'] ?? []),
-    betterSentences: List<String>.from(json['betterSentences'] ?? []),
-    nextPractice: json['nextPractice'] ?? '',
-    overallScore: (json['overallScore'] ?? 0).toDouble(),
-    xpEarned: json['xpEarned'] ?? 0,
-  );
+  factory ConversationFeedback.fromJson(Map<String, dynamic> json) =>
+      ConversationFeedback(
+        sessionId: json['sessionId'] ?? '',
+        whatYouDidWell: List<String>.from(json['whatYouDidWell'] ?? []),
+        mistakes: List<String>.from(json['mistakes'] ?? []),
+        betterSentences: List<String>.from(json['betterSentences'] ?? []),
+        nextPractice: json['nextPractice'] ?? '',
+        overallScore: (json['overallScore'] ?? 0).toDouble(),
+        xpEarned: json['xpEarned'] ?? 0,
+      );
 }

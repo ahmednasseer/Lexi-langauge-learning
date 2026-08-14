@@ -139,9 +139,11 @@ class _LessonsScreenState extends State<LessonsScreen>
                   const SizedBox(height: 16),
                   // Offline banner
                   if (_isOffline)
-                    _buildBanner('You are offline. Showing saved lessons.', AppColors.warning),
-                  if (_error != null)
-                    _buildBanner(_error!, AppColors.error),
+                    _buildBanner(
+                      'You are offline. Showing saved lessons.',
+                      AppColors.warning,
+                    ),
+                  if (_error != null) _buildBanner(_error!, AppColors.error),
                   const SizedBox(height: 16),
                   // Level selector
                   Container(
@@ -168,8 +170,9 @@ class _LessonsScreenState extends State<LessonsScreen>
                                     boxShadow: _level == l
                                         ? [
                                             BoxShadow(
-                                              color: AppColors.getLevelColor(l)
-                                                  .withValues(alpha: 0.3),
+                                              color: AppColors.getLevelColor(
+                                                l,
+                                              ).withValues(alpha: 0.3),
                                               blurRadius: 8,
                                             ),
                                           ]
@@ -228,10 +231,8 @@ class _LessonsScreenState extends State<LessonsScreen>
                     ),
                     physics: const BouncingScrollPhysics(),
                     itemCount: lessons.length,
-                    itemBuilder: (context, i) => _buildLessonCard(
-                      lessons[i],
-                      i,
-                    ),
+                    itemBuilder: (context, i) =>
+                        _buildLessonCard(lessons[i], i),
                   );
                 }).toList(),
               ),
@@ -282,7 +283,10 @@ class _LessonsScreenState extends State<LessonsScreen>
             child: SizedBox(
               width: 24,
               height: 24,
-              child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary),
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: AppColors.primary,
+              ),
             ),
           ),
         ),
@@ -330,100 +334,99 @@ class _LessonsScreenState extends State<LessonsScreen>
     final levelColor = AppColors.getLevelColor(lesson.level);
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: GlowCard(
-        glowColor: levelColor,
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => LessonDetailScreen(lesson: lesson),
-          ),
-        ),
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            // Icon
-            Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                gradient: AppColors.getLevelGradient(lesson.level),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Center(
-                child: Text(
-                  _getCategoryIcon(lesson.category),
-                  style: const TextStyle(fontSize: 28),
+        padding: const EdgeInsets.only(bottom: 16),
+        child: GlowCard(
+          glowColor: levelColor,
+          onTap: () => _openLessonDetail(lesson),
+          padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                // Icon
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    gradient: AppColors.getLevelGradient(lesson.level),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Center(
+                    child: Text(
+                      _getCategoryIcon(lesson.category),
+                      style: const TextStyle(fontSize: 28),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            // Info
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    lesson.title,
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    lesson.description,
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                      color: AppColors.textSecondary,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
+                const SizedBox(width: 16),
+                // Info
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildTag(lesson.level, levelColor),
-                      const SizedBox(width: 8),
-                      _buildTag('${lesson.quiz.length} exercises', AppColors.primary),
-                      const SizedBox(width: 8),
-                      _buildTag('${lesson.xpReward} XP', AppColors.gold),
+                      Text(
+                        lesson.title,
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        lesson.description,
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          color: AppColors.textSecondary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          _buildTag(lesson.level, levelColor),
+                          const SizedBox(width: 8),
+                          _buildTag(
+                            '${lesson.quiz.length} exercises',
+                            AppColors.primary,
+                          ),
+                          const SizedBox(width: 8),
+                          _buildTag('${lesson.xpReward} XP', AppColors.gold),
+                        ],
+                      ),
                     ],
                   ),
-                ],
-              ),
+                ),
+                // Status
+                if (lesson.isCompleted)
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: AppColors.success.withValues(alpha: 0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.check, color: AppColors.success),
+                  )
+                else
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      color: AppColors.textHint,
+                      size: 16,
+                    ),
+                  ),
+              ],
             ),
-            // Status
-            if (lesson.isCompleted)
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: AppColors.success.withValues(alpha: 0.15),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.check,
-                  color: AppColors.success,
-                ),
-              )
-            else
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  Icons.arrow_forward_ios,
-                  color: AppColors.textHint,
-                  size: 16,
-                ),
-              ),
-          ],
-        ),
-      ),
-    ).animate().fadeIn(delay: Duration(milliseconds: index * 100)).slideX(begin: 0.1);
+          ),
+        )
+        .animate()
+        .fadeIn(delay: Duration(milliseconds: index * 100))
+        .slideX(begin: 0.1);
   }
 
   Widget _buildTag(String text, Color color) {
@@ -451,5 +454,39 @@ class _LessonsScreenState extends State<LessonsScreen>
       'Listening' => '🎧',
       _ => '📚',
     };
+  }
+
+  Future<void> _openLessonDetail(LessonModel lesson) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+
+    LessonModel? fullLesson;
+    String? error;
+    try {
+      fullLesson = await _repository.getLessonDetail(lesson.id, lesson.language);
+    } catch (e) {
+      error = e.toString();
+    }
+
+    if (!mounted) return;
+    Navigator.of(context).pop();
+
+    if (fullLesson != null) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => LessonDetailScreen(lesson: fullLesson!),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error ?? 'Failed to load lesson details'),
+          backgroundColor: Colors.red.shade800,
+        ),
+      );
+    }
   }
 }

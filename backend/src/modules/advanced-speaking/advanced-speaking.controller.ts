@@ -1,14 +1,26 @@
-import { Controller, Get, Post, Body, Param, Query, HttpCode, HttpStatus } from '@nestjs/common';
-import { AdvancedSpeakingService, ConversationScenario, ConversationState, ConversationMessage, PronunciationAnalysis } from './advanced-speaking.service';
+import { Controller, Get, Post, Body, Param, HttpCode, HttpStatus, UseGuards, Req, ForbiddenException } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { AdvancedSpeakingService, ConversationScenario, ConversationMessage, PronunciationAnalysis } from './advanced-speaking.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+@ApiTags('Advanced Speaking')
 @Controller('speaking')
+@UseGuards(JwtAuthGuard)
 export class AdvancedSpeakingController {
   constructor(private readonly speakingService: AdvancedSpeakingService) {}
 
+  /** Resolve acting user from token, rejecting client-supplied userId mismatches. */
+  private self(sub: string, provided?: string): string {
+    if (provided && provided !== sub) {
+      throw new ForbiddenException('Cannot operate on another user');
+    }
+    return sub;
+  }
+
   @Post('session/start')
   @HttpCode(HttpStatus.CREATED)
-  startSession(@Body() body: { userId: string; scenario: ConversationScenario }) {
-    const session = this.speakingService.startSession(body.userId, body.scenario);
+  startSession(@Req() req, @Body() body: { userId?: string; scenario: ConversationScenario }) {
+    const session = this.speakingService.startSession(this.self(req.user.sub, body.userId), body.scenario);
     return {
       success: true,
       data: session,
@@ -27,8 +39,8 @@ export class AdvancedSpeakingController {
 
   @Post('response')
   @HttpCode(HttpStatus.OK)
-  getAIResponse(@Body() body: { sessionId: string; userResponse: string }) {
-    const response = this.speakingService.getAIResponse(body.sessionId, body.userResponse);
+  getAIResponse(@Req() req, @Body() body: { sessionId: string; userResponse: string }) {
+    const response = this.speakingService.getAIResponse(body.sessionId, body.userResponse, req.user.sub);
     return {
       success: true,
       data: { response },
@@ -37,7 +49,7 @@ export class AdvancedSpeakingController {
 
   @Post('message')
   @HttpCode(HttpStatus.OK)
-  addMessage(@Body() body: {
+  addMessage(@Req() req, @Body() body: {
     sessionId: string;
     role: 'ai' | 'user';
     content: string;
@@ -56,7 +68,7 @@ export class AdvancedSpeakingController {
       pronunciationAnalysis: body.pronunciationAnalysis,
     };
 
-    this.speakingService.addMessage(body.sessionId, message);
+    this.speakingService.addMessage(body.sessionId, message, req.user.sub);
     return {
       success: true,
       data: { message },
@@ -65,8 +77,8 @@ export class AdvancedSpeakingController {
 
   @Post('session/end')
   @HttpCode(HttpStatus.OK)
-  endSession(@Body() body: { sessionId: string }) {
-    const session = this.speakingService.endSession(body.sessionId);
+  endSession(@Req() req, @Body() body: { sessionId: string }) {
+    const session = this.speakingService.endSession(body.sessionId, req.user.sub);
     return {
       success: true,
       data: session,
@@ -75,8 +87,8 @@ export class AdvancedSpeakingController {
 
   @Post('feedback')
   @HttpCode(HttpStatus.OK)
-  getFeedback(@Body() body: { sessionId: string }) {
-    const feedback = this.speakingService.generateFeedback(body.sessionId);
+  getFeedback(@Req() req, @Body() body: { sessionId: string }) {
+    const feedback = this.speakingService.generateFeedback(body.sessionId, req.user.sub);
     return {
       success: true,
       data: feedback,
@@ -84,8 +96,8 @@ export class AdvancedSpeakingController {
   }
 
   @Get('history/:userId')
-  getHistory(@Param('userId') userId: string) {
-    const history = this.speakingService.getHistory(userId);
+  getHistory(@Req() req, @Param('userId') userId: string) {
+    const history = this.speakingService.getHistory(this.self(req.user.sub, userId));
     return {
       success: true,
       data: history,
@@ -93,8 +105,8 @@ export class AdvancedSpeakingController {
   }
 
   @Get('progress/:userId')
-  getProgress(@Param('userId') userId: string) {
-    const progress = this.speakingService.getProgress(userId);
+  getProgress(@Req() req, @Param('userId') userId: string) {
+    const progress = this.speakingService.getProgress(this.self(req.user.sub, userId));
     return {
       success: true,
       data: progress,
@@ -102,8 +114,8 @@ export class AdvancedSpeakingController {
   }
 
   @Get('challenges/:userId')
-  getChallenges(@Param('userId') userId: string) {
-    const challenges = this.speakingService.getChallenges(userId);
+  getChallenges(@Req() req, @Param('userId') userId: string) {
+    const challenges = this.speakingService.getChallenges(this.self(req.user.sub, userId));
     return {
       success: true,
       data: challenges,

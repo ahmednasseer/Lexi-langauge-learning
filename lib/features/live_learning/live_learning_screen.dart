@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lexi/core/services/auth_service.dart';
 import '../../shared/widgets/state_widgets.dart';
-import 'models/live_room.dart';
-import 'models/language_partner.dart';
-import 'models/learning_group.dart';
-import 'models/community_event.dart';
+import 'package:lexi/features/live_learning/models/live_room.dart';
+import 'package:lexi/features/live_learning/models/language_partner.dart';
+import 'package:lexi/features/live_learning/models/learning_group.dart';
+import 'package:lexi/features/live_learning/models/community_event.dart';
 import 'live_learning_controller.dart';
 
 class LiveLearningScreen extends StatefulWidget {
   const LiveLearningScreen({super.key});
-
   @override
   State<LiveLearningScreen> createState() => _LiveLearningScreenState();
 }
@@ -20,7 +20,6 @@ class _LiveLearningScreenState extends State<LiveLearningScreen> {
   bool _initialized = false;
   bool _initError = false;
   int _selectedTab = 0;
-
   @override
   void initState() {
     super.initState();
@@ -72,23 +71,22 @@ class _LiveLearningScreenState extends State<LiveLearningScreen> {
       ),
       body: !_initialized
           ? (_initError
-              ? ErrorState(
-                  message: 'Failed to load live sessions. Please try again.',
-                  onRetry: _initializeController,
-                )
-              : const LoadingState(message: 'Loading live sessions...'))
+                ? ErrorState(
+                    message: 'Failed to load live sessions. Please try again.',
+                    onRetry: _initializeController,
+                  )
+                : const LoadingState(message: 'Loading live sessions...'))
           : RefreshIndicator(
               color: const Color(0xFF6C63FF),
               onRefresh: () async {
                 await _controller.initialize();
-                if (mounted) setState(() => _initError = _controller.error.isNotEmpty);
+                if (mounted)
+                  setState(() => _initError = _controller.error.isNotEmpty);
               },
               child: Column(
                 children: [
                   _buildTabBar(),
-                  Expanded(
-                    child: _buildTabContent(),
-                  ),
+                  Expanded(child: _buildTabContent()),
                 ],
               ),
             ),
@@ -128,7 +126,11 @@ class _LiveLearningScreenState extends State<LiveLearningScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: isSelected ? Colors.white : Colors.white54, size: 18),
+              Icon(
+                icon,
+                color: isSelected ? Colors.white : Colors.white54,
+                size: 18,
+              ),
               const SizedBox(width: 6),
               Text(
                 label,
@@ -177,10 +179,7 @@ class _LiveLearningScreenState extends State<LiveLearningScreen> {
           const SizedBox(height: 4),
           Text(
             'Join a room and practice speaking German with others',
-            style: GoogleFonts.poppins(
-              color: Colors.white54,
-              fontSize: 13,
-            ),
+            style: GoogleFonts.poppins(color: Colors.white54, fontSize: 13),
           ),
           const SizedBox(height: 16),
           ..._controller.rooms.map((room) => _buildRoomCard(room)),
@@ -193,9 +192,8 @@ class _LiveLearningScreenState extends State<LiveLearningScreen> {
     final statusColor = room.status == RoomStatus.active
         ? Colors.green
         : room.status == RoomStatus.waiting
-            ? Colors.orange
-            : Colors.grey;
-
+        ? Colors.orange
+        : Colors.grey;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -273,7 +271,10 @@ class _LiveLearningScreenState extends State<LiveLearningScreen> {
                   const SizedBox(width: 4),
                   Text(
                     '${room.currentParticipants}/${room.maxParticipants}',
-                    style: GoogleFonts.poppins(color: Colors.white54, fontSize: 13),
+                    style: GoogleFonts.poppins(
+                      color: Colors.white54,
+                      fontSize: 13,
+                    ),
                   ),
                 ],
               ),
@@ -283,7 +284,10 @@ class _LiveLearningScreenState extends State<LiveLearningScreen> {
                   const SizedBox(width: 4),
                   Text(
                     '${room.durationMinutes} min',
-                    style: GoogleFonts.poppins(color: Colors.white54, fontSize: 13),
+                    style: GoogleFonts.poppins(
+                      color: Colors.white54,
+                      fontSize: 13,
+                    ),
                   ),
                 ],
               ),
@@ -332,10 +336,7 @@ class _LiveLearningScreenState extends State<LiveLearningScreen> {
           const SizedBox(height: 4),
           Text(
             'Find a language exchange partner',
-            style: GoogleFonts.poppins(
-              color: Colors.white54,
-              fontSize: 13,
-            ),
+            style: GoogleFonts.poppins(color: Colors.white54, fontSize: 13),
           ),
           const SizedBox(height: 16),
           _buildMatchButton(),
@@ -390,7 +391,10 @@ class _LiveLearningScreenState extends State<LiveLearningScreen> {
               ],
             ),
           ),
-          Icon(Icons.arrow_forward_ios, color: Colors.white.withValues(alpha: 0.7)),
+          Icon(
+            Icons.arrow_forward_ios,
+            color: Colors.white.withValues(alpha: 0.7),
+          ),
         ],
       ),
     );
@@ -494,10 +498,7 @@ class _LiveLearningScreenState extends State<LiveLearningScreen> {
           const SizedBox(height: 4),
           Text(
             'Join a group and learn together',
-            style: GoogleFonts.poppins(
-              color: Colors.white54,
-              fontSize: 13,
-            ),
+            style: GoogleFonts.poppins(color: Colors.white54, fontSize: 13),
           ),
           const SizedBox(height: 16),
           ..._controller.groups.map((group) => _buildGroupCard(group)),
@@ -551,10 +552,7 @@ class _LiveLearningScreenState extends State<LiveLearningScreen> {
           const SizedBox(height: 8),
           Text(
             group.description,
-            style: GoogleFonts.poppins(
-              color: Colors.white54,
-              fontSize: 13,
-            ),
+            style: GoogleFonts.poppins(color: Colors.white54, fontSize: 13),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -626,10 +624,7 @@ class _LiveLearningScreenState extends State<LiveLearningScreen> {
           const SizedBox(height: 4),
           Text(
             'Join exciting events and earn rewards',
-            style: GoogleFonts.poppins(
-              color: Colors.white54,
-              fontSize: 13,
-            ),
+            style: GoogleFonts.poppins(color: Colors.white54, fontSize: 13),
           ),
           const SizedBox(height: 16),
           ..._controller.events.map((event) => _buildEventCard(event)),
@@ -642,9 +637,8 @@ class _LiveLearningScreenState extends State<LiveLearningScreen> {
     final statusColor = event.status == EventStatus.active
         ? Colors.green
         : event.status == EventStatus.upcoming
-            ? Colors.orange
-            : Colors.grey;
-
+        ? Colors.orange
+        : Colors.grey;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -689,10 +683,7 @@ class _LiveLearningScreenState extends State<LiveLearningScreen> {
           const SizedBox(height: 8),
           Text(
             event.description,
-            style: GoogleFonts.poppins(
-              color: Colors.white54,
-              fontSize: 13,
-            ),
+            style: GoogleFonts.poppins(color: Colors.white54, fontSize: 13),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -741,7 +732,9 @@ class _LiveLearningScreenState extends State<LiveLearningScreen> {
   }
 
   void _joinRoom(LiveRoom room) async {
-    await _controller.joinRoom(room.id, 'current_user', 'You');
+    final userId = AuthService.instance.currentUser?.id ?? '';
+    final userName = AuthService.instance.currentUser?.name ?? 'User';
+    await _controller.joinRoom(room.id, userId, userName);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -753,7 +746,9 @@ class _LiveLearningScreenState extends State<LiveLearningScreen> {
   }
 
   void _joinGroup(LearningGroup group) async {
-    await _controller.joinGroup(group.id, 'current_user', 'You');
+    final userId = AuthService.instance.currentUser?.id ?? '';
+    final userName = AuthService.instance.currentUser?.name ?? 'User';
+    await _controller.joinGroup(group.id, userId, userName);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -765,7 +760,9 @@ class _LiveLearningScreenState extends State<LiveLearningScreen> {
   }
 
   void _joinEvent(CommunityEvent event) async {
-    await _controller.joinEvent(event.id, 'current_user', 'You');
+    final userId = AuthService.instance.currentUser?.id ?? '';
+    final userName = AuthService.instance.currentUser?.name ?? 'User';
+    await _controller.joinEvent(event.id, userId, userName);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -861,7 +858,10 @@ class _LiveLearningScreenState extends State<LiveLearningScreen> {
                   ),
                 ),
                 items: RoomLevel.values.map((level) {
-                  return DropdownMenuItem(value: level, child: Text(level.displayName));
+                  return DropdownMenuItem(
+                    value: level,
+                    child: Text(level.displayName),
+                  );
                 }).toList(),
                 onChanged: (value) {},
               ),

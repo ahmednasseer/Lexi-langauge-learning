@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lexi/core/services/auth_service.dart';
+import 'package:lexi/shared/models/user_model.dart';
 import 'package:lexi/features/community/models/message.dart';
 import 'package:lexi/features/community/security_service.dart';
 import 'package:lexi/features/community/community_controller.dart';
@@ -144,8 +146,16 @@ void main() {
     late CommunityController controller;
 
     setUp(() {
-      controller = CommunityController();
-      controller.setCurrentUser('user_a');
+      AuthService.instance = AuthService.test(
+        user: UserModel(
+          id: 'user_a',
+          name: 'Test User',
+          email: 'test@test.com',
+          createdAt: DateTime.now(),
+        ),
+      );
+      controller = CommunityController(loadOnCreate: false);
+      controller.setCurrentUser(isPremium: false);
     });
 
     test('should not allow messaging blocked user', () {
@@ -206,8 +216,16 @@ void main() {
     late CommunityController controller;
 
     setUp(() {
-      controller = CommunityController();
-      controller.setCurrentUser('user_a');
+      AuthService.instance = AuthService.test(
+        user: UserModel(
+          id: 'user_a',
+          name: 'Test User',
+          email: 'test@test.com',
+          createdAt: DateTime.now(),
+        ),
+      );
+      controller = CommunityController(loadOnCreate: false);
+      controller.setCurrentUser(isPremium: false);
     });
 
     test('should send message request when allowed', () {

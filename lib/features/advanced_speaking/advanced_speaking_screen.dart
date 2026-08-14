@@ -67,9 +67,10 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
         ],
       ),
       body: _initialized
-          ? _controller.currentSession == null || _controller.state == ConversationState.ended
-              ? _buildScenarioSelection()
-              : _buildConversationView()
+          ? _controller.currentSession == null ||
+                    _controller.state == ConversationState.ended
+                ? _buildScenarioSelection()
+                : _buildConversationView()
           : const Center(
               child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
             ),
@@ -136,7 +137,9 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
           ],
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF6C63FF).withValues(alpha: 0.3)),
+        border: Border.all(
+          color: const Color(0xFF6C63FF).withValues(alpha: 0.3),
+        ),
       ),
       child: Row(
         children: [
@@ -224,7 +227,10 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
                 ),
                 const SizedBox(height: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(8),
@@ -261,10 +267,7 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              scenario.emoji,
-              style: const TextStyle(fontSize: 32),
-            ),
+            Text(scenario.emoji, style: const TextStyle(fontSize: 32)),
             const SizedBox(height: 8),
             Text(
               scenario.displayName,
@@ -279,7 +282,9 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
-                color: _getLevelColor(scenario.difficulty).withValues(alpha: 0.2),
+                color: _getLevelColor(
+                  scenario.difficulty,
+                ).withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
@@ -304,9 +309,7 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
         _buildSessionInfo(),
 
         // Messages
-        Expanded(
-          child: _buildMessagesList(),
-        ),
+        Expanded(child: _buildMessagesList()),
 
         // Pronunciation Analysis
         if (_controller.lastAnalysis != null) _buildPronunciationCard(),
@@ -452,8 +455,12 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
         decoration: BoxDecoration(
           color: isAI ? const Color(0xFF1A1A2E) : const Color(0xFF6C63FF),
           borderRadius: BorderRadius.circular(16).copyWith(
-            bottomRight: isAI ? const Radius.circular(16) : const Radius.circular(4),
-            bottomLeft: isAI ? const Radius.circular(4) : const Radius.circular(16),
+            bottomRight: isAI
+                ? const Radius.circular(16)
+                : const Radius.circular(4),
+            bottomLeft: isAI
+                ? const Radius.circular(4)
+                : const Radius.circular(16),
           ),
         ),
         child: Column(
@@ -477,10 +484,7 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
             const SizedBox(height: 8),
             Text(
               message.content,
-              style: GoogleFonts.poppins(
-                color: Colors.white,
-                fontSize: 15,
-              ),
+              style: GoogleFonts.poppins(color: Colors.white, fontSize: 15),
             ),
             if (message.correction != null) ...[
               const SizedBox(height: 8),
@@ -538,10 +542,26 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildScoreCircle('Pronunciation', analysis.pronunciation, const Color(0xFF4CAF50)),
-              _buildScoreCircle('Fluency', analysis.speakingSpeed, const Color(0xFF2196F3)),
-              _buildScoreCircle('Grammar', analysis.confidence, const Color(0xFFFF9800)),
-              _buildScoreCircle('Accuracy', analysis.wordAccuracy, const Color(0xFF6C63FF)),
+              _buildScoreCircle(
+                'Pronunciation',
+                analysis.pronunciation,
+                const Color(0xFF4CAF50),
+              ),
+              _buildScoreCircle(
+                'Fluency',
+                analysis.speakingSpeed,
+                const Color(0xFF2196F3),
+              ),
+              _buildScoreCircle(
+                'Grammar',
+                analysis.confidence,
+                const Color(0xFFFF9800),
+              ),
+              _buildScoreCircle(
+                'Accuracy',
+                analysis.wordAccuracy,
+                const Color(0xFF6C63FF),
+              ),
             ],
           ),
         ],
@@ -578,10 +598,7 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
         const SizedBox(height: 4),
         Text(
           label,
-          style: GoogleFonts.poppins(
-            color: Colors.white54,
-            fontSize: 10,
-          ),
+          style: GoogleFonts.poppins(color: Colors.white54, fontSize: 10),
         ),
       ],
     );
@@ -619,7 +636,11 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
               // Stop button
               if (!isAISpeaking)
                 IconButton(
-                  icon: const Icon(Icons.stop_circle, color: Colors.red, size: 40),
+                  icon: const Icon(
+                    Icons.stop_circle,
+                    color: Colors.red,
+                    size: 40,
+                  ),
                   onPressed: () async {
                     await _controller.endConversation();
                     setState(() {});
@@ -647,8 +668,11 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: (isListening ? Colors.green : const Color(0xFF6C63FF))
-                            .withValues(alpha: 0.4),
+                        color:
+                            (isListening
+                                    ? Colors.green
+                                    : const Color(0xFF6C63FF))
+                                .withValues(alpha: 0.4),
                         blurRadius: 20,
                         offset: const Offset(0, 5),
                       ),
@@ -755,10 +779,30 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
                 crossAxisSpacing: 12,
                 childAspectRatio: 1.5,
                 children: [
-                  _buildProgressStat('Speaking Minutes', '${progress.totalSpeakingMinutes}', Icons.timer, const Color(0xFF6C63FF)),
-                  _buildProgressStat('Words Spoken', '${progress.totalWordsSpoken}', Icons.record_voice_over, const Color(0xFF4CAF50)),
-                  _buildProgressStat('Sessions', '${progress.totalSessions}', Icons.chat, const Color(0xFFFF9800)),
-                  _buildProgressStat('Streak', '${progress.currentStreak} days', Icons.local_fire_department, const Color(0xFFF44336)),
+                  _buildProgressStat(
+                    'Speaking Minutes',
+                    '${progress.totalSpeakingMinutes}',
+                    Icons.timer,
+                    const Color(0xFF6C63FF),
+                  ),
+                  _buildProgressStat(
+                    'Words Spoken',
+                    '${progress.totalWordsSpoken}',
+                    Icons.record_voice_over,
+                    const Color(0xFF4CAF50),
+                  ),
+                  _buildProgressStat(
+                    'Sessions',
+                    '${progress.totalSessions}',
+                    Icons.chat,
+                    const Color(0xFFFF9800),
+                  ),
+                  _buildProgressStat(
+                    'Streak',
+                    '${progress.currentStreak} days',
+                    Icons.local_fire_department,
+                    const Color(0xFFF44336),
+                  ),
                 ],
               ),
               const SizedBox(height: 24),
@@ -772,9 +816,17 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              _buildScoreBar('Pronunciation', progress.averagePronunciationScore, const Color(0xFF4CAF50)),
+              _buildScoreBar(
+                'Pronunciation',
+                progress.averagePronunciationScore,
+                const Color(0xFF4CAF50),
+              ),
               const SizedBox(height: 8),
-              _buildScoreBar('Fluency', progress.averageFluencyScore, const Color(0xFF2196F3)),
+              _buildScoreBar(
+                'Fluency',
+                progress.averageFluencyScore,
+                const Color(0xFF2196F3),
+              ),
               const SizedBox(height: 24),
               // Common Mistakes
               if (progress.commonMistakes.isNotEmpty) ...[
@@ -787,41 +839,47 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                ...progress.commonMistakes.map((mistake) => Container(
-                  margin: const EdgeInsets.only(bottom: 8),
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.red.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.error_outline, color: Colors.red, size: 20),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              mistake.pattern,
-                              style: GoogleFonts.poppins(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            Text(
-                              mistake.suggestion,
-                              style: GoogleFonts.poppins(
-                                color: Colors.white54,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
+                ...progress.commonMistakes.map(
+                  (mistake) => Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.red.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.error_outline,
+                          color: Colors.red,
+                          size: 20,
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                mistake.pattern,
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              Text(
+                                mistake.suggestion,
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white54,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                )),
+                ),
               ],
             ],
           ),
@@ -830,7 +888,12 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
     );
   }
 
-  Widget _buildProgressStat(String label, String value, IconData icon, Color color) {
+  Widget _buildProgressStat(
+    String label,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -852,10 +915,7 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
           ),
           Text(
             label,
-            style: GoogleFonts.poppins(
-              color: Colors.white54,
-              fontSize: 11,
-            ),
+            style: GoogleFonts.poppins(color: Colors.white54, fontSize: 11),
             textAlign: TextAlign.center,
           ),
         ],
@@ -872,10 +932,7 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
           children: [
             Text(
               label,
-              style: GoogleFonts.poppins(
-                color: Colors.white70,
-                fontSize: 13,
-              ),
+              style: GoogleFonts.poppins(color: Colors.white70, fontSize: 13),
             ),
             Text(
               '${score.toInt()}%',
@@ -942,7 +999,9 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              ..._controller.challenges.map((challenge) => _buildChallengeCard(challenge)),
+              ..._controller.challenges.map(
+                (challenge) => _buildChallengeCard(challenge),
+              ),
             ],
           ),
         );
@@ -989,7 +1048,9 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
                   challenge.isActive ? 'Active' : 'Completed',
                   style: GoogleFonts.poppins(
                     fontSize: 11,
-                    color: challenge.isActive ? const Color(0xFF4CAF50) : Colors.white54,
+                    color: challenge.isActive
+                        ? const Color(0xFF4CAF50)
+                        : Colors.white54,
                   ),
                 ),
               ),
@@ -998,10 +1059,7 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
           const SizedBox(height: 8),
           Text(
             challenge.description,
-            style: GoogleFonts.poppins(
-              color: Colors.white54,
-              fontSize: 13,
-            ),
+            style: GoogleFonts.poppins(color: Colors.white54, fontSize: 13),
           ),
           const SizedBox(height: 12),
           // Progress bar
@@ -1014,18 +1072,23 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
           const SizedBox(height: 8),
           Text(
             '${challenge.completedDays}/${challenge.targetDays} days completed',
-            style: GoogleFonts.poppins(
-              color: Colors.white70,
-              fontSize: 12,
-            ),
+            style: GoogleFonts.poppins(color: Colors.white70, fontSize: 12),
           ),
           const SizedBox(height: 12),
           // Rewards
           Row(
             children: [
-              _buildRewardBadge('XP', challenge.reward.xp.toString(), const Color(0xFFFF9800)),
+              _buildRewardBadge(
+                'XP',
+                challenge.reward.xp.toString(),
+                const Color(0xFFFF9800),
+              ),
               const SizedBox(width: 8),
-              _buildRewardBadge('Gems', challenge.reward.gems.toString(), const Color(0xFF6C63FF)),
+              _buildRewardBadge(
+                'Gems',
+                challenge.reward.gems.toString(),
+                const Color(0xFF6C63FF),
+              ),
               if (challenge.reward.badgeId != null) ...[
                 const SizedBox(width: 8),
                 _buildRewardBadge('Badge', '★', const Color(0xFFFFD700)),
@@ -1056,13 +1119,7 @@ class _AdvancedSpeakingScreenState extends State<AdvancedSpeakingScreen> {
             ),
           ),
           const SizedBox(width: 4),
-          Text(
-            label,
-            style: GoogleFonts.poppins(
-              color: color,
-              fontSize: 10,
-            ),
-          ),
+          Text(label, style: GoogleFonts.poppins(color: color, fontSize: 10)),
         ],
       ),
     );

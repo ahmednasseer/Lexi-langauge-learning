@@ -5,12 +5,11 @@ import '../../core/theme/app_colors.dart';
 import '../../shared/widgets/state_widgets.dart';
 import '../../shared/widgets/widgets.dart';
 import 'ai_coach_controller.dart';
-import 'models/conversation_category.dart';
+import 'package:lexi/features/ai_coach/models/conversation_category.dart';
 import 'widgets/category_card.dart';
 
 class AiCoachScreen extends StatefulWidget {
   const AiCoachScreen({super.key});
-
   @override
   State<AiCoachScreen> createState() => _AiCoachScreenState();
 }
@@ -21,7 +20,6 @@ class _AiCoachScreenState extends State<AiCoachScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _showCategories = true;
   bool _initError = false;
-
   @override
   void initState() {
     super.initState();
@@ -68,10 +66,8 @@ class _AiCoachScreenState extends State<AiCoachScreen> {
   Future<void> _sendMessage() async {
     final message = _messageController.text.trim();
     if (message.isEmpty) return;
-
     _messageController.clear();
     setState(() => _showCategories = false);
-
     await _controller.sendMessage(message);
   }
 
@@ -192,8 +188,7 @@ class _AiCoachScreenState extends State<AiCoachScreen> {
                   padding: const EdgeInsets.only(right: 12),
                   child: CategoryCard(
                     category: category,
-                    isSelected:
-                        _controller.selectedCategory?.id == category.id,
+                    isSelected: _controller.selectedCategory?.id == category.id,
                     onTap: () {
                       _controller.selectCategory(category);
                       setState(() => _showCategories = false);
@@ -203,9 +198,9 @@ class _AiCoachScreenState extends State<AiCoachScreen> {
                     },
                   ),
                 ).animate().fadeIn(
-                      delay: Duration(milliseconds: index * 80),
-                      duration: 400.ms,
-                    );
+                  delay: Duration(milliseconds: index * 80),
+                  duration: 400.ms,
+                );
               },
             ),
           ),
@@ -288,7 +283,6 @@ class _AiCoachScreenState extends State<AiCoachScreen> {
     if (_controller.history.isEmpty) {
       return _buildEmptyState();
     }
-
     return ListView.builder(
       controller: _scrollController,
       padding: const EdgeInsets.all(16),
@@ -304,7 +298,12 @@ class _AiCoachScreenState extends State<AiCoachScreen> {
               delay: Duration(milliseconds: index * 50),
               duration: 400.ms,
             )
-            .slideY(begin: 0.1, end: 0, delay: Duration(milliseconds: index * 50), duration: 400.ms);
+            .slideY(
+              begin: 0.1,
+              end: 0,
+              delay: Duration(milliseconds: index * 50),
+              duration: 400.ms,
+            );
       },
     );
   }
@@ -332,11 +331,11 @@ class _AiCoachScreenState extends State<AiCoachScreen> {
               child: Text('🤖', style: TextStyle(fontSize: 60)),
             ),
           ).animate().scale(
-                begin: const Offset(0.5, 0.5),
-                duration: 600.ms,
-                delay: 200.ms,
-                curve: Curves.easeOutBack,
-              ),
+            begin: const Offset(0.5, 0.5),
+            duration: 600.ms,
+            delay: 200.ms,
+            curve: Curves.easeOutBack,
+          ),
           const SizedBox(height: 24),
           Text(
             'محرر الذكي',
@@ -361,7 +360,6 @@ class _AiCoachScreenState extends State<AiCoachScreen> {
 
   Widget _buildMessageBubble(dynamic message, int index) {
     final bool isUser = message.isUser;
-
     if (isUser) {
       return Align(
         alignment: Alignment.centerRight,
@@ -386,10 +384,7 @@ class _AiCoachScreenState extends State<AiCoachScreen> {
           ),
           child: Text(
             message.content,
-            style: GoogleFonts.poppins(
-              fontSize: 15,
-              color: Colors.white,
-            ),
+            style: GoogleFonts.poppins(fontSize: 15, color: Colors.white),
           ),
         ),
       );
@@ -544,7 +539,6 @@ class _AiCoachScreenState extends State<AiCoachScreen> {
 
   Widget _buildQuickActionChips() {
     if (_controller.history.isEmpty) return const SizedBox.shrink();
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
@@ -686,10 +680,11 @@ class _AiCoachScreenState extends State<AiCoachScreen> {
                         : AppColors.primaryGradient,
                     boxShadow: [
                       BoxShadow(
-                        color: (_controller.isListening
-                                ? AppColors.error
-                                : AppColors.primary)
-                            .withValues(alpha: 0.3),
+                        color:
+                            (_controller.isListening
+                                    ? AppColors.error
+                                    : AppColors.primary)
+                                .withValues(alpha: 0.3),
                         blurRadius: _controller.isListening ? 15 : 8,
                         spreadRadius: _controller.isListening ? 3 : 0,
                       ),
@@ -714,14 +709,10 @@ class _AiCoachScreenState extends State<AiCoachScreen> {
                   ),
                   child: TextField(
                     controller: _messageController,
-                    style: GoogleFonts.poppins(
-                      color: AppColors.textPrimary,
-                    ),
+                    style: GoogleFonts.poppins(color: AppColors.textPrimary),
                     decoration: InputDecoration(
                       hintText: 'اكتب رسالتك...',
-                      hintStyle: GoogleFonts.poppins(
-                        color: AppColors.textHint,
-                      ),
+                      hintStyle: GoogleFonts.poppins(color: AppColors.textHint),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 20,
@@ -766,11 +757,7 @@ class _AiCoachScreenState extends State<AiCoachScreen> {
                               color: Colors.white,
                             ),
                           )
-                        : const Icon(
-                            Icons.send,
-                            color: Colors.white,
-                            size: 20,
-                          ),
+                        : const Icon(Icons.send, color: Colors.white, size: 20),
                   ),
                 ),
               ),

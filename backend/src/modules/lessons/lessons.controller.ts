@@ -8,10 +8,16 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 export class LessonsController {
   constructor(private lessonsService: LessonsService) {}
 
-  @Get('languages')
+   @Get('languages')
   @ApiOperation({ summary: 'Get available languages' })
   async getLanguages() {
     return this.lessonsService.getLanguages();
+  }
+
+  @Get('questions/:level')
+  @ApiOperation({ summary: 'Get quiz questions for a CEFR level' })
+  async getQuestionsForLevel(@Param('level') level: string) {
+    return this.lessonsService.getQuestionsForLevel(level);
   }
 
   @Get(':language')
@@ -26,9 +32,15 @@ export class LessonsController {
     return this.lessonsService.getLessons(language, level, category);
   }
 
-  @Get(':language/:id')
-  @ApiOperation({ summary: 'Get lesson detail' })
+  @Get('detail/:id')
+  @ApiOperation({ summary: 'Get lesson detail by id' })
   async getLessonDetail(@Param('id') id: string) {
+    return this.lessonsService.getLessonDetail(id);
+  }
+
+  @Get(':language/:id')
+  @ApiOperation({ summary: 'Get lesson detail (legacy, by language + id)' })
+  async getLessonDetailLegacy(@Param('id') id: string) {
     return this.lessonsService.getLessonDetail(id);
   }
 

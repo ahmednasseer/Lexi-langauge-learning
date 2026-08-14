@@ -1,30 +1,34 @@
 import 'package:flutter/material.dart';
-import 'models/message.dart';
+import 'package:lexi/features/community/models/message.dart';
 
 class SecurityService extends ChangeNotifier {
   final List<BlockedUser> _blockedUsers = [];
   final List<UserReport> _reports = [];
   final Map<String, List<DateTime>> _messageRateLimits = {};
   final Map<String, int> _dailyMessageCounts = {};
-
   static const int _freeUserDailyLimit = 10;
   static const int _premiumUserDailyLimit = 50;
   static const int _rateLimitWindowMinutes = 1;
   static const int _maxMessagesPerMinute = 5;
-
   List<BlockedUser> get blockedUsers => List.unmodifiable(_blockedUsers);
   List<UserReport> get reports => List.unmodifiable(_reports);
-
   bool isBlocked(String currentUserId, String targetUserId) {
-    return _blockedUsers.any((b) =>
-      (b.blockerId == currentUserId && b.blockedId == targetUserId) ||
-      (b.blockerId == targetUserId && b.blockedId == currentUserId)
+    return _blockedUsers.any(
+      (b) =>
+          (b.blockerId == currentUserId && b.blockedId == targetUserId) ||
+          (b.blockerId == targetUserId && b.blockedId == currentUserId),
     );
   }
 
-  bool canSendRequest(String senderId, String receiverId, UserProfile receiverProfile, bool isPremium) {
+  bool canSendRequest(
+    String senderId,
+    String receiverId,
+    UserProfile receiverProfile,
+    bool isPremium,
+  ) {
     if (isBlocked(senderId, receiverId)) return false;
-    if (!receiverProfile.canSendRequest && !receiverProfile.canMessage) return false;
+    if (!receiverProfile.canSendRequest && !receiverProfile.canMessage)
+      return false;
     if (!_checkRateLimit(senderId)) return false;
     if (!_checkDailyLimit(senderId, isPremium)) return false;
     return true;
@@ -40,9 +44,9 @@ class SecurityService extends ChangeNotifier {
   bool _checkRateLimit(String userId) {
     final now = DateTime.now();
     final timestamps = _messageRateLimits[userId] ?? [];
-    final recentTimestamps = timestamps.where(
-      (t) => now.difference(t).inMinutes < _rateLimitWindowMinutes,
-    ).toList();
+    final recentTimestamps = timestamps
+        .where((t) => now.difference(t).inMinutes < _rateLimitWindowMinutes)
+        .toList();
     _messageRateLimits[userId] = recentTimestamps;
     return recentTimestamps.length < _maxMessagesPerMinute;
   }
@@ -74,20 +78,22 @@ class SecurityService extends ChangeNotifier {
 
   bool blockUser(String blockerId, String blockedId) {
     if (isBlocked(blockerId, blockedId)) return false;
-    _blockedUsers.add(BlockedUser(
-      id: 'block_${DateTime.now().millisecondsSinceEpoch}',
-      blockerId: blockerId,
-      blockedId: blockedId,
-      createdAt: DateTime.now(),
-    ));
+    _blockedUsers.add(
+      BlockedUser(
+        id: 'block_${DateTime.now().millisecondsSinceEpoch}',
+        blockerId: blockerId,
+        blockedId: blockedId,
+        createdAt: DateTime.now(),
+      ),
+    );
     notifyListeners();
     return true;
   }
 
   bool unblockUser(String blockerId, String blockedId) {
     final initialLength = _blockedUsers.length;
-    _blockedUsers.removeWhere((b) =>
-      b.blockerId == blockerId && b.blockedId == blockedId
+    _blockedUsers.removeWhere(
+      (b) => b.blockerId == blockerId && b.blockedId == blockedId,
     );
     final removed = _blockedUsers.length < initialLength;
     if (removed) notifyListeners();
@@ -116,8 +122,8 @@ class SecurityService extends ChangeNotifier {
   }
 
   bool hasUserReported(String reporterId, String reportedUserId) {
-    return _reports.any((r) =>
-      r.reporterId == reporterId && r.reportedUserId == reportedUserId
+    return _reports.any(
+      (r) => r.reporterId == reporterId && r.reportedUserId == reportedUserId,
     );
   }
 

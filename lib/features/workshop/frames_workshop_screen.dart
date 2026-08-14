@@ -34,12 +34,7 @@ class _FramesWorkshopScreenState extends State<FramesWorkshopScreen> {
   bool _showDetailSheet = false;
   bool _showPreviewSheet = false;
 
-  final List<String> _tabTitles = [
-    'لجميع الإطارات',
-    'مميزة',
-    'نادرة',
-    'VIP',
-  ];
+  final List<String> _tabTitles = ['لجميع الإطارات', 'مميزة', 'نادرة', 'VIP'];
 
   final List<_FrameItem> _allFrames = [
     const _FrameItem(
@@ -138,10 +133,7 @@ class _FramesWorkshopScreenState extends State<FramesWorkshopScreen> {
     setState(() {});
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          'تم تطبيق الإطار بنجاح',
-          style: GoogleFonts.poppins(),
-        ),
+        content: Text('تم تطبيق الإطار بنجاح', style: GoogleFonts.poppins()),
         backgroundColor: AppColors.success,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -267,8 +259,12 @@ class _FramesWorkshopScreenState extends State<FramesWorkshopScreen> {
                     _tabTitles[index],
                     style: GoogleFonts.poppins(
                       fontSize: 12,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                      color: isSelected ? Colors.white : AppColors.textSecondary,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.w500,
+                      color: isSelected
+                          ? Colors.white
+                          : AppColors.textSecondary,
                     ),
                   ),
                 ),
@@ -301,81 +297,84 @@ class _FramesWorkshopScreenState extends State<FramesWorkshopScreen> {
 
   Widget _buildFrameCard(_FrameItem frame, int index) {
     return GestureDetector(
-      onTap: () => _onFrameTap(index),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: frame.color.withValues(alpha: 0.4),
-            width: 1.5,
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Ornate frame illustration
-            SizedBox(
-              width: 72,
-              height: 72,
-              child: CustomPaint(
-                painter: _OrnateFramePainter(
-                  color: frame.color,
-                  gradientColors: frame.gradientColors,
-                ),
-                child: Center(
-                  child: Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        colors: frame.gradientColors
-                            .map((c) => c.withValues(alpha: 0.3))
-                            .toList(),
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+          onTap: () => _onFrameTap(index),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: frame.color.withValues(alpha: 0.4),
+                width: 1.5,
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Ornate frame illustration
+                SizedBox(
+                  width: 72,
+                  height: 72,
+                  child: CustomPaint(
+                    painter: _OrnateFramePainter(
+                      color: frame.color,
+                      gradientColors: frame.gradientColors,
+                    ),
+                    child: Center(
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: frame.gradientColors
+                                .map((c) => c.withValues(alpha: 0.3))
+                                .toList(),
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.person,
+                          color: Colors.white54,
+                          size: 24,
+                        ),
                       ),
                     ),
-                    child: const Icon(
-                      Icons.person,
-                      color: Colors.white54,
-                      size: 24,
-                    ),
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            // Price badge
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                gradient: AppColors.gemGradient,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    '${frame.price}',
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                const SizedBox(height: 8),
+                // Price badge
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
                   ),
-                  const SizedBox(width: 2),
-                  const Text('💎', style: TextStyle(fontSize: 10)),
-                ],
-              ),
+                  decoration: BoxDecoration(
+                    gradient: AppColors.gemGradient,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '${frame.price}',
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(width: 2),
+                      const Text('💎', style: TextStyle(fontSize: 10)),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-    )
+          ),
+        )
         .animate()
         .fadeIn(
           delay: Duration(milliseconds: 200 + index * 60),
@@ -404,7 +403,9 @@ class _FramesWorkshopScreenState extends State<FramesWorkshopScreen> {
                   width: double.infinity,
                   decoration: const BoxDecoration(
                     color: Color(0xFF0D1117),
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(28),
+                    ),
                   ),
                   child: SingleChildScrollView(
                     child: Column(
@@ -573,7 +574,10 @@ class _FramesWorkshopScreenState extends State<FramesWorkshopScreen> {
                                     ),
                                   ),
                                   const SizedBox(width: 8),
-                                  const Text('💎', style: TextStyle(fontSize: 18)),
+                                  const Text(
+                                    '💎',
+                                    style: TextStyle(fontSize: 18),
+                                  ),
                                 ],
                               ),
                             ),
@@ -612,7 +616,9 @@ class _FramesWorkshopScreenState extends State<FramesWorkshopScreen> {
                   width: double.infinity,
                   decoration: const BoxDecoration(
                     color: Color(0xFF0D1117),
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(28),
+                    ),
                   ),
                   child: SingleChildScrollView(
                     child: Column(
@@ -838,10 +844,7 @@ class _OrnateFramePainter extends CustomPainter {
 
       // Dot with gradient effect
       final dotGradient = RadialGradient(
-        colors: [
-          color,
-          color.withValues(alpha: 0.5),
-        ],
+        colors: [color, color.withValues(alpha: 0.5)],
       );
 
       dotPaint.shader = dotGradient.createShader(

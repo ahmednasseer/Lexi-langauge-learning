@@ -1,21 +1,28 @@
+﻿===============================================================================
+                            HISTORICAL REFERENCE
+===============================================================================
+Status: SUPERSEDED — DO NOT USE AS CURRENT STATE REFERENCE
+Current State Audit: See LEXI_CURRENT_STATE_AUDIT.md
+===============================================================================
+
 # LEXI ARCHITECTURE GUIDE
 
 ## 1. VISION
 
-### هدف المشروع
-تطبيق تعليم اللغة الألمانية بالذكاء الاصطناعي يوفر تجربة تعلم شخصية وممتعة.
+### ظ‡ط¯ظپ ط§ظ„ظ…ط´ط±ظˆط¹
+طھط·ط¨ظٹظ‚ طھط¹ظ„ظٹظ… ط§ظ„ظ„ط؛ط© ط§ظ„ط£ظ„ظ…ط§ظ†ظٹط© ط¨ط§ظ„ط°ظƒط§ط، ط§ظ„ط§طµط·ظ†ط§ط¹ظٹ ظٹظˆظپط± طھط¬ط±ط¨ط© طھط¹ظ„ظ… ط´ط®طµظٹط© ظˆظ…ظ…طھط¹ط©.
 
-### المستخدم المستهدف
-- المبتدئون في تعلم اللغة الألمانية (A1-B1)
-- الطلاب الذين يحضرون لامتحانات غوته
-- المغتربون في ألمانيا
+### ط§ظ„ظ…ط³طھط®ط¯ظ… ط§ظ„ظ…ط³طھظ‡ط¯ظپ
+- ط§ظ„ظ…ط¨طھط¯ط¦ظˆظ† ظپظٹ طھط¹ظ„ظ… ط§ظ„ظ„ط؛ط© ط§ظ„ط£ظ„ظ…ط§ظ†ظٹط© (A1-B1)
+- ط§ظ„ط·ظ„ط§ط¨ ط§ظ„ط°ظٹظ† ظٹط­ط¶ط±ظˆظ† ظ„ط§ظ…طھط­ط§ظ†ط§طھ ط؛ظˆطھظ‡
+- ط§ظ„ظ…ط؛طھط±ط¨ظˆظ† ظپظٹ ط£ظ„ظ…ط§ظ†ظٹط§
 
-### المبادئ الأساسية
-- **Simplicity First**: بساطة قبل التعقيد
-- **User First**: المستخدم أولاً
-- **Incremental Development**: تطوير تدريجي
-- **Test Before Ship**: اختبار قبل إطلاق
-- **No Mock in Production**: ممنوع البيانات الوهمية في الإنتاج
+### ط§ظ„ظ…ط¨ط§ط¯ط¦ ط§ظ„ط£ط³ط§ط³ظٹط©
+- **Simplicity First**: ط¨ط³ط§ط·ط© ظ‚ط¨ظ„ ط§ظ„طھط¹ظ‚ظٹط¯
+- **User First**: ط§ظ„ظ…ط³طھط®ط¯ظ… ط£ظˆظ„ط§ظ‹
+- **Incremental Development**: طھط·ظˆظٹط± طھط¯ط±ظٹط¬ظٹ
+- **Test Before Ship**: ط§ط®طھط¨ط§ط± ظ‚ط¨ظ„ ط¥ط·ظ„ط§ظ‚
+- **No Mock in Production**: ظ…ظ…ظ†ظˆط¹ ط§ظ„ط¨ظٹط§ظ†ط§طھ ط§ظ„ظˆظ‡ظ…ظٹط© ظپظٹ ط§ظ„ط¥ظ†طھط§ط¬
 
 ---
 
@@ -25,34 +32,34 @@
 
 ```
 lib/
-├── core/
-│   ├── di/                    # Dependency Injection
-│   ├── error/                 # Error Handling
-│   ├── logger/                # Logging
-│   ├── network/               # Network Layer
-│   ├── state/                 # Base State Classes
-│   ├── storage/               # Local Storage
-│   └── utils/                 # Utilities
-├── data/
-│   ├── datasources/
-│   │   ├── local/             # Local Data Sources
-│   │   └── remote/            # Remote Data Sources
-│   ├── models/                # Data Models (DTOs)
-│   └── repositories/          # Repository Implementations
-├── domain/
-│   ├── entities/              # Business Entities
-│   ├── repositories/          # Repository Interfaces
-│   └── usecases/              # Business Logic
-├── presentation/
-│   ├── bloc/                  # Blocs
-│   ├── pages/                 # Screens
-│   ├── widgets/               # Reusable Widgets
-│   └── theme/                 # Theme
-└── main.dart
+â”œâ”€â”€ core/
+â”‚   â”œâ”€â”€ di/                    # Dependency Injection
+â”‚   â”œâ”€â”€ error/                 # Error Handling
+â”‚   â”œâ”€â”€ logger/                # Logging
+â”‚   â”œâ”€â”€ network/               # Network Layer
+â”‚   â”œâ”€â”€ state/                 # Base State Classes
+â”‚   â”œâ”€â”€ storage/               # Local Storage
+â”‚   â””â”€â”€ utils/                 # Utilities
+â”œâ”€â”€ data/
+â”‚   â”œâ”€â”€ datasources/
+â”‚   â”‚   â”œâ”€â”€ local/             # Local Data Sources
+â”‚   â”‚   â””â”€â”€ remote/            # Remote Data Sources
+â”‚   â”œâ”€â”€ models/                # Data Models (DTOs)
+â”‚   â””â”€â”€ repositories/          # Repository Implementations
+â”œâ”€â”€ domain/
+â”‚   â”œâ”€â”€ entities/              # Business Entities
+â”‚   â”œâ”€â”€ repositories/          # Repository Interfaces
+â”‚   â””â”€â”€ usecases/              # Business Logic
+â”œâ”€â”€ presentation/
+â”‚   â”œâ”€â”€ bloc/                  # Blocs
+â”‚   â”œâ”€â”€ pages/                 # Screens
+â”‚   â”œâ”€â”€ widgets/               # Reusable Widgets
+â”‚   â””â”€â”€ theme/                 # Theme
+â””â”€â”€ main.dart
 
 ```
 
-### طبقات المشروع
+### ط·ط¨ظ‚ط§طھ ط§ظ„ظ…ط´ط±ظˆط¹
 
 | Layer | Responsibility |
 |-------|----------------|
@@ -61,12 +68,12 @@ lib/
 | Data | Models, DataSources, Repository Implementations |
 | Core | DI, Logger, Error, Network |
 
-### قواعد النقل بين الطبقات
-- **مسموح**: Domain ← Data ← Core
-- **مسموح**: Presentation ← Domain ← Data
-- **ممنوع**: Data ← Presentation
-- **ممنوع**: Core ← Domain
-- **ممنوع**: أي Model يعبر طبقة بدون تحويل
+### ظ‚ظˆط§ط¹ط¯ ط§ظ„ظ†ظ‚ظ„ ط¨ظٹظ† ط§ظ„ط·ط¨ظ‚ط§طھ
+- **ظ…ط³ظ…ظˆط­**: Domain â†گ Data â†گ Core
+- **ظ…ط³ظ…ظˆط­**: Presentation â†گ Domain â†گ Data
+- **ظ…ظ…ظ†ظˆط¹**: Data â†گ Presentation
+- **ظ…ظ…ظ†ظˆط¹**: Core â†گ Domain
+- **ظ…ظ…ظ†ظˆط¹**: ط£ظٹ Model ظٹط¹ط¨ط± ط·ط¨ظ‚ط© ط¨ط¯ظˆظ† طھط­ظˆظٹظ„
 
 ---
 
@@ -74,21 +81,21 @@ lib/
 
 ### System: flutter_bloc (Bloc/Cubit)
 
-#### القواعد:
-- استخدام **Cubit** للحالات البسيطة
-- استخدام **Bloc** للحالات المعقدة مع Events
-- كل Screen لها Bloc/Cubit خاص
-- لا يوجد Bloc عام لأكثر من 3 Screens
+#### ط§ظ„ظ‚ظˆط§ط¹ط¯:
+- ط§ط³طھط®ط¯ط§ظ… **Cubit** ظ„ظ„ط­ط§ظ„ط§طھ ط§ظ„ط¨ط³ظٹط·ط©
+- ط§ط³طھط®ط¯ط§ظ… **Bloc** ظ„ظ„ط­ط§ظ„ط§طھ ط§ظ„ظ…ط¹ظ‚ط¯ط© ظ…ط¹ Events
+- ظƒظ„ Screen ظ„ظ‡ط§ Bloc/Cubit ط®ط§طµ
+- ظ„ط§ ظٹظˆط¬ط¯ Bloc ط¹ط§ظ… ظ„ط£ظƒط«ط± ظ…ظ† 3 Screens
 
-#### دورة الحياة:
-- **الإنشاء**: عند فتح الشاشة (BlocProvider create)
-- **التخلص**: عند إغلاق الشاشة (تلقائي via BlocProvider)
-- **التجديد**: عند الحاجة (BlocProvider.value)
+#### ط¯ظˆط±ط© ط§ظ„ط­ظٹط§ط©:
+- **ط§ظ„ط¥ظ†ط´ط§ط،**: ط¹ظ†ط¯ ظپطھط­ ط§ظ„ط´ط§ط´ط© (BlocProvider create)
+- **ط§ظ„طھط®ظ„طµ**: ط¹ظ†ط¯ ط¥ط؛ظ„ط§ظ‚ ط§ظ„ط´ط§ط´ط© (طھظ„ظ‚ط§ط¦ظٹ via BlocProvider)
+- **ط§ظ„طھط¬ط¯ظٹط¯**: ط¹ظ†ط¯ ط§ظ„ط­ط§ط¬ط© (BlocProvider.value)
 
-#### تحديث الواجهة:
-- `emit(newState)` فقط
-- لا setState داخل BlocBuilder
-- Equatable لجميع States
+#### طھط­ط¯ظٹط« ط§ظ„ظˆط§ط¬ظ‡ط©:
+- `emit(newState)` ظپظ‚ط·
+- ظ„ط§ setState ط¯ط§ط®ظ„ BlocBuilder
+- Equatable ظ„ط¬ظ…ظٹط¹ States
 
 ---
 
@@ -96,24 +103,24 @@ lib/
 
 ### System: get_it + injectable
 
-#### الأنواع:
+#### ط§ظ„ط£ظ†ظˆط§ط¹:
 | Type | Usage |
 |------|-------|
 | Singleton | Services, Repositories |
 | Lazy Singleton | Database, Firebase instances |
 | Factory | Blocs, UseCases |
 
-#### القواعد:
-- التسجيل في `injection_container.dart`
-- لا new مباشرة أبدًا
-- كل شيء عبر GetIt.instance
-- `@injectable` annotation لكل الكلاسات
+#### ط§ظ„ظ‚ظˆط§ط¹ط¯:
+- ط§ظ„طھط³ط¬ظٹظ„ ظپظٹ `injection_container.dart`
+- ظ„ط§ new ظ…ط¨ط§ط´ط±ط© ط£ط¨ط¯ظ‹ط§
+- ظƒظ„ ط´ظٹط، ط¹ط¨ط± GetIt.instance
+- `@injectable` annotation ظ„ظƒظ„ ط§ظ„ظƒظ„ط§ط³ط§طھ
 
 ---
 
 ## 5. REPOSITORY PATTERN
 
-### الهيكل الرسمي:
+### ط§ظ„ظ‡ظٹظƒظ„ ط§ظ„ط±ط³ظ…ظٹ:
 
 ```dart
 // Interface (Domain Layer)
@@ -140,14 +147,14 @@ class UserRepositoryImpl implements UserRepository {
 }
 ```
 
-### المصادر:
+### ط§ظ„ظ…طµط§ط¯ط±:
 - **Remote**: Firestore, Firebase Auth, APIs
 - **Local**: SharedPreferences, Hive, SQLite
 
-### القواعد:
-- Repository يبدأ بـ Remote
-- يفشل → يعود إلى Local
-- ينجح → يخزن في Local
+### ط§ظ„ظ‚ظˆط§ط¹ط¯:
+- Repository ظٹط¨ط¯ط£ ط¨ظ€ Remote
+- ظٹظپط´ظ„ â†’ ظٹط¹ظˆط¯ ط¥ظ„ظ‰ Local
+- ظٹظ†ط¬ط­ â†’ ظٹط®ط²ظ† ظپظٹ Local
 
 ---
 
@@ -156,9 +163,9 @@ class UserRepositoryImpl implements UserRepository {
 ### Firebase Collections:
 
 ```
-users/{userId}                 # بيانات المستخدم
-users/{userId}/progress        # التقدم
-users/{userId}/inventory       # المخزون
+users/{userId}                 # ط¨ظٹط§ظ†ط§طھ ط§ظ„ظ…ط³طھط®ط¯ظ…
+users/{userId}/progress        # ط§ظ„طھظ‚ط¯ظ…
+users/{userId}/inventory       # ط§ظ„ظ…ط®ط²ظˆظ†
 
 curriculum/{level}/units/{unitId}/lessons/{lessonId}
 questions/{level}/questions/{questionId}
@@ -206,23 +213,23 @@ match /posts/{postId} {
 ## 7. UI RULES
 
 ### Design System:
-- **Theme**: Dark/Light مع Material 3
+- **Theme**: Dark/Light ظ…ط¹ Material 3
 - **Typography**: Poppins (Google Fonts)
-- **Colors**: معرفة في AppColors
+- **Colors**: ظ…ط¹ط±ظپط© ظپظٹ AppColors
 - **Icons**: Material Icons
 
-### الحالات:
+### ط§ظ„ط­ط§ظ„ط§طھ:
 | State | Widget |
 |-------|--------|
 | Loading | Skeleton/CircularProgressIndicator |
-| Empty | EmptyState مع رسالة وإجراء |
-| Error | ErrorState مع Retry |
-| Success | المحتوى الفعلي |
+| Empty | EmptyState ظ…ط¹ ط±ط³ط§ظ„ط© ظˆط¥ط¬ط±ط§ط، |
+| Error | ErrorState ظ…ط¹ Retry |
+| Success | ط§ظ„ظ…ط­طھظˆظ‰ ط§ظ„ظپط¹ظ„ظٹ |
 
-### الأنيميشن:
-- استخدام flutter_animate
+### ط§ظ„ط£ظ†ظٹظ…ظٹط´ظ†:
+- ط§ط³طھط®ط¯ط§ظ… flutter_animate
 - Duration: 200-400ms
-- لا أنيميشنات ثقيلة
+- ظ„ط§ ط£ظ†ظٹظ…ظٹط´ظ†ط§طھ ط«ظ‚ظٹظ„ط©
 
 ---
 
@@ -260,26 +267,26 @@ RouteGuard(
 
 ## 9. ASSETS RULES
 
-### الهيكل:
+### ط§ظ„ظ‡ظٹظƒظ„:
 ```
 assets/
-├── images/
-│   ├── logo.png
-│   ├── characters/
-│   ├── badges/
-│   ├── frames/
-│   └── backgrounds/
-├── audio/
-│   └── lessons/
-└── lottie/
+â”œâ”€â”€ images/
+â”‚   â”œâ”€â”€ logo.png
+â”‚   â”œâ”€â”€ characters/
+â”‚   â”œâ”€â”€ badges/
+â”‚   â”œâ”€â”€ frames/
+â”‚   â””â”€â”€ backgrounds/
+â”œâ”€â”€ audio/
+â”‚   â””â”€â”€ lessons/
+â””â”€â”€ lottie/
 ```
 
 ### Naming:
-- أسماء صغيرة مع underscore
-- مثال: `lexi_happy.png`, `badge_a1.png`
+- ط£ط³ظ…ط§ط، طµط؛ظٹط±ط© ظ…ط¹ underscore
+- ظ…ط«ط§ظ„: `lexi_happy.png`, `badge_a1.png`
 
 ### Optimization:
-- WebP للصور
+- WebP ظ„ظ„طµظˆط±
 - Compression: 80%
 - Max size: 500KB per image
 
@@ -287,7 +294,7 @@ assets/
 
 ## 10. ERROR HANDLING
 
-### الأنواع:
+### ط§ظ„ط£ظ†ظˆط§ط¹:
 ```dart
 abstract class Failure {}
 class NetworkFailure extends Failure {}
@@ -296,17 +303,17 @@ class ValidationFailure extends Failure {}
 class UnknownFailure extends Failure {}
 ```
 
-### القواعد:
-- كل Repository يعيد `Either<Failure, Success>`
-- لا try-catch في UI
-- Bloc يلتقط الأخطاء ويحولها لـ State
-- رسالة خطأ واضحة للمستخدم
+### ط§ظ„ظ‚ظˆط§ط¹ط¯:
+- ظƒظ„ Repository ظٹط¹ظٹط¯ `Either<Failure, Success>`
+- ظ„ط§ try-catch ظپظٹ UI
+- Bloc ظٹظ„طھظ‚ط· ط§ظ„ط£ط®ط·ط§ط، ظˆظٹط­ظˆظ„ظ‡ط§ ظ„ظ€ State
+- ط±ط³ط§ظ„ط© ط®ط·ط£ ظˆط§ط¶ط­ط© ظ„ظ„ظ…ط³طھط®ط¯ظ…
 
 ---
 
 ## 11. LOGGING
 
-### القواعد:
+### ط§ظ„ظ‚ظˆط§ط¹ط¯:
 | Level | Usage |
 |-------|-------|
 | Debug | Development only |
@@ -314,7 +321,7 @@ class UnknownFailure extends Failure {}
 | Warning | Deprecated API, Slow operations |
 | Error | Failures, Exceptions |
 
-### الاستخدام:
+### ط§ظ„ط§ط³طھط®ط¯ط§ظ…:
 ```dart
 AppLogger.d('Debug message');
 AppLogger.i('User logged in: $userId');
@@ -336,8 +343,8 @@ collection
 ```
 
 ### Lazy Loading:
-- ListView.builder دائمًا
-- لا shrinkWrap إلا للضرورة
+- ListView.builder ط¯ط§ط¦ظ…ظ‹ط§
+- ظ„ط§ shrinkWrap ط¥ظ„ط§ ظ„ظ„ط¶ط±ظˆط±ط©
 - addAutomaticKeepAlives: false
 
 ### Image Cache:
@@ -347,39 +354,39 @@ collection
 
 ### Rebuild Rules:
 - const constructors
-- RepaintBoundary للودجات المتحركة
-- لا setState في build
+- RepaintBoundary ظ„ظ„ظˆط¯ط¬ط§طھ ط§ظ„ظ…طھط­ط±ظƒط©
+- ظ„ط§ setState ظپظٹ build
 
 ---
 
 ## 13. SECURITY RULES
 
 ### Authentication:
-- Firebase Auth إلزامي
-- Token refresh تلقائي
+- Firebase Auth ط¥ظ„ط²ط§ظ…ظٹ
+- Token refresh طھظ„ظ‚ط§ط¦ظٹ
 - Session timeout: 30 days
 
 ### Input Validation:
 ```dart
-// جميع المدخلات تُحقق
+// ط¬ظ…ظٹط¹ ط§ظ„ظ…ط¯ط®ظ„ط§طھ طھظڈط­ظ‚ظ‚
 final emailValidator = EmailValidator();
 final passwordValidator = PasswordValidator(minLength: 8);
 ```
 
 ### Secure Storage:
-- flutter_secure_storage للـ Tokens
-- لا تخزين بيانات حساسة في SharedPreferences
+- flutter_secure_storage ظ„ظ„ظ€ Tokens
+- ظ„ط§ طھط®ط²ظٹظ† ط¨ظٹط§ظ†ط§طھ ط­ط³ط§ط³ط© ظپظٹ SharedPreferences
 
 ### API Keys:
-- في متغيرات البيئة فقط
-- لا في الكود أبدًا
-- --dart-define للقيم المختلفة
+- ظپظٹ ظ…طھط؛ظٹط±ط§طھ ط§ظ„ط¨ظٹط¦ط© ظپظ‚ط·
+- ظ„ط§ ظپظٹ ط§ظ„ظƒظˆط¯ ط£ط¨ط¯ظ‹ط§
+- --dart-define ظ„ظ„ظ‚ظٹظ… ط§ظ„ظ…ط®طھظ„ظپط©
 
 ---
 
 ## 14. TESTING STRATEGY
 
-### الحدود الأدنى:
+### ط§ظ„ط­ط¯ظˆط¯ ط§ظ„ط£ط¯ظ†ظ‰:
 
 | Type | Coverage | Required Before Merge |
 |------|----------|----------------------|
@@ -389,9 +396,9 @@ final passwordValidator = PasswordValidator(minLength: 8);
 
 ### Unit Tests:
 ```dart
-// لكل UseCase
-// لكل Repository
-// لكل Bloc
+// ظ„ظƒظ„ UseCase
+// ظ„ظƒظ„ Repository
+// ظ„ظƒظ„ Bloc
 test('should return user when data exists', () async {
   // arrange
   // act
@@ -401,7 +408,7 @@ test('should return user when data exists', () async {
 
 ### Widget Tests:
 ```dart
-// لكل Screen رئيسية
+// ظ„ظƒظ„ Screen ط±ط¦ظٹط³ظٹط©
 testWidgets('should show loading initially', (tester) async {
   // pumpWidget
   // expect CircularProgressIndicator
@@ -422,11 +429,11 @@ testWidgets('should show loading initially', (tester) async {
 | File | snake_case | user_repository.dart |
 | Folder | snake_case | user_management |
 
-### القواعد:
-- كل Class في ملف منفصل
-- لا ملفات تتجاوز 300 سطر
-- كل Method لا يتجاوز 30 سطر
-- تعليق لكل Public API
+### ط§ظ„ظ‚ظˆط§ط¹ط¯:
+- ظƒظ„ Class ظپظٹ ظ…ظ„ظپ ظ…ظ†ظپطµظ„
+- ظ„ط§ ظ…ظ„ظپط§طھ طھطھط¬ط§ظˆط² 300 ط³ط·ط±
+- ظƒظ„ Method ظ„ط§ ظٹطھط¬ط§ظˆط² 30 ط³ط·ط±
+- طھط¹ظ„ظٹظ‚ ظ„ظƒظ„ Public API
 
 ### Comments:
 ```dart
@@ -466,20 +473,20 @@ docs(TASK-005): update architecture guide
 
 ## 17. DEFINITION OF DONE
 
-لا تعتبر أي Task منتهية إلا إذا:
+ظ„ط§ طھط¹طھط¨ط± ط£ظٹ Task ظ…ظ†طھظ‡ظٹط© ط¥ظ„ط§ ط¥ط°ط§:
 
-- [ ] تعمل بالكامل
-- [ ] جميع التبعيات مكتملة
-- [ ] لا يوجد TODO
-- [ ] لا يوجد Mock Data
-- [ ] لا يوجد Dead Code
-- [ ] لا يوجد Warning
-- [ ] لا يوجد Error
-- [ ] Unit Tests مكتوبة
-- [ ] Widget Tests مكتوبة (للشاشات)
-- [ ] تمت مراجعة الكود
-- [ ] تم اختبارها يدويًا
-- [ ] تم تحديث الوثائق إذا لزم الأمر
+- [ ] طھط¹ظ…ظ„ ط¨ط§ظ„ظƒط§ظ…ظ„
+- [ ] ط¬ظ…ظٹط¹ ط§ظ„طھط¨ط¹ظٹط§طھ ظ…ظƒطھظ…ظ„ط©
+- [ ] ظ„ط§ ظٹظˆط¬ط¯ TODO
+- [ ] ظ„ط§ ظٹظˆط¬ط¯ Mock Data
+- [ ] ظ„ط§ ظٹظˆط¬ط¯ Dead Code
+- [ ] ظ„ط§ ظٹظˆط¬ط¯ Warning
+- [ ] ظ„ط§ ظٹظˆط¬ط¯ Error
+- [ ] Unit Tests ظ…ظƒطھظˆط¨ط©
+- [ ] Widget Tests ظ…ظƒطھظˆط¨ط© (ظ„ظ„ط´ط§ط´ط§طھ)
+- [ ] طھظ…طھ ظ…ط±ط§ط¬ط¹ط© ط§ظ„ظƒظˆط¯
+- [ ] طھظ… ط§ط®طھط¨ط§ط±ظ‡ط§ ظٹط¯ظˆظٹظ‹ط§
+- [ ] طھظ… طھط­ط¯ظٹط« ط§ظ„ظˆط«ط§ط¦ظ‚ ط¥ط°ط§ ظ„ط²ظ… ط§ظ„ط£ظ…ط±
 - [ ] PR approved
 - [ ] Merged to develop
 
@@ -497,3 +504,4 @@ docs(TASK-005): update architecture guide
 ---
 
 # END OF ARCHITECTURE GUIDE
+

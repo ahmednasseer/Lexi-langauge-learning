@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import '../../data/models/curriculum.dart';
 import '../../data/models/question_bank.dart';
 
@@ -41,20 +42,24 @@ class CurriculumService {
 
       final units = <Unit>[];
       for (final unitDoc in unitsSnapshot.docs) {
-        final lessonsSnapshot =
-            await unitDoc.reference.collection('lessons').orderBy('order').get();
+        final lessonsSnapshot = await unitDoc.reference
+            .collection('lessons')
+            .orderBy('order')
+            .get();
         final lessons = lessonsSnapshot.docs
             .map((d) => Lesson.fromJson(d.data()))
             .toList();
 
-        units.add(Unit(
-          id: unitDoc.id,
-          title: unitDoc.data()['title'] ?? '',
-          titleArabic: unitDoc.data()['titleArabic'] ?? '',
-          description: unitDoc.data()['description'] ?? '',
-          order: unitDoc.data()['order'] ?? 0,
-          lessons: lessons,
-        ));
+        units.add(
+          Unit(
+            id: unitDoc.id,
+            title: unitDoc.data()['title'] ?? '',
+            titleArabic: unitDoc.data()['titleArabic'] ?? '',
+            description: unitDoc.data()['description'] ?? '',
+            order: unitDoc.data()['order'] ?? 0,
+            lessons: lessons,
+          ),
+        );
       }
 
       _curriculum = Curriculum(
@@ -85,21 +90,26 @@ class CurriculumService {
       );
 
       _firebaseAvailable = true;
-    } catch (e) {
+    } catch (e, st) {
+      debugPrint('Failed to load from Firebase: $e\n$st');
       _firebaseAvailable = false;
     }
   }
 
   Future<void> _loadFromLocal() async {
     try {
-      final jsonString =
-          await rootBundle.loadString('assets/data/curriculum_a1.json');
+      final jsonString = await rootBundle.loadString(
+        'assets/data/curriculum_a1.json',
+      );
       _curriculum = Curriculum.fromJson(jsonDecode(jsonString));
 
-      final questionsJson =
-          await rootBundle.loadString('assets/data/questions_a1.json');
+      final questionsJson = await rootBundle.loadString(
+        'assets/data/questions_a1.json',
+      );
       _questionBank = QuestionBank.fromJson(jsonDecode(questionsJson));
-    } catch (_) {}
+    } catch (e, st) {
+      debugPrint('Failed to load local curriculum: $e\n$st');
+    }
   }
 
   List<Unit> get units => _curriculum?.units ?? [];
@@ -145,7 +155,8 @@ class CurriculumService {
           .map((d) => d.data()['url'] as String? ?? '')
           .where((url) => url.isNotEmpty)
           .toList();
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Failed to load audio URLs: $e');
       return [];
     }
   }
@@ -157,7 +168,8 @@ class CurriculumService {
           .where('lessonId', isEqualTo: lessonId)
           .get();
       return snapshot.docs.map((d) => d.data()).toList();
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Failed to load pronunciation: $e');
       return [];
     }
   }
@@ -169,7 +181,8 @@ class CurriculumService {
           .where('lessonId', isEqualTo: lessonId)
           .get();
       return snapshot.docs.map((d) => d.data()).toList();
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Failed to load conversation: $e');
       return [];
     }
   }

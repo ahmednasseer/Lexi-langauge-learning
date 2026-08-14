@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'models/learning_profile.dart';
+import 'package:lexi/core/services/auth_service.dart';
+import 'package:lexi/features/ai_learning/models/learning_profile.dart';
 import 'ai_learning_controller.dart';
 
 class AILearningScreen extends StatefulWidget {
   const AILearningScreen({super.key});
-
   @override
   State<AILearningScreen> createState() => _AILearningScreenState();
 }
 
 class _AILearningScreenState extends State<AILearningScreen> {
   late AILearningController _controller;
-
   @override
   void initState() {
     super.initState();
     _controller = AILearningController();
-    _controller.initializeProfile('current_user');
+    _controller.initializeProfile(AuthService.instance.currentUser?.id ?? '');
   }
 
   @override
@@ -35,7 +34,10 @@ class _AILearningScreenState extends State<AILearningScreen> {
         backgroundColor: const Color(0xFF0A0E21),
         title: Text(
           'AI Learning Intelligence',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.bold, color: Colors.white),
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
         actions: [
           IconButton(
@@ -48,9 +50,10 @@ class _AILearningScreenState extends State<AILearningScreen> {
         animation: _controller,
         builder: (context, child) {
           if (_controller.isLoading) {
-            return const Center(child: CircularProgressIndicator(color: Color(0xFF6C63FF)));
+            return const Center(
+              child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
+            );
           }
-
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -78,7 +81,6 @@ class _AILearningScreenState extends State<AILearningScreen> {
   Widget _buildProfileSummary() {
     final profile = _controller.profile;
     if (profile == null) return const SizedBox();
-
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -131,7 +133,11 @@ class _AILearningScreenState extends State<AILearningScreen> {
               const SizedBox(width: 16),
               _buildProfileStat('🔥', '${profile.currentStreak}', 'Streak'),
               const SizedBox(width: 16),
-              _buildProfileStat('📊', '${(profile.overallProgress * 100).toInt()}%', 'Progress'),
+              _buildProfileStat(
+                '📊',
+                '${(profile.overallProgress * 100).toInt()}%',
+                'Progress',
+              ),
               const SizedBox(width: 16),
               _buildProfileStat('📚', '${profile.totalStudyHours}h', 'Total'),
             ],
@@ -163,10 +169,7 @@ class _AILearningScreenState extends State<AILearningScreen> {
             ),
             Text(
               label,
-              style: GoogleFonts.poppins(
-                color: Colors.white70,
-                fontSize: 11,
-              ),
+              style: GoogleFonts.poppins(color: Colors.white70, fontSize: 11),
             ),
           ],
         ),
@@ -179,7 +182,6 @@ class _AILearningScreenState extends State<AILearningScreen> {
     if (weaknesses.isEmpty) {
       return const SizedBox();
     }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,7 +280,6 @@ class _AILearningScreenState extends State<AILearningScreen> {
     if (strengths.isEmpty) {
       return const SizedBox();
     }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -300,7 +301,9 @@ class _AILearningScreenState extends State<AILearningScreen> {
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          children: strengths.map((strength) => _buildStrengthChip(strength)).toList(),
+          children: strengths
+              .map((strength) => _buildStrengthChip(strength))
+              .toList(),
         ),
       ],
     ).animate().fadeIn(delay: 300.ms);
@@ -345,7 +348,6 @@ class _AILearningScreenState extends State<AILearningScreen> {
     if (topRecs.isEmpty) {
       return const SizedBox();
     }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -458,7 +460,6 @@ class _AILearningScreenState extends State<AILearningScreen> {
   Widget _buildStudyPlanSection() {
     final plan = _controller.studyPlan;
     if (plan == null) return const SizedBox();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -467,7 +468,11 @@ class _AILearningScreenState extends State<AILearningScreen> {
           children: [
             Row(
               children: [
-                const Icon(Icons.calendar_today, color: Color(0xFF00BCD4), size: 20),
+                const Icon(
+                  Icons.calendar_today,
+                  color: Color(0xFF00BCD4),
+                  size: 20,
+                ),
                 const SizedBox(width: 8),
                 Text(
                   'Weekly Study Plan',
@@ -528,15 +533,19 @@ class _AILearningScreenState extends State<AILearningScreen> {
             ),
           ),
           const Spacer(),
-          ...day.activities.take(3).map((a) => Text(
-            '${a.typeEmoji} ${a.title}',
-            style: GoogleFonts.poppins(
-              color: Colors.white54,
-              fontSize: 10,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          )),
+          ...day.activities
+              .take(3)
+              .map(
+                (a) => Text(
+                  '${a.typeEmoji} ${a.title}',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white54,
+                    fontSize: 10,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
         ],
       ),
     );
@@ -545,7 +554,6 @@ class _AILearningScreenState extends State<AILearningScreen> {
   Widget _buildMemorySection() {
     final memory = _controller.memory;
     if (memory == null) return const SizedBox();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -573,11 +581,23 @@ class _AILearningScreenState extends State<AILearningScreen> {
           ),
           child: Column(
             children: [
-              _buildMemoryStat('Mistake Patterns', '${memory.mistakePatterns.length}', Icons.pattern),
+              _buildMemoryStat(
+                'Mistake Patterns',
+                '${memory.mistakePatterns.length}',
+                Icons.pattern,
+              ),
               const SizedBox(height: 12),
-              _buildMemoryStat('Words Learned', '${memory.successfullyLearned.length}', Icons.book),
+              _buildMemoryStat(
+                'Words Learned',
+                '${memory.successfullyLearned.length}',
+                Icons.book,
+              ),
               const SizedBox(height: 12),
-              _buildMemoryStat('Conversations', '${memory.conversationHistory.length}', Icons.chat),
+              _buildMemoryStat(
+                'Conversations',
+                '${memory.conversationHistory.length}',
+                Icons.chat,
+              ),
             ],
           ),
         ),
@@ -590,10 +610,7 @@ class _AILearningScreenState extends State<AILearningScreen> {
       children: [
         Icon(icon, color: Colors.purple, size: 18),
         const SizedBox(width: 12),
-        Text(
-          label,
-          style: GoogleFonts.poppins(color: Colors.white70),
-        ),
+        Text(label, style: GoogleFonts.poppins(color: Colors.white70)),
         const Spacer(),
         Text(
           value,

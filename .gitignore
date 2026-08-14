@@ -49,6 +49,13 @@ app.*.map.json
 .env.local
 backend/.env
 
+# Secrets / credentials
+scripts/*.json
+firebase-debug.log
+*.p12
+*.pem
+*.key
+
 # Firebase (keep google-services.json for now)
 # android/app/google-services.json
 

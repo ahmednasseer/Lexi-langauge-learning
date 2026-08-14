@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/services/api_service.dart';
 
 class AvatarShopScreen extends StatefulWidget {
   const AvatarShopScreen({super.key});
@@ -16,49 +17,48 @@ class _AvatarShopScreenState extends State<AvatarShopScreen>
   int _selectedAvatarIndex = 0;
   int _selectedFrameIndex = -1;
 
-  final _avatars = [
-    {
-      'name': 'Lena',
-      'price': 300,
-      'color': AppColors.primary,
-      'initial': 'L',
-    },
-    {
-      'name': 'Paul',
-      'price': 500,
-      'color': AppColors.secondary,
-      'initial': 'P',
-    },
-    {
-      'name': 'Anna',
-      'price': 700,
-      'color': AppColors.accent,
-      'initial': 'A',
-    },
-    {
-      'name': 'Max',
-      'price': 300,
-      'color': AppColors.success,
-      'initial': 'M',
-    },
-  ];
-
-  final _frames = [
-    {'name': 'أطارات', 'color': AppColors.error, 'icon': '🔥'},
-    {'name': 'نيون', 'color': AppColors.primary, 'icon': '💡'},
-    {'name': 'ذهبي', 'color': AppColors.gold, 'icon': '👑'},
-    {'name': 'طبيعة', 'color': AppColors.success, 'icon': '🌿'},
-    {'name': 'فضاء', 'color': AppColors.secondary, 'icon': '🚀'},
-    {'name': 'كristal', 'color': AppColors.accent, 'icon': '💎'},
-    {'name': 'كهرباء', 'color': Colors.cyan, 'icon': '⚡'},
-    {'name': 'ملكي', 'color': Colors.deepPurple, 'icon': '🏰'},
-  ];
+  final ApiService _api = ApiService();
+  List<dynamic> _avatars = [];
+  List<dynamic> _frames = [];
+  int _gems = 0;
+  bool _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() => setState(() {}));
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      final avatarsResult = await _api.getStoreItems(category: 'avatar');
+      final framesResult = await _api.getStoreItems(category: 'frame');
+      final walletResult = await _api.getWallet();
+
+      if (avatarsResult.isSuccess && avatarsResult.data != null) {
+        _avatars = avatarsResult.data!;
+      }
+      if (framesResult.isSuccess && framesResult.data != null) {
+        _frames = framesResult.data!;
+      }
+      if (walletResult.isSuccess && walletResult.data != null) {
+        _gems = walletResult.data!['gems'] ?? walletResult.data!['balance'] ?? 0;
+      }
+    } catch (e) {
+      _error = e.toString();
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -78,9 +78,25 @@ class _AvatarShopScreenState extends State<AvatarShopScreen>
             _buildTabSelector(),
             const SizedBox(height: 16),
             Expanded(
-              child: _tabController.index == 0
-                  ? _buildFramesTab()
-                  : _buildBackgroundsTab(),
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _error != null
+                      ? Center(
+                          child: Column(
+                            children: [
+                              const Icon(Icons.error_outline, size: 48, color: AppColors.error),
+                              const SizedBox(height: 16),
+                              TextButton.icon(
+                                onPressed: _loadData,
+                                icon: const Icon(Icons.refresh),
+                                label: const Text('Retry'),
+                              ),
+                            ],
+                          ),
+                        )
+                      : _tabController.index == 0
+                          ? _buildFramesTab()
+                          : _buildBackgroundsTab(),
             ),
           ],
         ),
@@ -134,7 +150,7 @@ class _AvatarShopScreenState extends State<AvatarShopScreen>
                 const Text('💎', style: TextStyle(fontSize: 14)),
                 const SizedBox(width: 4),
                 Text(
-                  '1250',
+                  '$_gems',
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -225,10 +241,7 @@ class _AvatarShopScreenState extends State<AvatarShopScreen>
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            AppColors.surface,
-            AppColors.surfaceLight,
-          ],
+          colors: [AppColors.surface, AppColors.surfaceLight],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -257,10 +270,7 @@ class _AvatarShopScreenState extends State<AvatarShopScreen>
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
-                    colors: [
-                      color,
-                      color.withValues(alpha: 0.7),
-                    ],
+                    colors: [color, color.withValues(alpha: 0.7)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -352,9 +362,9 @@ class _AvatarShopScreenState extends State<AvatarShopScreen>
           ),
           const SizedBox(height: 16),
           GestureDetector(
-            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('تم تطبيق الصورة')),
-            ),
+            onTap: () => ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('تم تطبيق الصورة'))),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               decoration: BoxDecoration(
@@ -390,132 +400,132 @@ class _AvatarShopScreenState extends State<AvatarShopScreen>
           final isSelected = _selectedAvatarIndex == index;
 
           return GestureDetector(
-            onTap: () => setState(() => _selectedAvatarIndex = index),
-            child: Container(
-              width: 100,
-              margin: const EdgeInsets.only(right: 12),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? color.withValues(alpha: 0.15)
-                    : AppColors.surface,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: isSelected ? color : AppColors.border,
-                  width: isSelected ? 2 : 1,
-                ),
-                boxShadow: isSelected
-                    ? [
-                        BoxShadow(
-                          color: color.withValues(alpha: 0.2),
-                          blurRadius: 12,
-                          spreadRadius: 1,
+                onTap: () => setState(() => _selectedAvatarIndex = index),
+                child: Container(
+                  width: 100,
+                  margin: const EdgeInsets.only(right: 12),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? color.withValues(alpha: 0.15)
+                        : AppColors.surface,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isSelected ? color : AppColors.border,
+                      width: isSelected ? 2 : 1,
+                    ),
+                    boxShadow: isSelected
+                        ? [
+                            BoxShadow(
+                              color: color.withValues(alpha: 0.2),
+                              blurRadius: 12,
+                              spreadRadius: 1,
+                            ),
+                          ]
+                        : null,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 56,
+                        height: 56,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [color, color.withValues(alpha: 0.7)],
+                          ),
+                          boxShadow: isSelected
+                              ? [
+                                  BoxShadow(
+                                    color: color.withValues(alpha: 0.3),
+                                    blurRadius: 8,
+                                    spreadRadius: 1,
+                                  ),
+                                ]
+                              : null,
                         ),
-                      ]
-                    : null,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 56,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        colors: [
-                          color,
-                          color.withValues(alpha: 0.7),
-                        ],
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Text(
+                              avatar['initial'] as String,
+                              style: GoogleFonts.poppins(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Positioned(
+                              top: 12,
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 5,
+                                    height: 5,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    width: 5,
+                                    height: 5,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      boxShadow: isSelected
-                          ? [
-                              BoxShadow(
-                                color: color.withValues(alpha: 0.3),
-                                blurRadius: 8,
-                                spreadRadius: 1,
-                              ),
-                            ]
-                          : null,
-                    ),
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Text(
-                          avatar['initial'] as String,
-                          style: GoogleFonts.poppins(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
+                      const SizedBox(height: 8),
+                      Text(
+                        avatar['name'] as String,
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
                         ),
-                        Positioned(
-                          top: 12,
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 5,
-                                height: 5,
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Container(
-                                width: 5,
-                                height: 5,
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                            ],
-                          ),
+                      ),
+                      const SizedBox(height: 4),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    avatar['name'] as String,
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      gradient: AppColors.gemGradient,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Text('💎', style: TextStyle(fontSize: 10)),
-                        const SizedBox(width: 3),
-                        Text(
-                          '${avatar['price']}',
-                          style: GoogleFonts.poppins(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
+                        decoration: BoxDecoration(
+                          gradient: AppColors.gemGradient,
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                      ],
-                    ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text('💎', style: TextStyle(fontSize: 10)),
+                            const SizedBox(width: 3),
+                            Text(
+                              '${avatar['price']}',
+                              style: GoogleFonts.poppins(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-          )
+                ),
+              )
               .animate()
               .fadeIn(
-                  delay: Duration(milliseconds: 200 + index * 80),
-                  duration: 350.ms)
+                delay: Duration(milliseconds: 200 + index * 80),
+                duration: 350.ms,
+              )
               .slideX(begin: 0.1);
         },
       ),
@@ -550,74 +560,74 @@ class _AvatarShopScreenState extends State<AvatarShopScreen>
               final isSelected = _selectedFrameIndex == index;
 
               return GestureDetector(
-                onTap: () => setState(() {
-                  _selectedFrameIndex =
-                      _selectedFrameIndex == index ? -1 : index;
-                }),
-                child: Container(
-                  width: 80,
-                  margin: const EdgeInsets.only(right: 10),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? color.withValues(alpha: 0.15)
-                        : AppColors.surface,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: isSelected ? color : AppColors.border,
-                      width: isSelected ? 2 : 1,
-                    ),
-                    boxShadow: isSelected
-                        ? [
-                            BoxShadow(
-                              color: color.withValues(alpha: 0.2),
-                              blurRadius: 10,
-                              spreadRadius: 1,
+                    onTap: () => setState(() {
+                      _selectedFrameIndex = _selectedFrameIndex == index
+                          ? -1
+                          : index;
+                    }),
+                    child: Container(
+                      width: 80,
+                      margin: const EdgeInsets.only(right: 10),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? color.withValues(alpha: 0.15)
+                            : AppColors.surface,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: isSelected ? color : AppColors.border,
+                          width: isSelected ? 2 : 1,
+                        ),
+                        boxShadow: isSelected
+                            ? [
+                                BoxShadow(
+                                  color: color.withValues(alpha: 0.2),
+                                  blurRadius: 10,
+                                  spreadRadius: 1,
+                                ),
+                              ]
+                            : null,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 44,
+                            height: 44,
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? color.withValues(alpha: 0.2)
+                                  : AppColors.surfaceLight,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: isSelected ? color : AppColors.border,
+                              ),
                             ),
-                          ]
-                        : null,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 44,
-                        height: 44,
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? color.withValues(alpha: 0.2)
-                              : AppColors.surfaceLight,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color:
-                                isSelected ? color : AppColors.border,
+                            child: Center(
+                              child: Text(
+                                frame['icon'] as String,
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                            ),
                           ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            frame['icon'] as String,
-                            style: const TextStyle(fontSize: 20),
+                          const SizedBox(height: 6),
+                          Text(
+                            frame['name'] as String,
+                            style: GoogleFonts.poppins(
+                              fontSize: 9,
+                              fontWeight: FontWeight.w500,
+                              color: isSelected ? color : AppColors.textHint,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
+                        ],
                       ),
-                      const SizedBox(height: 6),
-                      Text(
-                        frame['name'] as String,
-                        style: GoogleFonts.poppins(
-                          fontSize: 9,
-                          fontWeight: FontWeight.w500,
-                          color:
-                              isSelected ? color : AppColors.textHint,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-              )
+                    ),
+                  )
                   .animate()
                   .fadeIn(
-                      delay: Duration(milliseconds: 300 + index * 60),
-                      duration: 300.ms)
+                    delay: Duration(milliseconds: 300 + index * 60),
+                    duration: 300.ms,
+                  )
                   .slideX(begin: 0.15);
             },
           ),

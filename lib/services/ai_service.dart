@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import '../core/services/api_service.dart';
 import '../core/services/analytics_service.dart';
 import '../features/ai_tutor/chat_model.dart';
@@ -13,19 +14,22 @@ class AiService {
   List<ChatMessage> get history => List.unmodifiable(_localHistory);
   int get remainingMessages => _remainingMessages;
   int get dailyLimit => _dailyLimit;
-  bool get canSendMessages => _remainingMessages > 0 || _remainingMessages == -1;
+  bool get canSendMessages =>
+      _remainingMessages > 0 || _remainingMessages == -1;
   bool get isOffline => _isOffline;
   String? get lastError => _lastError;
 
   Future<void> loadHistory() async {
     final result = await _api.getChatHistory();
-    if (result.isSuccess) {
+    if (result.isSuccess && result.data != null) {
       final list = result.data!;
       _localHistory.clear();
       for (final item in list) {
         try {
           _localHistory.add(ChatMessage.fromJson(item as Map<String, dynamic>));
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('Failed to parse chat message: $e');
+        }
       }
     }
   }
@@ -36,14 +40,20 @@ class AiService {
     required String nativeLanguage,
   }) async {
     _lastError = null;
-    _localHistory.add(ChatMessage(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      content: message,
-      isUser: true,
-      timestamp: DateTime.now(),
-    ));
+    _localHistory.add(
+      ChatMessage(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        content: message,
+        isUser: true,
+        timestamp: DateTime.now(),
+      ),
+    );
 
-    final result = await _api.sendAiMessage(message, learningLanguage, nativeLanguage);
+    final result = await _api.sendAiMessage(
+      message,
+      learningLanguage,
+      nativeLanguage,
+    );
     if (result.isSuccess) {
       final response = result.data!;
       _isOffline = false;
@@ -51,7 +61,7 @@ class AiService {
 
       final aiMsg = ChatMessage(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
-        content: response['response'] ?? response['message'] ?? 'I understand. Keep practicing!',
+        content: response['response'] ?? response['message'] ?? '',
         isUser: false,
         timestamp: DateTime.now(),
         correction: response['correction'],
@@ -64,26 +74,16 @@ class AiService {
     } else {
       _isOffline = result.isOffline;
       _lastError = result.error;
-      final fallback = ChatMessage(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        content: result.isOffline
-            ? 'You are offline. Please check your connection and try again.'
-            : (result.error ?? 'Sorry, I encountered an error. Please try again.'),
-        isUser: false,
-        timestamp: DateTime.now(),
-      );
-      _localHistory.add(fallback);
-      return fallback;
+      throw Exception(result.error ?? 'Failed to send message');
     }
   }
 
   Future<Map<String, dynamic>> getUsageStats() async {
     final result = await _api.getAiUsage();
-    if (result.isSuccess) return result.data!;
-    return {
-      'today': {'messages': 0, 'tokens': 0},
-      'thisMonth': {'totalMessages': 0, 'totalTokens': 0, 'activeDays': 0},
-    };
+    if (result.isSuccess && result.data != null) {
+      return result.data!;
+    }
+    throw Exception(result.error ?? 'Failed to load AI usage stats');
   }
 
   Future<void> clearHistory() async {

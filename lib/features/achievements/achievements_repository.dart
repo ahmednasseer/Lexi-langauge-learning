@@ -3,19 +3,14 @@ import 'models/achievement_badge.dart';
 
 class AchievementsRepository {
   final ApiService _api = ApiService();
-
   Future<List<AchievementBadge>> getAchievements() async {
-    try {
-      final result = await _api.getAchievements();
-      if (result.isSuccess && result.data!.isNotEmpty) {
-        return result.data!.map((e) => _mapFromApi(e as Map<String, dynamic>)).toList();
-      }
-    } catch (_) {}
-    return _mergeLocalWithApi();
-  }
-
-  Future<List<AchievementBadge>> _mergeLocalWithApi() async {
-    return AchievementBadge.getAllBadges();
+    final result = await _api.getAchievements();
+    if (!result.isSuccess || result.data == null) {
+      throw Exception(result.error ?? 'Failed to load achievements');
+    }
+    return result.data!
+        .map((e) => _mapFromApi(e as Map<String, dynamic>))
+        .toList();
   }
 
   AchievementBadge _mapFromApi(Map<String, dynamic> json) {
@@ -28,7 +23,9 @@ class AchievementsRepository {
       requirement: json['targetValue'] ?? 0,
       rewardXp: json['xpReward'] ?? 0,
       isUnlocked: json['isUnlocked'] ?? json['unlocked'] ?? false,
-      unlockedAt: json['unlockedAt'] != null ? DateTime.parse(json['unlockedAt']) : null,
+      unlockedAt: json['unlockedAt'] != null
+          ? DateTime.parse(json['unlockedAt'])
+          : null,
     );
   }
 }

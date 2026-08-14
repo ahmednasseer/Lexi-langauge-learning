@@ -81,10 +81,7 @@ class _PremiumOfferScreenState extends State<PremiumOfferScreen> {
     return Text(
       'اختر خطتك المفضلة',
       textAlign: TextAlign.center,
-      style: GoogleFonts.poppins(
-        fontSize: 16,
-        color: AppColors.textSecondary,
-      ),
+      style: GoogleFonts.poppins(fontSize: 16, color: AppColors.textSecondary),
     ).animate().fadeIn(delay: 100.ms);
   }
 
@@ -240,8 +237,12 @@ class _PremiumOfferScreenState extends State<PremiumOfferScreen> {
           gradient: _isYearly
               ? LinearGradient(
                   colors: [
-                    AppColors.primaryGradient.colors.first.withValues(alpha: 0.15),
-                    AppColors.primaryGradient.colors.last.withValues(alpha: 0.05),
+                    AppColors.primaryGradient.colors.first.withValues(
+                      alpha: 0.15,
+                    ),
+                    AppColors.primaryGradient.colors.last.withValues(
+                      alpha: 0.05,
+                    ),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -305,7 +306,10 @@ class _PremiumOfferScreenState extends State<PremiumOfferScreen> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.success,
                     borderRadius: BorderRadius.circular(8),

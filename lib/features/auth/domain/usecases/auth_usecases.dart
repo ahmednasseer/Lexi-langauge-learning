@@ -60,3 +60,43 @@ class GetCurrentUserUseCase {
     return await repository.getCurrentFirebaseUser();
   }
 }
+
+class GoogleSignInUseCase {
+  final AuthRepository repository;
+
+  GoogleSignInUseCase(this.repository);
+
+  Future<User?> call() async {
+    return await repository.signInWithGoogle();
+  }
+}
+
+class SendEmailVerificationUseCase {
+  final AuthRepository repository;
+
+  SendEmailVerificationUseCase(this.repository);
+
+  Future<void> call() async {
+    await repository.sendEmailVerification();
+  }
+}
+
+class CheckEmailVerifiedUseCase {
+  final AuthRepository repository;
+
+  CheckEmailVerifiedUseCase(this.repository);
+
+  Future<bool> call() async {
+    return await repository.isEmailVerified();
+  }
+}
+
+class ReloadUserUseCase {
+  final AuthRepository repository;
+
+  ReloadUserUseCase(this.repository);
+
+  Future<void> call() async {
+    await repository.reloadUser();
+  }
+}

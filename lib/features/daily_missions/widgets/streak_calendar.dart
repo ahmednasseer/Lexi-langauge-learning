@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class StreakCalendar extends StatelessWidget {
   final int currentStreak;
   final int bestStreak;
   final List<DateTime> activeDays;
-
   const StreakCalendar({
     super.key,
     required this.currentStreak,
     required this.bestStreak,
     required this.activeDays,
   });
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -67,7 +65,6 @@ class StreakCalendar extends StatelessWidget {
     final now = DateTime.now();
     final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
     final firstDayOfWeek = DateTime(now.year, now.month, 1).weekday % 7;
-
     return Column(
       children: [
         Row(
@@ -94,14 +91,14 @@ class StreakCalendar extends StatelessWidget {
               if (dayNumber < 1 || dayNumber > daysInMonth) {
                 return const Expanded(child: SizedBox());
               }
-
               final date = DateTime(now.year, now.month, dayNumber);
-              final isActive = activeDays.any((d) =>
-                  d.year == date.year &&
-                  d.month == date.month &&
-                  d.day == date.day);
+              final isActive = activeDays.any(
+                (d) =>
+                    d.year == date.year &&
+                    d.month == date.month &&
+                    d.day == date.day,
+              );
               final isToday = date.day == now.day;
-
               return Expanded(
                 child: Container(
                   margin: const EdgeInsets.all(2),
@@ -112,8 +109,8 @@ class StreakCalendar extends StatelessWidget {
                     color: isActive
                         ? Colors.orange
                         : isToday
-                            ? Colors.orange.shade100
-                            : Colors.transparent,
+                        ? Colors.orange.shade100
+                        : Colors.transparent,
                     border: isToday && !isActive
                         ? Border.all(color: Colors.orange, width: 2)
                         : null,
@@ -127,8 +124,8 @@ class StreakCalendar extends StatelessWidget {
                         color: isActive
                             ? Colors.white
                             : isToday
-                                ? Colors.orange
-                                : Colors.grey.shade600,
+                            ? Colors.orange
+                            : Colors.grey.shade600,
                       ),
                     ),
                   ),
@@ -146,7 +143,6 @@ class StreakCalendar extends StatelessWidget {
       {'days': 30, 'label': '30 Days', 'icon': '🥈', 'color': Colors.grey},
       {'days': 100, 'label': '100 Days', 'icon': '🥇', 'color': Colors.amber},
     ];
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: milestones.map((m) {
@@ -159,7 +155,9 @@ class StreakCalendar extends StatelessWidget {
               height: 50,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isAchieved ? color.withValues(alpha: 0.2) : AppColors.border,
+                color: isAchieved
+                    ? color.withValues(alpha: 0.2)
+                    : AppColors.border,
                 border: Border.all(
                   color: isAchieved ? color : AppColors.border,
                   width: 2,
@@ -168,7 +166,10 @@ class StreakCalendar extends StatelessWidget {
               child: Center(
                 child: Text(
                   m['icon'] as String,
-                  style: TextStyle(fontSize: 24, color: isAchieved ? color : AppColors.textHint),
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: isAchieved ? color : AppColors.textHint,
+                  ),
                 ),
               ),
             ),

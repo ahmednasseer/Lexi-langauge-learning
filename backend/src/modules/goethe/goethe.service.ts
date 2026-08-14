@@ -141,22 +141,23 @@ export class GoetheService {
     prompt: string;
     text: string;
   }) {
-    const wordCount = data.text.split(' ').length;
+    let wordCount = data.text.split(' ').length;
     const hasGreeting = data.text.includes('Sehr geehrte') || data.text.includes('Hallo');
     const hasClosing = data.text.includes('Mit freundlichen Grüßen') || data.text.includes('Viele Grüße');
 
-    let grammarScore = 70 + Math.random() * 25;
-    let vocabularyScore = 65 + Math.random() * 30;
-    let structureScore = 60 + Math.random() * 35;
+    let grammarScore = this._scoreGrammar(data.text, data.level);
+    let vocabularyScore = this._scoreVocabulary(data.text, data.level);
+    let structureScore = 60;
 
-    if (hasGreeting) structureScore = Math.min(100, structureScore + 5);
-    if (hasClosing) structureScore = Math.min(100, structureScore + 5);
+    if (hasGreeting) structureScore = Math.min(100, structureScore + 10);
+    if (hasClosing) structureScore = Math.min(100, structureScore + 10);
+    if (wordCount >= 30) structureScore = Math.min(100, structureScore + 10);
     if (wordCount < 30) {
-      grammarScore *= 0.8;
-      vocabularyScore *= 0.8;
+      grammarScore = Math.min(100, Math.round(grammarScore * 0.85));
+      vocabularyScore = Math.min(100, Math.round(vocabularyScore * 0.85));
     }
 
-    const overallScore = (grammarScore + vocabularyScore + structureScore) / 3;
+    const overallScore = Math.round((grammarScore + vocabularyScore + structureScore) / 3);
 
     const evaluation = {
       grammarScore,
@@ -186,10 +187,10 @@ export class GoetheService {
     prompt: string;
     audioTranscript: string;
   }) {
-    let pronunciationScore = 65 + Math.random() * 30;
-    let fluencyScore = 60 + Math.random() * 35;
-    let grammarScore = 65 + Math.random() * 30;
-    let vocabularyScore = 60 + Math.random() * 35;
+    const pronunciationScore = this._scorePronunciation(data.audioTranscript);
+    const fluencyScore = this._scoreFluency(data.audioTranscript);
+    const grammarScore = this._scoreGrammar(data.audioTranscript, data.level);
+    const vocabularyScore = this._scoreVocabulary(data.audioTranscript, data.level);
 
     const overallScore = (pronunciationScore + fluencyScore + grammarScore + vocabularyScore) / 4;
 
@@ -298,56 +299,111 @@ export class GoetheService {
   }
 
   private async generateReadingQuestions(level: string) {
-    return Array.from({ length: this.getQuestionCount(level, 'reading') }, (_, i) => ({
+    const questions = await this.prisma.quizQuestion.findMany({
+      where: {
+        type: { in: ['multipleChoice', 'trueFalse'] },
+      },
+      take: this.getQuestionCount(level, 'reading'),
+    });
+
+    return questions.map((q, i) => ({
       id: `reading_${level}_${i}`,
-      type: 'multipleChoice',
-      question: `Reading question ${i + 1}`,
-      options: ['Option A', 'Option B', 'Option C', 'Option D'],
-      correctAnswer: 'Option A',
-      explanation: 'Explanation for the correct answer',
-      difficulty: ['easy', 'medium', 'hard'][Math.floor(Math.random() * 3)],
+      type: q.type,
+      question: q.question,
+      options: q.options,
+      correctAnswer: q.correctAnswer,
+      explanation: q.explanation,
+      difficulty: this._difficultyForIndex(i),
       points: 2,
     }));
   }
 
   private async generateListeningQuestions(level: string) {
-    return Array.from({ length: this.getQuestionCount(level, 'listening') }, (_, i) => ({
+    const questions = await this.prisma.quizQuestion.findMany({
+      where: {
+        type: 'multipleChoice',
+        question: { contains: 'hören' },
+      },
+      take: this.getQuestionCount(level, 'listening'),
+    });
+
+    return questions.map((q, i) => ({
       id: `listening_${level}_${i}`,
-      type: 'multipleChoice',
-      question: `Listening question ${i + 1}`,
-      options: ['Option A', 'Option B', 'Option C', 'Option D'],
-      correctAnswer: 'Option A',
-      explanation: 'Explanation for the correct answer',
-      audioUrl: `audio/listening/${level}_${i}.mp3`,
-      difficulty: ['easy', 'medium', 'hard'][Math.floor(Math.random() * 3)],
+      type: q.type,
+      question: q.question,
+      options: q.options,
+      correctAnswer: q.correctAnswer,
+      explanation: q.explanation,
+      difficulty: this._difficultyForIndex(i),
       points: 2,
     }));
   }
 
   private async generateWritingPrompts(level: string) {
-    return Array.from({ length: this.getQuestionCount(level, 'writing') }, (_, i) => ({
-      id: `writing_${level}_${i}`,
-      type: 'essay',
-      question: `Writing task ${i + 1}`,
-      options: [],
-      correctAnswer: 'Example answer',
-      explanation: 'Evaluation criteria',
-      difficulty: ['easy', 'medium', 'hard'][Math.floor(Math.random() * 3)],
-      points: 5,
-    }));
+    const prompts = [
+      {
+        id: `writing_${level}_0`,
+        type: 'essay',
+        question: 'Schreiben Sie einen Brief, in dem Sie sich einer Freundin/Ihrem Freund vorstellen.',
+        options: [],
+        correctAnswer: '',
+        explanation: 'Bewertungskriterien: Begrüßung, Vorstellung, Fragen stellen, Abschied',
+        difficulty: 'medium',
+        points: 5,
+      },
+      {
+        id: `writing_${level}_1`,
+        type: 'essay',
+        question: 'Beschreiben Sie Ihren Wohnsitz. Welche Möbel hat Ihr Zimmer?',
+        options: [],
+        correctAnswer: '',
+        explanation: 'Bewertungskriterien: Artikelverwendung, Adjektive, Satzbau',
+        difficulty: 'medium',
+        points: 5,
+      },
+    ];
+    return prompts.slice(0, this.getQuestionCount(level, 'writing'));
   }
 
   private async generateSpeakingPrompts(level: string) {
-    return Array.from({ length: this.getQuestionCount(level, 'speaking') }, (_, i) => ({
-      id: `speaking_${level}_${i}`,
-      type: 'shortAnswer',
-      question: `Speaking task ${i + 1}`,
-      options: [],
-      correctAnswer: 'Example response',
-      explanation: 'Evaluation criteria',
-      difficulty: ['easy', 'medium', 'hard'][Math.floor(Math.random() * 3)],
-      points: 5,
-    }));
+    const prompts = [
+      {
+        id: `speaking_${level}_0`,
+        type: 'shortAnswer',
+        question: 'Vorstellen: Woher kommen Sie? Was ist Ihr Name?',
+        options: [],
+        correctAnswer: '',
+        explanation: 'Bewertungskriterien: Aussprache, Grammatik, Flüssigkeit',
+        difficulty: 'medium',
+        points: 5,
+      },
+      {
+        id: `speaking_${level}_1`,
+        type: 'shortAnswer',
+        question: 'Beschreiben Sie einen Tag in Ihrer Stadt.',
+        options: [],
+        correctAnswer: '',
+        explanation: 'Bewertungskriterien: Wortschatz, Satzstruktur, Verständlichkeit',
+        difficulty: 'medium',
+        points: 5,
+      },
+      {
+        id: `speaking_${level}_2`,
+        type: 'shortAnswer',
+        question: 'Erklären Sie, was Sie in Ihrer Freizeit machen.',
+        options: [],
+        correctAnswer: '',
+        explanation: 'Bewertungskriterien: Konjugation, Präpositionen, natürliche Sprache',
+        difficulty: 'medium',
+        points: 5,
+      },
+    ];
+    return prompts.slice(0, this.getQuestionCount(level, 'speaking'));
+  }
+
+  private _difficultyForIndex(index: number): string {
+    const difficulties = ['easy', 'medium', 'hard'];
+    return difficulties[index % difficulties.length];
   }
 
   private calculateGrade(percentage: number): string {
@@ -413,5 +469,46 @@ export class GoetheService {
     if (score >= 80) return 'Excellent speaking! You communicate clearly and fluently.';
     if (score >= 60) return 'Good speaking! Work on pronunciation and fluency.';
     return 'Keep practicing! Focus on pronunciation and sentence structure.';
+  }
+
+  private _scoreGrammar(text: string, level: string): number {
+    let score = 70;
+    const lower = text.toLowerCase();
+    const hasUmlauts = /ä|ö|ü|ß/.test(lower);
+    if (hasUmlauts) score += 10;
+    if (lower.includes('der ') || lower.includes('die ') || lower.includes('das ')) score += 10;
+    const levelBase = { A1: 0, A2: 5, B1: 10, B2: 15, C1: 20, C2: 25 }[level as keyof typeof levelBase] || 0;
+    return Math.min(100, score + levelBase);
+  }
+
+  private _scoreVocabulary(text: string, level: string): number {
+    let score = 65;
+    const lower = text.toLowerCase();
+    const uniqueWords = new Set(lower.split(/\s+/).filter(w => w.length > 2));
+    if (uniqueWords.size >= 10) score += 10;
+    if (uniqueWords.size >= 20) score += 5;
+    const levelBase = { A1: 0, A2: 5, B1: 10, B2: 15, C1: 20, C2: 25 }[level as keyof typeof levelBase] || 0;
+    return Math.min(100, score + levelBase);
+  }
+
+  private _scorePronunciation(transcript: string): number {
+    let score = 65;
+    const lower = transcript.toLowerCase();
+    const hasUmlauts = /ä|ö|ü|ß/.test(lower);
+    if (hasUmlauts) score += 10;
+    const words = lower.split(/\s+/).filter(w => w.length > 2);
+    if (words.length >= 5) score += 10;
+    return Math.min(100, score);
+  }
+
+  private _scoreFluency(transcript: string): number {
+    let score = 60;
+    const sentences = transcript.split(/[.!?]+/).filter(s => s.trim().length > 3);
+    if (sentences.length >= 3) score += 15;
+    else if (sentences.length >= 2) score += 10;
+    else if (sentences.length >= 1) score += 5;
+    const words = transcript.split(/\s+/).filter(w => w.length > 0);
+    if (words.length >= 25) score += 10;
+    return Math.min(100, score);
   }
 }

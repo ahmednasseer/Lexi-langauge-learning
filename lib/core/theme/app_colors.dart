@@ -192,10 +192,7 @@ class AppColors {
   // ═══════════════════════════════════════════
   // CARD GRADIENTS (for glassmorphism cards)
   // ═══════════════════════════════════════════
-  static LinearGradient cardGradient({
-    double opacity = 0.1,
-    Color? color,
-  }) {
+  static LinearGradient cardGradient({double opacity = 0.1, Color? color}) {
     return LinearGradient(
       colors: [
         (color ?? primary).withValues(alpha: opacity),
@@ -240,25 +237,51 @@ class AppColors {
 
   static LinearGradient getLevelGradient(String level) {
     switch (level.toUpperCase()) {
-      case 'A1': return a1Gradient;
-      case 'A2': return a2Gradient;
-      case 'B1': return b1Gradient;
-      case 'B2': return b2Gradient;
-      case 'C1': return c1Gradient;
-      case 'C2': return c2Gradient;
-      default: return primaryGradient;
+      case 'A1':
+        return a1Gradient;
+      case 'A2':
+        return a2Gradient;
+      case 'B1':
+        return b1Gradient;
+      case 'B2':
+        return b2Gradient;
+      case 'C1':
+        return c1Gradient;
+      case 'C2':
+        return c2Gradient;
+      default:
+        return primaryGradient;
     }
   }
 
   static Color getLevelColor(String level) {
     switch (level.toUpperCase()) {
-      case 'A1': return levelA1;
-      case 'A2': return levelA2;
-      case 'B1': return levelB1;
-      case 'B2': return levelB2;
-      case 'C1': return levelC1;
-      case 'C2': return levelC2;
-      default: return primary;
+      case 'A1':
+        return levelA1;
+      case 'A2':
+        return levelA2;
+      case 'B1':
+        return levelB1;
+      case 'B2':
+        return levelB2;
+      case 'C1':
+        return levelC1;
+      case 'C2':
+        return levelC2;
+      default:
+        return primary;
+    }
+  }
+
+  static String getLevelLabel(String level) {
+    switch (level.toUpperCase()) {
+      case 'A1': return 'Anfänger';
+      case 'A2': return 'Grundkenntnisse';
+      case 'B1': return 'Mittelstufe';
+      case 'B2': return ' Oberstufe';
+      case 'C1': return 'Fortgeschritten';
+      case 'C2': return 'Muttersprachlich';
+      default: return 'Unbekannt';
     }
   }
 }

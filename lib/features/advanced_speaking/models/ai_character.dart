@@ -1,3 +1,4 @@
+import 'package:lexi/core/services/auth_service.dart';
 import 'conversation_models.dart';
 
 class AICharacter {
@@ -24,8 +25,10 @@ class AICharacter {
   factory AICharacter.lexi() => const AICharacter(
     id: 'lexi',
     name: 'Lexi',
-    personality: 'Friendly, encouraging, and patient German teacher. Uses humor to make learning fun.',
-    speakingStyle: 'Clear, professional, and supportive. Adapts to student level.',
+    personality:
+        'Friendly, encouraging, and patient German teacher. Uses humor to make learning fun.',
+    speakingStyle:
+        'Clear, professional, and supportive. Adapts to student level.',
     language: 'de-DE',
     specialties: [
       'Grammar correction',
@@ -123,21 +126,22 @@ class ConversationContext {
     'topic': topic,
   };
 
-  factory ConversationContext.fromJson(Map<String, dynamic> json) => ConversationContext(
-    sessionId: json['sessionId'] ?? '',
-    userId: json['userId'] ?? '',
-    scenario: ConversationScenario.values.firstWhere(
-      (s) => s.name == json['scenario'],
-      orElse: () => ConversationScenario.dailyLife,
-    ),
-    character: AICharacter.fromJson(json['character'] ?? {}),
-    userLevel: json['userLevel'] ?? 'A1',
-    previousMistakes: List<String>.from(json['previousMistakes'] ?? []),
-    vocabularyProblems: List<String>.from(json['vocabularyProblems'] ?? []),
-    grammarProblems: List<String>.from(json['grammarProblems'] ?? []),
-    turnCount: json['turnCount'] ?? 0,
-    topic: json['topic'],
-  );
+  factory ConversationContext.fromJson(Map<String, dynamic> json) =>
+      ConversationContext(
+        sessionId: json['sessionId'] ?? '',
+        userId: json['userId'] ?? '',
+        scenario: ConversationScenario.values.firstWhere(
+          (s) => s.name == json['scenario'],
+          orElse: () => ConversationScenario.dailyLife,
+        ),
+        character: AICharacter.fromJson(json['character'] ?? {}),
+        userLevel: json['userLevel'] ?? 'A1',
+        previousMistakes: List<String>.from(json['previousMistakes'] ?? []),
+        vocabularyProblems: List<String>.from(json['vocabularyProblems'] ?? []),
+        grammarProblems: List<String>.from(json['grammarProblems'] ?? []),
+        turnCount: json['turnCount'] ?? 0,
+        topic: json['topic'],
+      );
 }
 
 class ConversationMemory {
@@ -199,20 +203,23 @@ class ConversationMemory {
     'weaknesses': weaknesses,
   };
 
-  factory ConversationMemory.fromJson(Map<String, dynamic> json) => ConversationMemory(
-    userId: json['userId'] ?? '',
-    recentMistakes: List<String>.from(json['recentMistakes'] ?? []),
-    vocabularyProblems: List<String>.from(json['vocabularyProblems'] ?? []),
-    grammarProblems: List<String>.from(json['grammarProblems'] ?? []),
-    scenarioScores: Map<String, int>.from(json['scenarioScores'] ?? {}),
-    lastPracticeDate: DateTime.parse(json['lastPracticeDate'] ?? DateTime.now().toIso8601String()),
-    userLevel: json['userLevel'] ?? 'A1',
-    strengths: List<String>.from(json['strengths'] ?? []),
-    weaknesses: List<String>.from(json['weaknesses'] ?? []),
-  );
+  factory ConversationMemory.fromJson(Map<String, dynamic> json) =>
+      ConversationMemory(
+        userId: json['userId'] ?? '',
+        recentMistakes: List<String>.from(json['recentMistakes'] ?? []),
+        vocabularyProblems: List<String>.from(json['vocabularyProblems'] ?? []),
+        grammarProblems: List<String>.from(json['grammarProblems'] ?? []),
+        scenarioScores: Map<String, int>.from(json['scenarioScores'] ?? {}),
+        lastPracticeDate: DateTime.parse(
+          json['lastPracticeDate'] ?? DateTime.now().toIso8601String(),
+        ),
+        userLevel: json['userLevel'] ?? 'A1',
+        strengths: List<String>.from(json['strengths'] ?? []),
+        weaknesses: List<String>.from(json['weaknesses'] ?? []),
+      );
 
   factory ConversationMemory.empty() => ConversationMemory(
-    userId: 'current_user',
+    userId: AuthService.instance.currentUser?.id ?? '',
     recentMistakes: [],
     vocabularyProblems: [],
     grammarProblems: [],

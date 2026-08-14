@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/di/injection_container.dart';
 import 'speaking_controller.dart';
+import 'speaking_repository.dart';
 
 class SpeakingScreen extends StatefulWidget {
   const SpeakingScreen({super.key});
@@ -22,7 +24,10 @@ class _SpeakingScreenState extends State<SpeakingScreen>
   @override
   void initState() {
     super.initState();
-    _controller = SpeakingController(level: 'A1');
+    _controller = SpeakingController(
+      level: 'A1',
+      speakingRepository: getIt<SpeakingRepository>(),
+    );
     _controller.addListener(_onControllerUpdate);
 
     _glowRingController = AnimationController(
@@ -228,7 +233,7 @@ class _SpeakingScreenState extends State<SpeakingScreen>
               ),
               const SizedBox(width: 12),
               Text(
-                '\u0641\u064A \u0627\u0644\u0645\u0637\u0639\u0645',
+                '/u0641/u064A /u0627/u0644/u0645/u0637/u0639/u0645',
                 style: GoogleFonts.poppins(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -239,7 +244,7 @@ class _SpeakingScreenState extends State<SpeakingScreen>
           ),
           const SizedBox(height: 6),
           Text(
-            '\u062A\u0645\u0631\u064A\u0646 \u0627\u0644\u062A\u062D\u062F\u062B',
+            '/u062A/u0645/u0631/u064A/u0646 /u0627/u0644/u062A/u062D/u062F/u062B',
             style: GoogleFonts.poppins(
               fontSize: 14,
               color: AppColors.textSecondary,
@@ -251,21 +256,21 @@ class _SpeakingScreenState extends State<SpeakingScreen>
   }
 
   Widget _buildMicrophone() {
-    final isActive = _controller.speakingMode == SpeakingMode.listening ||
+    final isActive =
+        _controller.speakingMode == SpeakingMode.listening ||
         _controller.speakingMode == SpeakingMode.processing;
     final exercise = _controller.currentExercise;
 
     return Center(
       child: Column(
         children: [
-          if (exercise != null &&
-              _controller.speakingMode == SpeakingMode.idle)
+          if (exercise != null && _controller.speakingMode == SpeakingMode.idle)
             Padding(
               padding: const EdgeInsets.only(bottom: 20),
               child: Column(
                 children: [
                   Text(
-                    '\u0642\u0644 \u0647\u0630\u0647 \u0627\u0644\u062C\u0645\u0644\u0629:',
+                    '/u0642/u0644 /u0647/u0630/u0647 /u0627/u0644/u062C/u0645/u0644/u0629:',
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       color: AppColors.textSecondary,
@@ -314,8 +319,7 @@ class _SpeakingScreenState extends State<SpeakingScreen>
                           shape: BoxShape.circle,
                           border: Border.all(
                             color: AppColors.primary.withValues(
-                              alpha: 0.1 +
-                                  (_glowRingAnimation.value * 0.1),
+                              alpha: 0.1 + (_glowRingAnimation.value * 0.1),
                             ),
                             width: 1.5,
                           ),
@@ -329,8 +333,7 @@ class _SpeakingScreenState extends State<SpeakingScreen>
                           shape: BoxShape.circle,
                           border: Border.all(
                             color: AppColors.primary.withValues(
-                              alpha:
-                                  0.08 + (_glowRingAnimation.value * 0.12),
+                              alpha: 0.08 + (_glowRingAnimation.value * 0.12),
                             ),
                             width: 1,
                           ),
@@ -345,8 +348,7 @@ class _SpeakingScreenState extends State<SpeakingScreen>
                           gradient: RadialGradient(
                             colors: [
                               AppColors.primary.withValues(
-                                alpha: 0.05 +
-                                    (_glowRingAnimation.value * 0.08),
+                                alpha: 0.05 + (_glowRingAnimation.value * 0.08),
                               ),
                               Colors.transparent,
                             ],
@@ -379,25 +381,26 @@ class _SpeakingScreenState extends State<SpeakingScreen>
                               ? [
                                   BoxShadow(
                                     color: AppColors.primary.withValues(
-                                      alpha: 0.4 +
+                                      alpha:
+                                          0.4 +
                                           (_glowRingAnimation.value * 0.2),
                                     ),
-                                    blurRadius: 30 +
-                                        (_glowRingAnimation.value * 15),
-                                    spreadRadius: 5 +
-                                        (_glowRingAnimation.value * 5),
+                                    blurRadius:
+                                        30 + (_glowRingAnimation.value * 15),
+                                    spreadRadius:
+                                        5 + (_glowRingAnimation.value * 5),
                                   ),
                                   BoxShadow(
-                                    color: AppColors.primaryDark
-                                        .withValues(alpha: 0.2),
+                                    color: AppColors.primaryDark.withValues(
+                                      alpha: 0.2,
+                                    ),
                                     blurRadius: 50,
                                     spreadRadius: 10,
                                   ),
                                 ]
                               : [
                                   BoxShadow(
-                                    color:
-                                        Colors.black.withValues(alpha: 0.3),
+                                    color: Colors.black.withValues(alpha: 0.3),
                                     blurRadius: 20,
                                     offset: const Offset(0, 8),
                                   ),
@@ -454,9 +457,7 @@ class _SpeakingScreenState extends State<SpeakingScreen>
         ),
         boxShadow: [
           BoxShadow(
-            color: (result.isPerfect
-                    ? AppColors.success
-                    : AppColors.primary)
+            color: (result.isPerfect ? AppColors.success : AppColors.primary)
                 .withValues(alpha: 0.1),
             blurRadius: 20,
             spreadRadius: -5,
@@ -478,8 +479,8 @@ class _SpeakingScreenState extends State<SpeakingScreen>
               const SizedBox(width: 8),
               Text(
                 result.isPerfect
-                    ? '\u0645\u0645\u062A\u0627\u0632!'
-                    : '\u0623\u062D\u0633\u0646\u062A!',
+                    ? '/u0645/u0645/u062A/u0627/u0632!'
+                    : '/u0623/u062D/u0633/u0646/u062A!',
                 style: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -493,17 +494,17 @@ class _SpeakingScreenState extends State<SpeakingScreen>
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _buildStatMini(
-                '\u0627\u0644\u062F\u0642\u0629',
+                '/u0627/u0644/u062F/u0642/u0629',
                 '${result.accuracy.toInt()}%',
                 AppColors.success,
               ),
               _buildStatMini(
-                '\u0627\u0644\u0637\u0644\u0627\u0639\u0629',
+                '/u0627/u0644/u0637/u0644/u0627/u0639/u0629',
                 '${result.fluency.toInt()}%',
                 AppColors.secondary,
               ),
               _buildStatMini(
-                '\u0627\u0644\u0642\u0648\u0627\u0639\u062F',
+                '/u0627/u0644/u0642/u0648/u0627/u0639/u062F',
                 '${result.grammar.toInt()}%',
                 AppColors.primary,
               ),
@@ -544,17 +545,15 @@ class _SpeakingScreenState extends State<SpeakingScreen>
         const SizedBox(height: 2),
         Text(
           label,
-          style: GoogleFonts.poppins(
-            fontSize: 11,
-            color: AppColors.textHint,
-          ),
+          style: GoogleFonts.poppins(fontSize: 11, color: AppColors.textHint),
         ),
       ],
     );
   }
 
   Widget _buildPlaybackControls() {
-    final isActive = _controller.speakingMode == SpeakingMode.listening ||
+    final isActive =
+        _controller.speakingMode == SpeakingMode.listening ||
         _controller.speakingMode == SpeakingMode.processing;
 
     return Row(
@@ -580,9 +579,7 @@ class _SpeakingScreenState extends State<SpeakingScreen>
           icon: Icons.skip_next_rounded,
           size: 48,
           onTap: _controller.speakingMode == SpeakingMode.result
-              ? (_controller.hasNextExercise
-                  ? _controller.nextExercise
-                  : null)
+              ? (_controller.hasNextExercise ? _controller.nextExercise : null)
               : null,
         ),
       ],
@@ -608,21 +605,19 @@ class _SpeakingScreenState extends State<SpeakingScreen>
           gradient: isMain && isActive
               ? AppColors.primaryGradient
               : isMain
-                  ? const LinearGradient(
-                      colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
-                    )
-                  : null,
+              ? const LinearGradient(
+                  colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
+                )
+              : null,
           color: isMain
               ? null
-              : (enabled
-                  ? const Color(0xFF161B22)
-                  : const Color(0xFF111520)),
+              : (enabled ? const Color(0xFF161B22) : const Color(0xFF111520)),
           border: Border.all(
             color: isMain && isActive
                 ? AppColors.primary
                 : enabled
-                    ? const Color(0xFF334155)
-                    : const Color(0xFF1E293B),
+                ? const Color(0xFF334155)
+                : const Color(0xFF1E293B),
             width: isMain ? 2 : 1,
           ),
           boxShadow: isMain && isActive
@@ -665,7 +660,7 @@ class _SpeakingScreenState extends State<SpeakingScreen>
           ),
           const SizedBox(width: 8),
           Text(
-            '\u0627\u0644\u062A\u0645\u0631\u064A\u0646 ${_currentExerciseIndex + 1} \u0645\u0646 $_totalExercises',
+            '/u0627/u0644/u062A/u0645/u0631/u064A/u0646 ${_currentExerciseIndex + 1} /u0645/u0646 $_totalExercises',
             style: GoogleFonts.poppins(
               fontSize: 14,
               fontWeight: FontWeight.w500,
@@ -682,9 +677,7 @@ class _SpeakingScreenState extends State<SpeakingScreen>
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       decoration: const BoxDecoration(
         color: Color(0xFF161B22),
-        border: Border(
-          top: BorderSide(color: Color(0xFF21262D), width: 1),
-        ),
+        border: Border(top: BorderSide(color: Color(0xFF21262D), width: 1)),
       ),
       child: SafeArea(
         top: false,
@@ -693,17 +686,17 @@ class _SpeakingScreenState extends State<SpeakingScreen>
           children: [
             _buildBottomItem(
               icon: Icons.fitness_center,
-              label: '\u062A\u0645\u0631\u064A\u0646',
+              label: '/u062A/u0645/u0631/u064A/u0646',
               index: 0,
             ),
             _buildBottomItem(
               icon: Icons.chat_bubble_outline,
-              label: '\u0645\u062D\u0627\u062F\u062B\u0629',
+              label: '/u0645/u062D/u0627/u062F/u062B/u0629',
               index: 1,
             ),
             _buildBottomItem(
               icon: Icons.quiz_outlined,
-              label: '\u0627\u062E\u062A\u0628\u0627\u0631',
+              label: '/u0627/u062E/u062A/u0628/u0627/u0631',
               index: 2,
             ),
           ],
@@ -767,8 +760,7 @@ class _SpeakingScreenState extends State<SpeakingScreen>
       case SpeakingMode.idle:
         _controller.startSpeaking();
         Future.delayed(const Duration(seconds: 3), () {
-          if (mounted &&
-              _controller.speakingMode == SpeakingMode.listening) {
+          if (mounted && _controller.speakingMode == SpeakingMode.listening) {
             _controller.processSpokenText(exercise.sentence);
           }
         });
@@ -785,13 +777,13 @@ class _SpeakingScreenState extends State<SpeakingScreen>
   String _getMicLabel() {
     switch (_controller.speakingMode) {
       case SpeakingMode.idle:
-        return '\u0627\u0636\u063A\u0637 \u0648\u0623\u0646\u0627 \u0623\u0633\u0645\u0639';
+        return '/u0627/u0636/u063A/u0637 /u0648/u0623/u0646/u0627 /u0623/u0633/u0645/u0639';
       case SpeakingMode.listening:
-        return '\u0623\u0633\u0645\u0639\u0643... \u062A\u0643\u0644\u0645 \u0628\u0635\u0648\u062A \u0639\u0627\u0644\u064A';
+        return '/u0623/u0633/u0645/u0639/u0643... /u062A/u0643/u0644/u0645 /u0628/u0635/u0648/u062A /u0639/u0627/u0644/u064A';
       case SpeakingMode.processing:
-        return '\u062C\u0627\u0631\u064A \u0627\u0644\u062A\u062D\u0644\u064A\u0644...';
+        return '/u062C/u0627/u0631/u064A /u0627/u0644/u062A/u062D/u0644/u064A/u0644...';
       case SpeakingMode.result:
-        return '\u0623\u062D\u0633\u0646\u062A!';
+        return '/u0623/u062D/u0633/u0646/u062A!';
     }
   }
 }

@@ -45,7 +45,14 @@ class LevelBadge extends StatelessWidget {
                   )
                 : null,
             child: ClipOval(
-              child: Image.asset(asset, width: size, height: size, fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) => Icon(Icons.broken_image, size: size)),
+              child: Image.asset(
+                asset,
+                width: size,
+                height: size,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) =>
+                    Icon(Icons.broken_image, size: size),
+              ),
             ),
           )
         else
@@ -85,25 +92,39 @@ class LevelBadge extends StatelessWidget {
 
   String _getLevelName(String level) {
     switch (level.toUpperCase()) {
-      case 'A1': return 'Beginner';
-      case 'A2': return 'Elementary';
-      case 'B1': return 'Intermediate';
-      case 'B2': return 'Upper-Int.';
-      case 'C1': return 'Advanced';
-      case 'C2': return 'Mastery';
-      default: return level;
+      case 'A1':
+        return 'Beginner';
+      case 'A2':
+        return 'Elementary';
+      case 'B1':
+        return 'Intermediate';
+      case 'B2':
+        return 'Upper-Int.';
+      case 'C1':
+        return 'Advanced';
+      case 'C2':
+        return 'Mastery';
+      default:
+        return level;
     }
   }
 
   static String? _badgeAsset(String level) {
     switch (level.toUpperCase()) {
-      case 'A1': return AppAssets.badgeA1;
-      case 'A2': return AppAssets.badgeA2;
-      case 'B1': return AppAssets.badgeB1;
-      case 'B2': return AppAssets.badgeB2;
-      case 'C1': return AppAssets.badgeC1;
-      case 'C2': return AppAssets.badgeC1;
-      default: return null;
+      case 'A1':
+        return AppAssets.badgeA1;
+      case 'A2':
+        return AppAssets.badgeA2;
+      case 'B1':
+        return AppAssets.badgeB1;
+      case 'B2':
+        return AppAssets.badgeB2;
+      case 'C1':
+        return AppAssets.badgeC1;
+      case 'C2':
+        return AppAssets.badgeC1;
+      default:
+        return null;
     }
   }
 }
@@ -139,11 +160,7 @@ class LevelBadgeIcon extends StatelessWidget {
   final String level;
   final double size;
 
-  const LevelBadgeIcon({
-    super.key,
-    required this.level,
-    this.size = 40,
-  });
+  const LevelBadgeIcon({super.key, required this.level, this.size = 40});
 
   @override
   Widget build(BuildContext context) {

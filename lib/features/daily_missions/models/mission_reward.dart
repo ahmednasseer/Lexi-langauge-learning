@@ -37,9 +37,27 @@ class MissionReward {
   );
 
   factory MissionReward.streakBonus(int days) {
-    if (days >= 100) return const MissionReward(xp: 500, gems: 100, title: '100 Day Streak!', isBonus: true);
-    if (days >= 30) return const MissionReward(xp: 200, gems: 50, title: '30 Day Streak!', isBonus: true);
-    if (days >= 7) return const MissionReward(xp: 100, gems: 20, title: '7 Day Streak!', isBonus: true);
+    if (days >= 100)
+      return const MissionReward(
+        xp: 500,
+        gems: 100,
+        title: '100 Day Streak!',
+        isBonus: true,
+      );
+    if (days >= 30)
+      return const MissionReward(
+        xp: 200,
+        gems: 50,
+        title: '30 Day Streak!',
+        isBonus: true,
+      );
+    if (days >= 7)
+      return const MissionReward(
+        xp: 100,
+        gems: 20,
+        title: '7 Day Streak!',
+        isBonus: true,
+      );
     return MissionReward(xp: days * 10, gems: days * 2);
   }
 }

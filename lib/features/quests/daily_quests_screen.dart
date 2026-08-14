@@ -121,9 +121,12 @@ class DailyQuestsScreen extends StatelessWidget {
           final index = entry.key;
           final quest = entry.value;
           return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: _buildQuestCard(quest),
-          ).animate().fadeIn(delay: Duration(milliseconds: 300 + index * 100)).slideY(begin: 0.1);
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _buildQuestCard(quest),
+              )
+              .animate()
+              .fadeIn(delay: Duration(milliseconds: 300 + index * 100))
+              .slideY(begin: 0.1);
         }),
       ],
     );

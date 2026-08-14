@@ -1,3 +1,10 @@
+﻿===============================================================================
+                            HISTORICAL REFERENCE
+===============================================================================
+Status: SUPERSEDED — DO NOT USE AS CURRENT STATE REFERENCE
+Current State Audit: See LEXI_CURRENT_STATE_AUDIT.md
+===============================================================================
+
 ================================================================================
               LEXI FEATURE SPECIFICATION
 ================================================================================
@@ -15,30 +22,30 @@ FEATURE: User Registration
 Purpose: Allow new users to create an account
 
 Required Functions:
-├── Email/Password Registration
-├── Social Login (Google, Apple, Facebook)
-├── Guest Mode
-├── Email Verification
-├── Username Selection
-├── Password Strength Check
-├── Terms of Service Agreement
-├── Privacy Policy Agreement
-└── Age Verification
+â”œâ”€â”€ Email/Password Registration
+â”œâ”€â”€ Social Login (Google, Apple, Facebook)
+â”œâ”€â”€ Guest Mode
+â”œâ”€â”€ Email Verification
+â”œâ”€â”€ Username Selection
+â”œâ”€â”€ Password Strength Check
+â”œâ”€â”€ Terms of Service Agreement
+â”œâ”€â”€ Privacy Policy Agreement
+â””â”€â”€ Age Verification
 
 Current Status:
-├── Email/Password Registration: ❌ Not implemented (fake)
-├── Social Login: ❌ Not implemented
-├── Guest Mode: ✅ Exists but limited
-├── Email Verification: ❌ Not implemented
-├── Username Selection: ❌ Not implemented
-├── Password Strength Check: ❌ Not implemented
-├── Terms of Service: ❌ Not implemented
-├── Privacy Policy: ❌ Not implemented
-└── Age Verification: ❌ Not implemented
+â”œâ”€â”€ Email/Password Registration: â‌Œ Not implemented (fake)
+â”œâ”€â”€ Social Login: â‌Œ Not implemented
+â”œâ”€â”€ Guest Mode: âœ… Exists but limited
+â”œâ”€â”€ Email Verification: â‌Œ Not implemented
+â”œâ”€â”€ Username Selection: â‌Œ Not implemented
+â”œâ”€â”€ Password Strength Check: â‌Œ Not implemented
+â”œâ”€â”€ Terms of Service: â‌Œ Not implemented
+â”œâ”€â”€ Privacy Policy: â‌Œ Not implemented
+â””â”€â”€ Age Verification: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Register → Verify Email → Setup Profile → Start Learning
-Current Flow: Guest Mode → Start Learning (no real account)
+Correct Flow: Register â†’ Verify Email â†’ Setup Profile â†’ Start Learning
+Current Flow: Guest Mode â†’ Start Learning (no real account)
 Broken At: No real authentication
 Production Impact: CRITICAL - Users can't save progress
 
@@ -48,30 +55,30 @@ FEATURE: User Login
 Purpose: Allow users to access their account
 
 Required Functions:
-├── Email/Password Login
-├── Social Login
-├── Remember Me
-├── Forgot Password
-├── Reset Password via Email
-├── Biometric Login (Fingerprint/Face)
-├── Session Management
-├── Multi-device Support
-└── Logout
+â”œâ”€â”€ Email/Password Login
+â”œâ”€â”€ Social Login
+â”œâ”€â”€ Remember Me
+â”œâ”€â”€ Forgot Password
+â”œâ”€â”€ Reset Password via Email
+â”œâ”€â”€ Biometric Login (Fingerprint/Face)
+â”œâ”€â”€ Session Management
+â”œâ”€â”€ Multi-device Support
+â””â”€â”€ Logout
 
 Current Status:
-├── Email/Password Login: ❌ Fake (no real auth)
-├── Social Login: ❌ Not implemented
-├── Remember Me: ❌ Not implemented
-├── Forgot Password: ❌ Not implemented
-├── Reset Password: ❌ Not implemented
-├── Biometric Login: ❌ Not implemented
-├── Session Management: ❌ Not implemented
-├── Multi-device Support: ❌ Not implemented
-└── Logout: ❌ Not implemented
+â”œâ”€â”€ Email/Password Login: â‌Œ Fake (no real auth)
+â”œâ”€â”€ Social Login: â‌Œ Not implemented
+â”œâ”€â”€ Remember Me: â‌Œ Not implemented
+â”œâ”€â”€ Forgot Password: â‌Œ Not implemented
+â”œâ”€â”€ Reset Password: â‌Œ Not implemented
+â”œâ”€â”€ Biometric Login: â‌Œ Not implemented
+â”œâ”€â”€ Session Management: â‌Œ Not implemented
+â”œâ”€â”€ Multi-device Support: â‌Œ Not implemented
+â””â”€â”€ Logout: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Enter Credentials → Authenticate → Load Profile → Home
-Current Flow: Click Login → Skip to Home (no auth)
+Correct Flow: Enter Credentials â†’ Authenticate â†’ Load Profile â†’ Home
+Current Flow: Click Login â†’ Skip to Home (no auth)
 Broken At: No real authentication
 Production Impact: CRITICAL
 
@@ -81,48 +88,48 @@ FEATURE: User Profile
 Purpose: Allow users to view and edit their profile
 
 Required Functions:
-├── View Profile
-├── Edit Profile
-├── Upload Avatar
-├── Crop Avatar
-├── Delete Avatar
-├── Change Username
-├── Change Email
-├── Change Password
-├── View Statistics
-├── View Achievements
-├── View Level
-├── View Streak
-├── Privacy Settings
-├── Blocked Users
-├── Linked Accounts
-├── Language Preferences
-├── Notification Settings
-└── Delete Account
+â”œâ”€â”€ View Profile
+â”œâ”€â”€ Edit Profile
+â”œâ”€â”€ Upload Avatar
+â”œâ”€â”€ Crop Avatar
+â”œâ”€â”€ Delete Avatar
+â”œâ”€â”€ Change Username
+â”œâ”€â”€ Change Email
+â”œâ”€â”€ Change Password
+â”œâ”€â”€ View Statistics
+â”œâ”€â”€ View Achievements
+â”œâ”€â”€ View Level
+â”œâ”€â”€ View Streak
+â”œâ”€â”€ Privacy Settings
+â”œâ”€â”€ Blocked Users
+â”œâ”€â”€ Linked Accounts
+â”œâ”€â”€ Language Preferences
+â”œâ”€â”€ Notification Settings
+â””â”€â”€ Delete Account
 
 Current Status:
-├── View Profile: ✅ Partial (hardcoded data)
-├── Edit Profile: ❌ Not implemented
-├── Upload Avatar: ❌ Not implemented
-├── Crop Avatar: ❌ Not implemented
-├── Delete Avatar: ❌ Not implemented
-├── Change Username: ❌ Not implemented
-├── Change Email: ❌ Not implemented
-├── Change Password: ❌ Not implemented
-├── View Statistics: ✅ Partial (hardcoded)
-├── View Achievements: ✅ Partial (from Firestore)
-├── View Level: ✅ Partial (hardcoded)
-├── View Streak: ✅ Partial (hardcoded)
-├── Privacy Settings: ❌ Not implemented
-├── Blocked Users: ❌ Not implemented
-├── Linked Accounts: ❌ Not implemented
-├── Language Preferences: ❌ Not implemented
-├── Notification Settings: ❌ Not implemented
-└── Delete Account: ❌ Not implemented
+â”œâ”€â”€ View Profile: âœ… Partial (hardcoded data)
+â”œâ”€â”€ Edit Profile: â‌Œ Not implemented
+â”œâ”€â”€ Upload Avatar: â‌Œ Not implemented
+â”œâ”€â”€ Crop Avatar: â‌Œ Not implemented
+â”œâ”€â”€ Delete Avatar: â‌Œ Not implemented
+â”œâ”€â”€ Change Username: â‌Œ Not implemented
+â”œâ”€â”€ Change Email: â‌Œ Not implemented
+â”œâ”€â”€ Change Password: â‌Œ Not implemented
+â”œâ”€â”€ View Statistics: âœ… Partial (hardcoded)
+â”œâ”€â”€ View Achievements: âœ… Partial (from Firestore)
+â”œâ”€â”€ View Level: âœ… Partial (hardcoded)
+â”œâ”€â”€ View Streak: âœ… Partial (hardcoded)
+â”œâ”€â”€ Privacy Settings: â‌Œ Not implemented
+â”œâ”€â”€ Blocked Users: â‌Œ Not implemented
+â”œâ”€â”€ Linked Accounts: â‌Œ Not implemented
+â”œâ”€â”€ Language Preferences: â‌Œ Not implemented
+â”œâ”€â”€ Notification Settings: â‌Œ Not implemented
+â””â”€â”€ Delete Account: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: View Profile → Edit → Save → Update UI
-Current Flow: View Profile → No Edit Option
+Correct Flow: View Profile â†’ Edit â†’ Save â†’ Update UI
+Current Flow: View Profile â†’ No Edit Option
 Broken At: No edit functionality
 Production Impact: HIGH
 
@@ -135,38 +142,38 @@ FEATURE: Learning Path / Roadmap
 Purpose: Show user's learning journey and progress
 
 Required Functions:
-├── View Learning Path
-├── View All Levels (A1-C2)
-├── View Units per Level
-├── View Lessons per Unit
-├── Track Overall Progress
-├── Track Unit Progress
-├── Track Lesson Progress
-├── Unlock Next Lesson
-├── Unlock Next Unit
-├── View Completion Percentage
-├── View Time Spent
-├── View XP Earned
-└── Visual Progress Indicators
+â”œâ”€â”€ View Learning Path
+â”œâ”€â”€ View All Levels (A1-C2)
+â”œâ”€â”€ View Units per Level
+â”œâ”€â”€ View Lessons per Unit
+â”œâ”€â”€ Track Overall Progress
+â”œâ”€â”€ Track Unit Progress
+â”œâ”€â”€ Track Lesson Progress
+â”œâ”€â”€ Unlock Next Lesson
+â”œâ”€â”€ Unlock Next Unit
+â”œâ”€â”€ View Completion Percentage
+â”œâ”€â”€ View Time Spent
+â”œâ”€â”€ View XP Earned
+â””â”€â”€ Visual Progress Indicators
 
 Current Status:
-├── View Learning Path: ✅ Exists
-├── View All Levels: ✅ A1-C2 shown
-├── View Units per Level: ✅ From Firestore
-├── View Lessons per Unit: ✅ From Firestore
-├── Track Overall Progress: ❌ Not implemented
-├── Track Unit Progress: ❌ Not implemented
-├── Track Lesson Progress: ❌ Not implemented
-├── Unlock Next Lesson: ❌ Not implemented
-├── Unlock Next Unit: ❌ Not implemented
-├── View Completion Percentage: ❌ Not implemented
-├── View Time Spent: ❌ Not implemented
-├── View XP Earned: ✅ Partial (displayed)
-└── Visual Progress Indicators: ✅ Partial
+â”œâ”€â”€ View Learning Path: âœ… Exists
+â”œâ”€â”€ View All Levels: âœ… A1-C2 shown
+â”œâ”€â”€ View Units per Level: âœ… From Firestore
+â”œâ”€â”€ View Lessons per Unit: âœ… From Firestore
+â”œâ”€â”€ Track Overall Progress: â‌Œ Not implemented
+â”œâ”€â”€ Track Unit Progress: â‌Œ Not implemented
+â”œâ”€â”€ Track Lesson Progress: â‌Œ Not implemented
+â”œâ”€â”€ Unlock Next Lesson: â‌Œ Not implemented
+â”œâ”€â”€ Unlock Next Unit: â‌Œ Not implemented
+â”œâ”€â”€ View Completion Percentage: â‌Œ Not implemented
+â”œâ”€â”€ View Time Spent: â‌Œ Not implemented
+â”œâ”€â”€ View XP Earned: âœ… Partial (displayed)
+â””â”€â”€ Visual Progress Indicators: âœ… Partial
 
 Flow Analysis:
-Correct Flow: View Path → Select Unit → Complete Lessons → Progress Updates
-Current Flow: View Path → No Progress Tracking
+Correct Flow: View Path â†’ Select Unit â†’ Complete Lessons â†’ Progress Updates
+Current Flow: View Path â†’ No Progress Tracking
 Broken At: No progress persistence
 Production Impact: CRITICAL
 
@@ -176,42 +183,42 @@ FEATURE: Lessons
 Purpose: Deliver learning content to users
 
 Required Functions:
-├── Browse Lessons by Level
-├── Browse Lessons by Category
-├── View Lesson Details
-├── View Vocabulary
-├── Play Audio for Vocabulary
-├── View Grammar Rules
-├── View Examples
-├── Take Quiz
-├── Complete Lesson
-├── Earn XP
-├── Track Progress
-├── Bookmark Lesson
-├── Take Notes
-├── Report Issue
-└── Share Lesson
+â”œâ”€â”€ Browse Lessons by Level
+â”œâ”€â”€ Browse Lessons by Category
+â”œâ”€â”€ View Lesson Details
+â”œâ”€â”€ View Vocabulary
+â”œâ”€â”€ Play Audio for Vocabulary
+â”œâ”€â”€ View Grammar Rules
+â”œâ”€â”€ View Examples
+â”œâ”€â”€ Take Quiz
+â”œâ”€â”€ Complete Lesson
+â”œâ”€â”€ Earn XP
+â”œâ”€â”€ Track Progress
+â”œâ”€â”€ Bookmark Lesson
+â”œâ”€â”€ Take Notes
+â”œâ”€â”€ Report Issue
+â””â”€â”€ Share Lesson
 
 Current Status:
-├── Browse Lessons by Level: ✅ Exists
-├── Browse Lessons by Category: ✅ Exists
-├── View Lesson Details: ✅ Exists
-├── View Vocabulary: ✅ Exists
-├── Play Audio: ❌ No real audio files
-├── View Grammar Rules: ✅ Exists
-├── View Examples: ✅ Exists
-├── Take Quiz: ✅ Exists
-├── Complete Lesson: ❌ Not tracked
-├── Earn XP: ❌ Not calculated
-├── Track Progress: ❌ Not implemented
-├── Bookmark Lesson: ❌ Not implemented
-├── Take Notes: ❌ Not implemented
-├── Report Issue: ❌ Not implemented
-└── Share Lesson: ❌ Not implemented
+â”œâ”€â”€ Browse Lessons by Level: âœ… Exists
+â”œâ”€â”€ Browse Lessons by Category: âœ… Exists
+â”œâ”€â”€ View Lesson Details: âœ… Exists
+â”œâ”€â”€ View Vocabulary: âœ… Exists
+â”œâ”€â”€ Play Audio: â‌Œ No real audio files
+â”œâ”€â”€ View Grammar Rules: âœ… Exists
+â”œâ”€â”€ View Examples: âœ… Exists
+â”œâ”€â”€ Take Quiz: âœ… Exists
+â”œâ”€â”€ Complete Lesson: â‌Œ Not tracked
+â”œâ”€â”€ Earn XP: â‌Œ Not calculated
+â”œâ”€â”€ Track Progress: â‌Œ Not implemented
+â”œâ”€â”€ Bookmark Lesson: â‌Œ Not implemented
+â”œâ”€â”€ Take Notes: â‌Œ Not implemented
+â”œâ”€â”€ Report Issue: â‌Œ Not implemented
+â””â”€â”€ Share Lesson: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Browse → Select → Study → Quiz → Complete → Earn XP
-Current Flow: Browse → Select → Study → Quiz → (nothing happens)
+Correct Flow: Browse â†’ Select â†’ Study â†’ Quiz â†’ Complete â†’ Earn XP
+Current Flow: Browse â†’ Select â†’ Study â†’ Quiz â†’ (nothing happens)
 Broken At: Lesson completion
 Production Impact: CRITICAL
 
@@ -221,38 +228,38 @@ FEATURE: Flashcards
 Purpose: Help users memorize vocabulary
 
 Required Functions:
-├── View Flashcard Decks
-├── Create Custom Deck
-├── Edit Deck
-├── Delete Deck
-├── Flip Card
-├── Mark as Learned
-├── Mark as Unknown
-├── Shuffle Cards
-├── Spaced Repetition
-├── Progress Statistics
-├── Import Cards
-├── Export Cards
-└── Share Deck
+â”œâ”€â”€ View Flashcard Decks
+â”œâ”€â”€ Create Custom Deck
+â”œâ”€â”€ Edit Deck
+â”œâ”€â”€ Delete Deck
+â”œâ”€â”€ Flip Card
+â”œâ”€â”€ Mark as Learned
+â”œâ”€â”€ Mark as Unknown
+â”œâ”€â”€ Shuffle Cards
+â”œâ”€â”€ Spaced Repetition
+â”œâ”€â”€ Progress Statistics
+â”œâ”€â”€ Import Cards
+â”œâ”€â”€ Export Cards
+â””â”€â”€ Share Deck
 
 Current Status:
-├── View Flashcard Decks: ✅ Exists
-├── Create Custom Deck: ❌ Not implemented
-├── Edit Deck: ❌ Not implemented
-├── Delete Deck: ❌ Not implemented
-├── Flip Card: ✅ Exists
-├── Mark as Learned: ❌ Not implemented
-├── Mark as Unknown: ❌ Not implemented
-├── Shuffle Cards: ❌ Not implemented
-├── Spaced Repetition: ❌ Not implemented
-├── Progress Statistics: ❌ Not implemented
-├── Import Cards: ❌ Not implemented
-├── Export Cards: ❌ Not implemented
-└── Share Deck: ❌ Not implemented
+â”œâ”€â”€ View Flashcard Decks: âœ… Exists
+â”œâ”€â”€ Create Custom Deck: â‌Œ Not implemented
+â”œâ”€â”€ Edit Deck: â‌Œ Not implemented
+â”œâ”€â”€ Delete Deck: â‌Œ Not implemented
+â”œâ”€â”€ Flip Card: âœ… Exists
+â”œâ”€â”€ Mark as Learned: â‌Œ Not implemented
+â”œâ”€â”€ Mark as Unknown: â‌Œ Not implemented
+â”œâ”€â”€ Shuffle Cards: â‌Œ Not implemented
+â”œâ”€â”€ Spaced Repetition: â‌Œ Not implemented
+â”œâ”€â”€ Progress Statistics: â‌Œ Not implemented
+â”œâ”€â”€ Import Cards: â‌Œ Not implemented
+â”œâ”€â”€ Export Cards: â‌Œ Not implemented
+â””â”€â”€ Share Deck: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: View Deck → Study → Mark Progress → Next Review
-Current Flow: View Deck → Flip Card → (no progress)
+Correct Flow: View Deck â†’ Study â†’ Mark Progress â†’ Next Review
+Current Flow: View Deck â†’ Flip Card â†’ (no progress)
 Broken At: No progress tracking
 Production Impact: MEDIUM
 
@@ -262,38 +269,38 @@ FEATURE: Audio Lessons
 Purpose: Improve listening skills
 
 Required Functions:
-├── Browse Audio Library
-├── Play Audio
-├── Pause Audio
-├── Stop Audio
-├── Seek Forward/Backward
-├── Change Speed
-├── Download for Offline
-├── View Transcript
-├── Follow Along
-├── Take Listening Quiz
-├── Track Progress
-├── Create Playlist
-└── Favorite Audio
+â”œâ”€â”€ Browse Audio Library
+â”œâ”€â”€ Play Audio
+â”œâ”€â”€ Pause Audio
+â”œâ”€â”€ Stop Audio
+â”œâ”€â”€ Seek Forward/Backward
+â”œâ”€â”€ Change Speed
+â”œâ”€â”€ Download for Offline
+â”œâ”€â”€ View Transcript
+â”œâ”€â”€ Follow Along
+â”œâ”€â”€ Take Listening Quiz
+â”œâ”€â”€ Track Progress
+â”œâ”€â”€ Create Playlist
+â””â”€â”€ Favorite Audio
 
 Current Status:
-├── Browse Audio Library: ✅ Exists (metadata only)
-├── Play Audio: ❌ No real files
-├── Pause Audio: ❌ Not implemented
-├── Stop Audio: ❌ Not implemented
-├── Seek: ❌ Not implemented
-├── Change Speed: ❌ Not implemented
-├── Download: ❌ Not implemented
-├── View Transcript: ❌ Not implemented
-├── Follow Along: ❌ Not implemented
-├── Listening Quiz: ❌ Not implemented
-├── Track Progress: ❌ Not implemented
-├── Create Playlist: ❌ Not implemented
-└── Favorite Audio: ❌ Not implemented
+â”œâ”€â”€ Browse Audio Library: âœ… Exists (metadata only)
+â”œâ”€â”€ Play Audio: â‌Œ No real files
+â”œâ”€â”€ Pause Audio: â‌Œ Not implemented
+â”œâ”€â”€ Stop Audio: â‌Œ Not implemented
+â”œâ”€â”€ Seek: â‌Œ Not implemented
+â”œâ”€â”€ Change Speed: â‌Œ Not implemented
+â”œâ”€â”€ Download: â‌Œ Not implemented
+â”œâ”€â”€ View Transcript: â‌Œ Not implemented
+â”œâ”€â”€ Follow Along: â‌Œ Not implemented
+â”œâ”€â”€ Listening Quiz: â‌Œ Not implemented
+â”œâ”€â”€ Track Progress: â‌Œ Not implemented
+â”œâ”€â”€ Create Playlist: â‌Œ Not implemented
+â””â”€â”€ Favorite Audio: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Browse → Select → Play → Quiz → Progress
-Current Flow: Browse → Select → (can't play)
+Correct Flow: Browse â†’ Select â†’ Play â†’ Quiz â†’ Progress
+Current Flow: Browse â†’ Select â†’ (can't play)
 Broken At: No real audio files
 Production Impact: HIGH
 
@@ -303,34 +310,34 @@ FEATURE: Speaking Practice
 Purpose: Improve speaking skills
 
 Required Functions:
-├── View Speaking Exercises
-├── Record Voice
-├── Play Recording
-├── Speech-to-Text
-├── Pronunciation Score
-├── AI Feedback
-├── Compare with Native
-├── Practice Conversation
-├── Difficulty Levels
-├── Progress Tracking
-└── Share Recording
+â”œâ”€â”€ View Speaking Exercises
+â”œâ”€â”€ Record Voice
+â”œâ”€â”€ Play Recording
+â”œâ”€â”€ Speech-to-Text
+â”œâ”€â”€ Pronunciation Score
+â”œâ”€â”€ AI Feedback
+â”œâ”€â”€ Compare with Native
+â”œâ”€â”€ Practice Conversation
+â”œâ”€â”€ Difficulty Levels
+â”œâ”€â”€ Progress Tracking
+â””â”€â”€ Share Recording
 
 Current Status:
-├── View Speaking Exercises: ✅ Exists
-├── Record Voice: ❌ Not implemented
-├── Play Recording: ❌ Not implemented
-├── Speech-to-Text: ❌ Not implemented (package exists but unused)
-├── Pronunciation Score: ❌ Not implemented
-├── AI Feedback: ❌ Not implemented
-├── Compare with Native: ❌ Not implemented
-├── Practice Conversation: ❌ Not implemented
-├── Difficulty Levels: ❌ Not implemented
-├── Progress Tracking: ❌ Not implemented
-└── Share Recording: ❌ Not implemented
+â”œâ”€â”€ View Speaking Exercises: âœ… Exists
+â”œâ”€â”€ Record Voice: â‌Œ Not implemented
+â”œâ”€â”€ Play Recording: â‌Œ Not implemented
+â”œâ”€â”€ Speech-to-Text: â‌Œ Not implemented (package exists but unused)
+â”œâ”€â”€ Pronunciation Score: â‌Œ Not implemented
+â”œâ”€â”€ AI Feedback: â‌Œ Not implemented
+â”œâ”€â”€ Compare with Native: â‌Œ Not implemented
+â”œâ”€â”€ Practice Conversation: â‌Œ Not implemented
+â”œâ”€â”€ Difficulty Levels: â‌Œ Not implemented
+â”œâ”€â”€ Progress Tracking: â‌Œ Not implemented
+â””â”€â”€ Share Recording: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Select Exercise → Record → Analyze → Feedback
-Current Flow: Select Exercise → (can't record)
+Correct Flow: Select Exercise â†’ Record â†’ Analyze â†’ Feedback
+Current Flow: Select Exercise â†’ (can't record)
 Broken At: No audio recording
 Production Impact: HIGH
 
@@ -340,36 +347,36 @@ FEATURE: Pronunciation Training
 Purpose: Improve pronunciation accuracy
 
 Required Functions:
-├── View Word/Phrase
-├── Listen to Native
-├── Record Voice
-├── Waveform Visualization
-├── Pitch Analysis
-├── Compare Spectrogram
-├── Score Pronunciation
-├── Highlight Errors
-├── Tips for Improvement
-├── Practice Difficulty
-├── History
-└── Progress Chart
+â”œâ”€â”€ View Word/Phrase
+â”œâ”€â”€ Listen to Native
+â”œâ”€â”€ Record Voice
+â”œâ”€â”€ Waveform Visualization
+â”œâ”€â”€ Pitch Analysis
+â”œâ”€â”€ Compare Spectrogram
+â”œâ”€â”€ Score Pronunciation
+â”œâ”€â”€ Highlight Errors
+â”œâ”€â”€ Tips for Improvement
+â”œâ”€â”€ Practice Difficulty
+â”œâ”€â”€ History
+â””â”€â”€ Progress Chart
 
 Current Status:
-├── View Word/Phrase: ✅ Exists
-├── Listen to Native: ❌ No audio
-├── Record Voice: ❌ Not implemented
-├── Waveform Visualization: ❌ Not implemented
-├── Pitch Analysis: ❌ Not implemented
-├── Compare Spectrogram: ❌ Not implemented
-├── Score Pronunciation: ❌ Not implemented
-├── Highlight Errors: ❌ Not implemented
-├── Tips: ❌ Not implemented
-├── Practice Difficulty: ❌ Not implemented
-├── History: ❌ Not implemented
-└── Progress Chart: ❌ Not implemented
+â”œâ”€â”€ View Word/Phrase: âœ… Exists
+â”œâ”€â”€ Listen to Native: â‌Œ No audio
+â”œâ”€â”€ Record Voice: â‌Œ Not implemented
+â”œâ”€â”€ Waveform Visualization: â‌Œ Not implemented
+â”œâ”€â”€ Pitch Analysis: â‌Œ Not implemented
+â”œâ”€â”€ Compare Spectrogram: â‌Œ Not implemented
+â”œâ”€â”€ Score Pronunciation: â‌Œ Not implemented
+â”œâ”€â”€ Highlight Errors: â‌Œ Not implemented
+â”œâ”€â”€ Tips: â‌Œ Not implemented
+â”œâ”€â”€ Practice Difficulty: â‌Œ Not implemented
+â”œâ”€â”€ History: â‌Œ Not implemented
+â””â”€â”€ Progress Chart: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Select Word → Listen → Record → Analyze → Score
-Current Flow: Select Word → (can't listen or record)
+Correct Flow: Select Word â†’ Listen â†’ Record â†’ Analyze â†’ Score
+Current Flow: Select Word â†’ (can't listen or record)
 Broken At: No audio functionality
 Production Impact: HIGH
 
@@ -382,38 +389,38 @@ FEATURE: Quizzes
 Purpose: Test user knowledge
 
 Required Functions:
-├── Take Quiz
-├── Multiple Choice Questions
-├── True/False Questions
-├── Fill in Blank
-├── Matching Questions
-├── Timer
-├── Score Calculation
-├── Show Results
-├── Show Correct Answers
-├── Retry Quiz
-├── Track Attempts
-├── Difficulty Adaptation
-└── Leaderboard Integration
+â”œâ”€â”€ Take Quiz
+â”œâ”€â”€ Multiple Choice Questions
+â”œâ”€â”€ True/False Questions
+â”œâ”€â”€ Fill in Blank
+â”œâ”€â”€ Matching Questions
+â”œâ”€â”€ Timer
+â”œâ”€â”€ Score Calculation
+â”œâ”€â”€ Show Results
+â”œâ”€â”€ Show Correct Answers
+â”œâ”€â”€ Retry Quiz
+â”œâ”€â”€ Track Attempts
+â”œâ”€â”€ Difficulty Adaptation
+â””â”€â”€ Leaderboard Integration
 
 Current Status:
-├── Take Quiz: ✅ Exists
-├── Multiple Choice: ✅ Exists
-├── True/False: ✅ Exists
-├── Fill in Blank: ❌ Not implemented
-├── Matching: ❌ Not implemented
-├── Timer: ❌ Not implemented
-├── Score Calculation: ✅ Basic
-├── Show Results: ✅ Basic
-├── Show Correct Answers: ❌ Not implemented
-├── Retry Quiz: ❌ Not implemented
-├── Track Attempts: ❌ Not implemented
-├── Difficulty Adaptation: ❌ Not implemented
-└── Leaderboard Integration: ❌ Not implemented
+â”œâ”€â”€ Take Quiz: âœ… Exists
+â”œâ”€â”€ Multiple Choice: âœ… Exists
+â”œâ”€â”€ True/False: âœ… Exists
+â”œâ”€â”€ Fill in Blank: â‌Œ Not implemented
+â”œâ”€â”€ Matching: â‌Œ Not implemented
+â”œâ”€â”€ Timer: â‌Œ Not implemented
+â”œâ”€â”€ Score Calculation: âœ… Basic
+â”œâ”€â”€ Show Results: âœ… Basic
+â”œâ”€â”€ Show Correct Answers: â‌Œ Not implemented
+â”œâ”€â”€ Retry Quiz: â‌Œ Not implemented
+â”œâ”€â”€ Track Attempts: â‌Œ Not implemented
+â”œâ”€â”€ Difficulty Adaptation: â‌Œ Not implemented
+â””â”€â”€ Leaderboard Integration: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Start → Answer → Submit → Results → Retry/Continue
-Current Flow: Start → Answer → Submit → (basic results)
+Correct Flow: Start â†’ Answer â†’ Submit â†’ Results â†’ Retry/Continue
+Current Flow: Start â†’ Answer â†’ Submit â†’ (basic results)
 Broken At: No retry or progress
 Production Impact: MEDIUM
 
@@ -423,40 +430,40 @@ FEATURE: Goethe Exam Preparation
 Purpose: Prepare users for official Goethe exam
 
 Required Functions:
-├── View Exam Structure
-├── Reading Section
-├── Listening Section
-├── Writing Section
-├── Speaking Section
-├── Full Mock Exam
-├── Section Timer
-├── Auto-save Progress
-├── Score Breakdown
-├── Pass/Fail Determination
-├── Certificate Generation
-├── Exam History
-├── Weak Areas Analysis
-└── Study Recommendations
+â”œâ”€â”€ View Exam Structure
+â”œâ”€â”€ Reading Section
+â”œâ”€â”€ Listening Section
+â”œâ”€â”€ Writing Section
+â”œâ”€â”€ Speaking Section
+â”œâ”€â”€ Full Mock Exam
+â”œâ”€â”€ Section Timer
+â”œâ”€â”€ Auto-save Progress
+â”œâ”€â”€ Score Breakdown
+â”œâ”€â”€ Pass/Fail Determination
+â”œâ”€â”€ Certificate Generation
+â”œâ”€â”€ Exam History
+â”œâ”€â”€ Weak Areas Analysis
+â””â”€â”€ Study Recommendations
 
 Current Status:
-├── View Exam Structure: ✅ Exists
-├── Reading Section: ❌ Not implemented
-├── Listening Section: ❌ Not implemented
-├── Writing Section: ❌ Not implemented
-├── Speaking Section: ❌ Not implemented
-├── Full Mock Exam: ❌ Not implemented
-├── Section Timer: ❌ Not implemented
-├── Auto-save: ❌ Not implemented
-├── Score Breakdown: ❌ Not implemented
-├── Pass/Fail: ❌ Not implemented
-├── Certificate: ❌ Not implemented
-├── Exam History: ❌ Not implemented
-├── Weak Areas: ❌ Not implemented
-└── Recommendations: ❌ Not implemented
+â”œâ”€â”€ View Exam Structure: âœ… Exists
+â”œâ”€â”€ Reading Section: â‌Œ Not implemented
+â”œâ”€â”€ Listening Section: â‌Œ Not implemented
+â”œâ”€â”€ Writing Section: â‌Œ Not implemented
+â”œâ”€â”€ Speaking Section: â‌Œ Not implemented
+â”œâ”€â”€ Full Mock Exam: â‌Œ Not implemented
+â”œâ”€â”€ Section Timer: â‌Œ Not implemented
+â”œâ”€â”€ Auto-save: â‌Œ Not implemented
+â”œâ”€â”€ Score Breakdown: â‌Œ Not implemented
+â”œâ”€â”€ Pass/Fail: â‌Œ Not implemented
+â”œâ”€â”€ Certificate: â‌Œ Not implemented
+â”œâ”€â”€ Exam History: â‌Œ Not implemented
+â”œâ”€â”€ Weak Areas: â‌Œ Not implemented
+â””â”€â”€ Recommendations: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Study → Practice → Mock Exam → Results → Certificate
-Current Flow: View Info → (can't take exam)
+Correct Flow: Study â†’ Practice â†’ Mock Exam â†’ Results â†’ Certificate
+Current Flow: View Info â†’ (can't take exam)
 Broken At: No exam functionality
 Production Impact: HIGH
 
@@ -466,36 +473,36 @@ FEATURE: Progress Tracking
 Purpose: Track and display user progress
 
 Required Functions:
-├── Track Lessons Completed
-├── Track XP Earned
-├── Track Time Spent
-├── Track Streak
-├── Track Vocabulary Learned
-├── Track Quiz Scores
-├── Track Level Progress
-├── Visual Charts
-├── Weekly/Monthly Reports
-├── Goals Setting
-├── Goal Notifications
-└── Export Progress
+â”œâ”€â”€ Track Lessons Completed
+â”œâ”€â”€ Track XP Earned
+â”œâ”€â”€ Track Time Spent
+â”œâ”€â”€ Track Streak
+â”œâ”€â”€ Track Vocabulary Learned
+â”œâ”€â”€ Track Quiz Scores
+â”œâ”€â”€ Track Level Progress
+â”œâ”€â”€ Visual Charts
+â”œâ”€â”€ Weekly/Monthly Reports
+â”œâ”€â”€ Goals Setting
+â”œâ”€â”€ Goal Notifications
+â””â”€â”€ Export Progress
 
 Current Status:
-├── Track Lessons: ❌ Not implemented
-├── Track XP: ❌ Not implemented
-├── Track Time: ❌ Not implemented
-├── Track Streak: ❌ Not implemented
-├── Track Vocabulary: ❌ Not implemented
-├── Track Quiz Scores: ❌ Not implemented
-├── Track Level: ❌ Not implemented
-├── Visual Charts: ❌ Not implemented
-├── Reports: ❌ Not implemented
-├── Goals: ❌ Not implemented
-├── Goal Notifications: ❌ Not implemented
-└── Export: ❌ Not implemented
+â”œâ”€â”€ Track Lessons: â‌Œ Not implemented
+â”œâ”€â”€ Track XP: â‌Œ Not implemented
+â”œâ”€â”€ Track Time: â‌Œ Not implemented
+â”œâ”€â”€ Track Streak: â‌Œ Not implemented
+â”œâ”€â”€ Track Vocabulary: â‌Œ Not implemented
+â”œâ”€â”€ Track Quiz Scores: â‌Œ Not implemented
+â”œâ”€â”€ Track Level: â‌Œ Not implemented
+â”œâ”€â”€ Visual Charts: â‌Œ Not implemented
+â”œâ”€â”€ Reports: â‌Œ Not implemented
+â”œâ”€â”€ Goals: â‌Œ Not implemented
+â”œâ”€â”€ Goal Notifications: â‌Œ Not implemented
+â””â”€â”€ Export: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Complete Activity → Update Stats → View Progress
-Current Flow: Complete Activity → (no tracking)
+Correct Flow: Complete Activity â†’ Update Stats â†’ View Progress
+Current Flow: Complete Activity â†’ (no tracking)
 Broken At: No tracking at all
 Production Impact: CRITICAL
 
@@ -508,32 +515,32 @@ FEATURE: XP and Leveling
 Purpose: Motivate users through progression
 
 Required Functions:
-├── Earn XP from Activities
-├── XP Calculation Logic
-├── Level Thresholds
-├── Level Up Notification
-├── Level Up Rewards
-├── Level Progress Bar
-├── Total XP Display
-├── XP History
-├── XP Bonuses (streak, etc.)
-└── Level Benefits
+â”œâ”€â”€ Earn XP from Activities
+â”œâ”€â”€ XP Calculation Logic
+â”œâ”€â”€ Level Thresholds
+â”œâ”€â”€ Level Up Notification
+â”œâ”€â”€ Level Up Rewards
+â”œâ”€â”€ Level Progress Bar
+â”œâ”€â”€ Total XP Display
+â”œâ”€â”€ XP History
+â”œâ”€â”€ XP Bonuses (streak, etc.)
+â””â”€â”€ Level Benefits
 
 Current Status:
-├── Earn XP: ❌ Not calculated
-├── XP Calculation: ❌ Not implemented
-├── Level Thresholds: ❌ Not implemented
-├── Level Up Notification: ❌ Not implemented
-├── Level Up Rewards: ❌ Not implemented
-├── Level Progress Bar: ❌ Not implemented
-├── Total XP Display: ✅ Hardcoded
-├── XP History: ❌ Not implemented
-├── XP Bonuses: ❌ Not implemented
-└── Level Benefits: ❌ Not implemented
+â”œâ”€â”€ Earn XP: â‌Œ Not calculated
+â”œâ”€â”€ XP Calculation: â‌Œ Not implemented
+â”œâ”€â”€ Level Thresholds: â‌Œ Not implemented
+â”œâ”€â”€ Level Up Notification: â‌Œ Not implemented
+â”œâ”€â”€ Level Up Rewards: â‌Œ Not implemented
+â”œâ”€â”€ Level Progress Bar: â‌Œ Not implemented
+â”œâ”€â”€ Total XP Display: âœ… Hardcoded
+â”œâ”€â”€ XP History: â‌Œ Not implemented
+â”œâ”€â”€ XP Bonuses: â‌Œ Not implemented
+â””â”€â”€ Level Benefits: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Complete Activity → Earn XP → Level Up → Get Rewards
-Current Flow: Complete Activity → (nothing)
+Correct Flow: Complete Activity â†’ Earn XP â†’ Level Up â†’ Get Rewards
+Current Flow: Complete Activity â†’ (nothing)
 Broken At: No XP system
 Production Impact: HIGH
 
@@ -543,32 +550,32 @@ FEATURE: Achievements
 Purpose: Reward user accomplishments
 
 Required Functions:
-├── View All Achievements
-├── View Achievement Progress
-├── Unlock Achievement
-├── Achievement Notification
-├── Claim Achievement Reward
-├── Achievement Categories
-├── Achievement Rarity
-├── Share Achievement
-├── Achievement History
-└── Hidden Achievements
+â”œâ”€â”€ View All Achievements
+â”œâ”€â”€ View Achievement Progress
+â”œâ”€â”€ Unlock Achievement
+â”œâ”€â”€ Achievement Notification
+â”œâ”€â”€ Claim Achievement Reward
+â”œâ”€â”€ Achievement Categories
+â”œâ”€â”€ Achievement Rarity
+â”œâ”€â”€ Share Achievement
+â”œâ”€â”€ Achievement History
+â””â”€â”€ Hidden Achievements
 
 Current Status:
-├── View All: ✅ Exists (from Firestore)
-├── View Progress: ❌ Not implemented
-├── Unlock: ❌ Not implemented
-├── Notification: ❌ Not implemented
-├── Claim Reward: ❌ Not implemented
-├── Categories: ❌ Not implemented
-├── Rarity: ❌ Not implemented
-├── Share: ❌ Not implemented
-├── History: ❌ Not implemented
-└── Hidden: ❌ Not implemented
+â”œâ”€â”€ View All: âœ… Exists (from Firestore)
+â”œâ”€â”€ View Progress: â‌Œ Not implemented
+â”œâ”€â”€ Unlock: â‌Œ Not implemented
+â”œâ”€â”€ Notification: â‌Œ Not implemented
+â”œâ”€â”€ Claim Reward: â‌Œ Not implemented
+â”œâ”€â”€ Categories: â‌Œ Not implemented
+â”œâ”€â”€ Rarity: â‌Œ Not implemented
+â”œâ”€â”€ Share: â‌Œ Not implemented
+â”œâ”€â”€ History: â‌Œ Not implemented
+â””â”€â”€ Hidden: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Meet Condition → Unlock → Notify → Claim Reward
-Current Flow: View Achievements → (locked forever)
+Correct Flow: Meet Condition â†’ Unlock â†’ Notify â†’ Claim Reward
+Current Flow: View Achievements â†’ (locked forever)
 Broken At: No unlock logic
 Production Impact: MEDIUM
 
@@ -578,30 +585,30 @@ FEATURE: Daily Streaks
 Purpose: Encourage daily usage
 
 Required Functions:
-├── Track Daily Login
-├── Streak Counter
-├── Streak Milestones
-├── Streak Rewards
-├── Streak Freeze (premium)
-├── Streak Recovery
-├── Streak History
-├── Streak Notifications
-└── Calendar View
+â”œâ”€â”€ Track Daily Login
+â”œâ”€â”€ Streak Counter
+â”œâ”€â”€ Streak Milestones
+â”œâ”€â”€ Streak Rewards
+â”œâ”€â”€ Streak Freeze (premium)
+â”œâ”€â”€ Streak Recovery
+â”œâ”€â”€ Streak History
+â”œâ”€â”€ Streak Notifications
+â””â”€â”€ Calendar View
 
 Current Status:
-├── Track Daily Login: ❌ Not implemented
-├── Streak Counter: ✅ Hardcoded display
-├── Streak Milestones: ❌ Not implemented
-├── Streak Rewards: ❌ Not implemented
-├── Streak Freeze: ❌ Not implemented
-├── Streak Recovery: ❌ Not implemented
-├── Streak History: ❌ Not implemented
-├── Streak Notifications: ❌ Not implemented
-└── Calendar View: ❌ Not implemented
+â”œâ”€â”€ Track Daily Login: â‌Œ Not implemented
+â”œâ”€â”€ Streak Counter: âœ… Hardcoded display
+â”œâ”€â”€ Streak Milestones: â‌Œ Not implemented
+â”œâ”€â”€ Streak Rewards: â‌Œ Not implemented
+â”œâ”€â”€ Streak Freeze: â‌Œ Not implemented
+â”œâ”€â”€ Streak Recovery: â‌Œ Not implemented
+â”œâ”€â”€ Streak History: â‌Œ Not implemented
+â”œâ”€â”€ Streak Notifications: â‌Œ Not implemented
+â””â”€â”€ Calendar View: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Login → Update Streak → Check Milestones → Rewards
-Current Flow: View Streak → (no tracking)
+Correct Flow: Login â†’ Update Streak â†’ Check Milestones â†’ Rewards
+Current Flow: View Streak â†’ (no tracking)
 Broken At: No streak logic
 Production Impact: MEDIUM
 
@@ -611,32 +618,32 @@ FEATURE: Daily Missions / Quests
 Purpose: Provide daily goals
 
 Required Functions:
-├── Generate Daily Missions
-├── View Active Missions
-├── Accept Mission
-├── Track Progress
-├── Complete Mission
-├── Claim Reward
-├── Refresh Daily
-├── Mission Types (variety)
-├── Difficulty Levels
-└── Mission History
+â”œâ”€â”€ Generate Daily Missions
+â”œâ”€â”€ View Active Missions
+â”œâ”€â”€ Accept Mission
+â”œâ”€â”€ Track Progress
+â”œâ”€â”€ Complete Mission
+â”œâ”€â”€ Claim Reward
+â”œâ”€â”€ Refresh Daily
+â”œâ”€â”€ Mission Types (variety)
+â”œâ”€â”€ Difficulty Levels
+â””â”€â”€ Mission History
 
 Current Status:
-├── Generate: ❌ Not implemented
-├── View Active: ✅ Static display
-├── Accept: ❌ Not implemented
-├── Track Progress: ❌ Not implemented
-├── Complete: ❌ Not implemented
-├── Claim Reward: ❌ Not implemented
-├── Refresh: ❌ Not implemented
-├── Mission Types: ❌ Not implemented
-├── Difficulty: ❌ Not implemented
-└── History: ❌ Not implemented
+â”œâ”€â”€ Generate: â‌Œ Not implemented
+â”œâ”€â”€ View Active: âœ… Static display
+â”œâ”€â”€ Accept: â‌Œ Not implemented
+â”œâ”€â”€ Track Progress: â‌Œ Not implemented
+â”œâ”€â”€ Complete: â‌Œ Not implemented
+â”œâ”€â”€ Claim Reward: â‌Œ Not implemented
+â”œâ”€â”€ Refresh: â‌Œ Not implemented
+â”œâ”€â”€ Mission Types: â‌Œ Not implemented
+â”œâ”€â”€ Difficulty: â‌Œ Not implemented
+â””â”€â”€ History: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: View Missions → Accept → Complete → Claim Reward
-Current Flow: View Missions → (can't interact)
+Correct Flow: View Missions â†’ Accept â†’ Complete â†’ Claim Reward
+Current Flow: View Missions â†’ (can't interact)
 Broken At: No mission logic
 Production Impact: MEDIUM
 
@@ -646,31 +653,31 @@ FEATURE: Leaderboard
 Purpose: Show user ranking
 
 Required Functions:
-├── View Global Leaderboard
-├── View Friends Leaderboard
-├── View Weekly Leaderboard
-├── View Level-specific Leaderboard
-├── Filter by Time Period
-├── User Ranking
-├── Top 100
-├── Refresh Real-time
-├── Seasonal Leaderboards
-└── Leaderboard Rewards
+â”œâ”€â”€ View Global Leaderboard
+â”œâ”€â”€ View Friends Leaderboard
+â”œâ”€â”€ View Weekly Leaderboard
+â”œâ”€â”€ View Level-specific Leaderboard
+â”œâ”€â”€ Filter by Time Period
+â”œâ”€â”€ User Ranking
+â”œâ”€â”€ Top 100
+â”œâ”€â”€ Refresh Real-time
+â”œâ”€â”€ Seasonal Leaderboards
+â””â”€â”€ Leaderboard Rewards
 
 Current Status:
-├── Global: ❌ Not implemented
-├── Friends: ❌ Not implemented
-├── Weekly: ❌ Not implemented
-├── Level-specific: ❌ Not implemented
-├── Filter: ❌ Not implemented
-├── User Ranking: ❌ Not implemented
-├── Top 100: ❌ Not implemented
-├── Refresh: ❌ Not implemented
-├── Seasonal: ❌ Not implemented
-└── Rewards: ❌ Not implemented
+â”œâ”€â”€ Global: â‌Œ Not implemented
+â”œâ”€â”€ Friends: â‌Œ Not implemented
+â”œâ”€â”€ Weekly: â‌Œ Not implemented
+â”œâ”€â”€ Level-specific: â‌Œ Not implemented
+â”œâ”€â”€ Filter: â‌Œ Not implemented
+â”œâ”€â”€ User Ranking: â‌Œ Not implemented
+â”œâ”€â”€ Top 100: â‌Œ Not implemented
+â”œâ”€â”€ Refresh: â‌Œ Not implemented
+â”œâ”€â”€ Seasonal: â‌Œ Not implemented
+â””â”€â”€ Rewards: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Calculate Rankings → Display → Update
+Correct Flow: Calculate Rankings â†’ Display â†’ Update
 Current Flow: Non-functional
 Broken At: No ranking system
 Production Impact: LOW
@@ -684,44 +691,44 @@ FEATURE: Community Feed
 Purpose: Allow users to share and interact
 
 Required Functions:
-├── View Feed
-├── Create Post
-├── Upload Image
-├── Upload Video
-├── Like Post
-├── Unlike Post
-├── Comment on Post
-├── Reply to Comment
-├── Delete Own Post
-├── Report Post
-├── Share Post
-├── Bookmark Post
-├── Filter Feed
-├── Search Posts
-├── Report User
-└── Block User
+â”œâ”€â”€ View Feed
+â”œâ”€â”€ Create Post
+â”œâ”€â”€ Upload Image
+â”œâ”€â”€ Upload Video
+â”œâ”€â”€ Like Post
+â”œâ”€â”€ Unlike Post
+â”œâ”€â”€ Comment on Post
+â”œâ”€â”€ Reply to Comment
+â”œâ”€â”€ Delete Own Post
+â”œâ”€â”€ Report Post
+â”œâ”€â”€ Share Post
+â”œâ”€â”€ Bookmark Post
+â”œâ”€â”€ Filter Feed
+â”œâ”€â”€ Search Posts
+â”œâ”€â”€ Report User
+â””â”€â”€ Block User
 
 Current Status:
-├── View Feed: ✅ Fake data
-├── Create Post: ✅ UI only
-├── Upload Image: ❌ Not implemented
-├── Upload Video: ❌ Not implemented
-├── Like Post: ✅ UI only
-├── Unlike Post: ❌ Not implemented
-├── Comment: ✅ UI only
-├── Reply: ❌ Not implemented
-├── Delete Post: ❌ Not implemented
-├── Report: ❌ Not implemented
-├── Share: ❌ Not implemented
-├── Bookmark: ❌ Not implemented
-├── Filter: ❌ Not implemented
-├── Search: ❌ Not implemented
-├── Report User: ❌ Not implemented
-└── Block User: ❌ Not implemented
+â”œâ”€â”€ View Feed: âœ… Fake data
+â”œâ”€â”€ Create Post: âœ… UI only
+â”œâ”€â”€ Upload Image: â‌Œ Not implemented
+â”œâ”€â”€ Upload Video: â‌Œ Not implemented
+â”œâ”€â”€ Like Post: âœ… UI only
+â”œâ”€â”€ Unlike Post: â‌Œ Not implemented
+â”œâ”€â”€ Comment: âœ… UI only
+â”œâ”€â”€ Reply: â‌Œ Not implemented
+â”œâ”€â”€ Delete Post: â‌Œ Not implemented
+â”œâ”€â”€ Report: â‌Œ Not implemented
+â”œâ”€â”€ Share: â‌Œ Not implemented
+â”œâ”€â”€ Bookmark: â‌Œ Not implemented
+â”œâ”€â”€ Filter: â‌Œ Not implemented
+â”œâ”€â”€ Search: â‌Œ Not implemented
+â”œâ”€â”€ Report User: â‌Œ Not implemented
+â””â”€â”€ Block User: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Create Post → Upload → Share → Get Likes/Comments
-Current Flow: View Fake Feed → (can't create real post)
+Correct Flow: Create Post â†’ Upload â†’ Share â†’ Get Likes/Comments
+Current Flow: View Fake Feed â†’ (can't create real post)
 Broken At: No real backend
 Production Impact: HIGH
 
@@ -731,34 +738,34 @@ FEATURE: Friends System
 Purpose: Connect users with each other
 
 Required Functions:
-├── Search Users
-├── Send Friend Request
-├── Accept Request
-├── Decline Request
-├── Remove Friend
-├── View Friends List
-├── Friend Suggestions
-├── Friend Activity
-├── Unfriend
-├── Block User
-└── Friend Privacy
+â”œâ”€â”€ Search Users
+â”œâ”€â”€ Send Friend Request
+â”œâ”€â”€ Accept Request
+â”œâ”€â”€ Decline Request
+â”œâ”€â”€ Remove Friend
+â”œâ”€â”€ View Friends List
+â”œâ”€â”€ Friend Suggestions
+â”œâ”€â”€ Friend Activity
+â”œâ”€â”€ Unfriend
+â”œâ”€â”€ Block User
+â””â”€â”€ Friend Privacy
 
 Current Status:
-├── Search Users: ❌ Not implemented
-├── Send Request: ❌ Not implemented
-├── Accept: ❌ Not implemented
-├── Decline: ❌ Not implemented
-├── Remove Friend: ❌ Not implemented
-├── View Friends: ✅ Fake data
-├── Suggestions: ❌ Not implemented
-├── Activity: ❌ Not implemented
-├── Unfriend: ❌ Not implemented
-├── Block: ❌ Not implemented
-└── Privacy: ❌ Not implemented
+â”œâ”€â”€ Search Users: â‌Œ Not implemented
+â”œâ”€â”€ Send Request: â‌Œ Not implemented
+â”œâ”€â”€ Accept: â‌Œ Not implemented
+â”œâ”€â”€ Decline: â‌Œ Not implemented
+â”œâ”€â”€ Remove Friend: â‌Œ Not implemented
+â”œâ”€â”€ View Friends: âœ… Fake data
+â”œâ”€â”€ Suggestions: â‌Œ Not implemented
+â”œâ”€â”€ Activity: â‌Œ Not implemented
+â”œâ”€â”€ Unfriend: â‌Œ Not implemented
+â”œâ”€â”€ Block: â‌Œ Not implemented
+â””â”€â”€ Privacy: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Search → Send Request → Accept → Friends
-Current Flow: View Fake Friends → (can't add)
+Correct Flow: Search â†’ Send Request â†’ Accept â†’ Friends
+Current Flow: View Fake Friends â†’ (can't add)
 Broken At: No friend system
 Production Impact: MEDIUM
 
@@ -768,40 +775,40 @@ FEATURE: Messaging / Chat
 Purpose: Allow direct communication
 
 Required Functions:
-├── View Conversations
-├── Start New Chat
-├── Send Text Message
-├── Send Image
-├── Send Voice Message
-├── Send Sticker
-├── Read Receipts
-├── Online Status
-├── Typing Indicator
-├── Delete Message
-├── Clear Chat
-├── Block User
-├── Report Message
-└── Search Messages
+â”œâ”€â”€ View Conversations
+â”œâ”€â”€ Start New Chat
+â”œâ”€â”€ Send Text Message
+â”œâ”€â”€ Send Image
+â”œâ”€â”€ Send Voice Message
+â”œâ”€â”€ Send Sticker
+â”œâ”€â”€ Read Receipts
+â”œâ”€â”€ Online Status
+â”œâ”€â”€ Typing Indicator
+â”œâ”€â”€ Delete Message
+â”œâ”€â”€ Clear Chat
+â”œâ”€â”€ Block User
+â”œâ”€â”€ Report Message
+â””â”€â”€ Search Messages
 
 Current Status:
-├── View Conversations: ✅ Fake data
-├── New Chat: ❌ Not implemented
-├── Send Text: ❌ Not implemented
-├── Send Image: ❌ Not implemented
-├── Send Voice: ❌ Not implemented
-├── Send Sticker: ❌ Not implemented
-├── Read Receipts: ❌ Not implemented
-├── Online Status: ❌ Not implemented
-├── Typing: ❌ Not implemented
-├── Delete: ❌ Not implemented
-├── Clear Chat: ❌ Not implemented
-├── Block: ❌ Not implemented
-├── Report: ❌ Not implemented
-└── Search: ❌ Not implemented
+â”œâ”€â”€ View Conversations: âœ… Fake data
+â”œâ”€â”€ New Chat: â‌Œ Not implemented
+â”œâ”€â”€ Send Text: â‌Œ Not implemented
+â”œâ”€â”€ Send Image: â‌Œ Not implemented
+â”œâ”€â”€ Send Voice: â‌Œ Not implemented
+â”œâ”€â”€ Send Sticker: â‌Œ Not implemented
+â”œâ”€â”€ Read Receipts: â‌Œ Not implemented
+â”œâ”€â”€ Online Status: â‌Œ Not implemented
+â”œâ”€â”€ Typing: â‌Œ Not implemented
+â”œâ”€â”€ Delete: â‌Œ Not implemented
+â”œâ”€â”€ Clear Chat: â‌Œ Not implemented
+â”œâ”€â”€ Block: â‌Œ Not implemented
+â”œâ”€â”€ Report: â‌Œ Not implemented
+â””â”€â”€ Search: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Select Friend → Send Message → Receive Reply
-Current Flow: View Fake Chats → (can't send)
+Correct Flow: Select Friend â†’ Send Message â†’ Receive Reply
+Current Flow: View Fake Chats â†’ (can't send)
 Broken At: No messaging system
 Production Impact: MEDIUM
 
@@ -811,42 +818,42 @@ FEATURE: Live Learning / Rooms
 Purpose: Real-time group learning
 
 Required Functions:
-├── View Active Rooms
-├── Create Room
-├── Join Room
-├── Leave Room
-├── Host Controls
-├── Video Stream
-├── Audio Stream
-├── Screen Share
-├── Room Chat
-├── Raise Hand
-├── Mute/Unmute
-├── Room Settings
-├── Private Rooms
-├── Room Recording
-└── Schedule Room
+â”œâ”€â”€ View Active Rooms
+â”œâ”€â”€ Create Room
+â”œâ”€â”€ Join Room
+â”œâ”€â”€ Leave Room
+â”œâ”€â”€ Host Controls
+â”œâ”€â”€ Video Stream
+â”œâ”€â”€ Audio Stream
+â”œâ”€â”€ Screen Share
+â”œâ”€â”€ Room Chat
+â”œâ”€â”€ Raise Hand
+â”œâ”€â”€ Mute/Unmute
+â”œâ”€â”€ Room Settings
+â”œâ”€â”€ Private Rooms
+â”œâ”€â”€ Room Recording
+â””â”€â”€ Schedule Room
 
 Current Status:
-├── View Rooms: ✅ Fake data
-├── Create Room: ❌ No Agora
-├── Join Room: ❌ No Agora
-├── Leave Room: ❌ Not implemented
-├── Host Controls: ❌ Not implemented
-├── Video Stream: ❌ No Agora
-├── Audio Stream: ❌ No Agora
-├── Screen Share: ❌ Not implemented
-├── Chat: ❌ Not implemented
-├── Raise Hand: ❌ Not implemented
-├── Mute: ❌ Not implemented
-├── Settings: ❌ Not implemented
-├── Private Rooms: ❌ Not implemented
-├── Recording: ❌ Not implemented
-└── Schedule: ❌ Not implemented
+â”œâ”€â”€ View Rooms: âœ… Fake data
+â”œâ”€â”€ Create Room: â‌Œ No Agora
+â”œâ”€â”€ Join Room: â‌Œ No Agora
+â”œâ”€â”€ Leave Room: â‌Œ Not implemented
+â”œâ”€â”€ Host Controls: â‌Œ Not implemented
+â”œâ”€â”€ Video Stream: â‌Œ No Agora
+â”œâ”€â”€ Audio Stream: â‌Œ No Agora
+â”œâ”€â”€ Screen Share: â‌Œ Not implemented
+â”œâ”€â”€ Chat: â‌Œ Not implemented
+â”œâ”€â”€ Raise Hand: â‌Œ Not implemented
+â”œâ”€â”€ Mute: â‌Œ Not implemented
+â”œâ”€â”€ Settings: â‌Œ Not implemented
+â”œâ”€â”€ Private Rooms: â‌Œ Not implemented
+â”œâ”€â”€ Recording: â‌Œ Not implemented
+â””â”€â”€ Schedule: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Create Room → Invite → Start Stream → Interact
-Current Flow: View Fake Rooms → (can't join)
+Correct Flow: Create Room â†’ Invite â†’ Start Stream â†’ Interact
+Current Flow: View Fake Rooms â†’ (can't join)
 Broken At: No real-time infrastructure
 Production Impact: HIGH
 
@@ -859,38 +866,38 @@ FEATURE: AI Tutor
 Purpose: Personal AI learning assistant
 
 Required Functions:
-├── Send Message
-├── Receive AI Response
-├── Conversation Context
-├── Grammar Correction
-├── Vocabulary Suggestions
-├── Pronunciation Tips
-├── Personalized Lessons
-├── Difficulty Adaptation
-├── Progress Awareness
-├── Multiple Topics
-├── Voice Input
-├── Conversation History
-└── Export Chat
+â”œâ”€â”€ Send Message
+â”œâ”€â”€ Receive AI Response
+â”œâ”€â”€ Conversation Context
+â”œâ”€â”€ Grammar Correction
+â”œâ”€â”€ Vocabulary Suggestions
+â”œâ”€â”€ Pronunciation Tips
+â”œâ”€â”€ Personalized Lessons
+â”œâ”€â”€ Difficulty Adaptation
+â”œâ”€â”€ Progress Awareness
+â”œâ”€â”€ Multiple Topics
+â”œâ”€â”€ Voice Input
+â”œâ”€â”€ Conversation History
+â””â”€â”€ Export Chat
 
 Current Status:
-├── Send Message: ✅ Exists
-├── Receive Response: ❌ Static/fake
-├── Context: ❌ Not implemented
-├── Grammar Correction: ❌ Not implemented
-├── Vocabulary Suggestions: ❌ Not implemented
-├── Pronunciation Tips: ❌ Not implemented
-├── Personalized Lessons: ❌ Not implemented
-├── Difficulty Adaptation: ❌ Not implemented
-├── Progress Awareness: ❌ Not implemented
-├── Multiple Topics: ❌ Not implemented
-├── Voice Input: ❌ Not implemented
-├── History: ✅ Local only
-└── Export: ❌ Not implemented
+â”œâ”€â”€ Send Message: âœ… Exists
+â”œâ”€â”€ Receive Response: â‌Œ Static/fake
+â”œâ”€â”€ Context: â‌Œ Not implemented
+â”œâ”€â”€ Grammar Correction: â‌Œ Not implemented
+â”œâ”€â”€ Vocabulary Suggestions: â‌Œ Not implemented
+â”œâ”€â”€ Pronunciation Tips: â‌Œ Not implemented
+â”œâ”€â”€ Personalized Lessons: â‌Œ Not implemented
+â”œâ”€â”€ Difficulty Adaptation: â‌Œ Not implemented
+â”œâ”€â”€ Progress Awareness: â‌Œ Not implemented
+â”œâ”€â”€ Multiple Topics: â‌Œ Not implemented
+â”œâ”€â”€ Voice Input: â‌Œ Not implemented
+â”œâ”€â”€ History: âœ… Local only
+â””â”€â”€ Export: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Ask Question → Get Personalized Response → Learn
-Current Flow: Ask Question → Get Static Response
+Correct Flow: Ask Question â†’ Get Personalized Response â†’ Learn
+Current Flow: Ask Question â†’ Get Static Response
 Broken At: No real AI integration
 Production Impact: HIGH
 
@@ -900,33 +907,33 @@ FEATURE: AI Coach
 Purpose: Specialized coaching for specific skills
 
 Required Functions:
-├── Speaking Writing
-├── Grammar Check
-├── Vocabulary Quiz
-├── Pronunciation Analysis
-├── Writing Correction
-├── Personalized Plan
-├── Progress Tracking
-├── Goal Setting
-├── Weekly Reports
-├── Motivation Tips
-└── Custom Exercises
+â”œâ”€â”€ Speaking Writing
+â”œâ”€â”€ Grammar Check
+â”œâ”€â”€ Vocabulary Quiz
+â”œâ”€â”€ Pronunciation Analysis
+â”œâ”€â”€ Writing Correction
+â”œâ”€â”€ Personalized Plan
+â”œâ”€â”€ Progress Tracking
+â”œâ”€â”€ Goal Setting
+â”œâ”€â”€ Weekly Reports
+â”œâ”€â”€ Motivation Tips
+â””â”€â”€ Custom Exercises
 
 Current Status:
-├── Speaking Writing: ❌ Not implemented
-├── Grammar Check: ❌ Not implemented
-├── Vocabulary Quiz: ❌ Not implemented
-├── Pronunciation: ❌ Not implemented
-├── Writing Correction: ❌ Not implemented
-├── Personalized Plan: ❌ Not implemented
-├── Progress: ❌ Not implemented
-├── Goal Setting: ❌ Not implemented
-├── Reports: ❌ Not implemented
-├── Motivation: ❌ Not implemented
-└── Custom Exercises: ❌ Not implemented
+â”œâ”€â”€ Speaking Writing: â‌Œ Not implemented
+â”œâ”€â”€ Grammar Check: â‌Œ Not implemented
+â”œâ”€â”€ Vocabulary Quiz: â‌Œ Not implemented
+â”œâ”€â”€ Pronunciation: â‌Œ Not implemented
+â”œâ”€â”€ Writing Correction: â‌Œ Not implemented
+â”œâ”€â”€ Personalized Plan: â‌Œ Not implemented
+â”œâ”€â”€ Progress: â‌Œ Not implemented
+â”œâ”€â”€ Goal Setting: â‌Œ Not implemented
+â”œâ”€â”€ Reports: â‌Œ Not implemented
+â”œâ”€â”€ Motivation: â‌Œ Not implemented
+â””â”€â”€ Custom Exercises: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Select Skill → Get Coaching → Practice → Improve
+Correct Flow: Select Skill â†’ Get Coaching â†’ Practice â†’ Improve
 Current Flow: Non-functional
 Broken At: No AI integration
 Production Impact: HIGH
@@ -940,36 +947,36 @@ FEATURE: Store
 Purpose: Sell virtual items
 
 Required Functions:
-├── Browse Items
-├── Filter by Category
-├── Search Items
-├── View Item Details
-├── Purchase Item
-├── Use Gems/Currency
-├── Gift Item
-├── Item Reviews
-├── Item Recommendations
-├── Sale/Discount
-├── Limited Items
-└── Item Preview
+â”œâ”€â”€ Browse Items
+â”œâ”€â”€ Filter by Category
+â”œâ”€â”€ Search Items
+â”œâ”€â”€ View Item Details
+â”œâ”€â”€ Purchase Item
+â”œâ”€â”€ Use Gems/Currency
+â”œâ”€â”€ Gift Item
+â”œâ”€â”€ Item Reviews
+â”œâ”€â”€ Item Recommendations
+â”œâ”€â”€ Sale/Discount
+â”œâ”€â”€ Limited Items
+â””â”€â”€ Item Preview
 
 Current Status:
-├── Browse: ✅ Exists
-├── Filter: ❌ Not implemented
-├── Search: ❌ Not implemented
-├── Details: ❌ Not implemented
-├── Purchase: ❌ Not implemented
-├── Use Gems: ❌ Not implemented
-├── Gift: ❌ Not implemented
-├── Reviews: ❌ Not implemented
-├── Recommendations: ❌ Not implemented
-├── Sale: ❌ Not implemented
-├── Limited: ❌ Not implemented
-└── Preview: ❌ Not implemented
+â”œâ”€â”€ Browse: âœ… Exists
+â”œâ”€â”€ Filter: â‌Œ Not implemented
+â”œâ”€â”€ Search: â‌Œ Not implemented
+â”œâ”€â”€ Details: â‌Œ Not implemented
+â”œâ”€â”€ Purchase: â‌Œ Not implemented
+â”œâ”€â”€ Use Gems: â‌Œ Not implemented
+â”œâ”€â”€ Gift: â‌Œ Not implemented
+â”œâ”€â”€ Reviews: â‌Œ Not implemented
+â”œâ”€â”€ Recommendations: â‌Œ Not implemented
+â”œâ”€â”€ Sale: â‌Œ Not implemented
+â”œâ”€â”€ Limited: â‌Œ Not implemented
+â””â”€â”€ Preview: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Browse → Select → Buy → Use
-Current Flow: Browse → (can't buy)
+Correct Flow: Browse â†’ Select â†’ Buy â†’ Use
+Current Flow: Browse â†’ (can't buy)
 Broken At: No purchase logic
 Production Impact: CRITICAL
 
@@ -979,34 +986,34 @@ FEATURE: Wallet / Currency
 Purpose: Manage in-app currency
 
 Required Functions:
-├── View Balance
-├── Earn Gems (free)
-├── Purchase Gems
-├── Spend Gems
-├── Transaction History
-├── Gift Gems
-├── Refund
-├── Referral Rewards
-├── Daily Rewards
-├── Streak Bonuses
-└── Premium Currency
+â”œâ”€â”€ View Balance
+â”œâ”€â”€ Earn Gems (free)
+â”œâ”€â”€ Purchase Gems
+â”œâ”€â”€ Spend Gems
+â”œâ”€â”€ Transaction History
+â”œâ”€â”€ Gift Gems
+â”œâ”€â”€ Refund
+â”œâ”€â”€ Referral Rewards
+â”œâ”€â”€ Daily Rewards
+â”œâ”€â”€ Streak Bonuses
+â””â”€â”€ Premium Currency
 
 Current Status:
-├── View Balance: ✅ Hardcoded
-├── Earn Gems: ❌ Not implemented
-├── Purchase Gems: ❌ Not implemented
-├── Spend Gems: ❌ Not implemented
-├── History: ✅ Fake data
-├── Gift: ❌ Not implemented
-├── Refund: ❌ Not implemented
-├── Referral Rewards: ❌ Not implemented
-├── Daily Rewards: ❌ Not implemented
-├── Streak Bonuses: ❌ Not implemented
-└── Premium Currency: ❌ Not implemented
+â”œâ”€â”€ View Balance: âœ… Hardcoded
+â”œâ”€â”€ Earn Gems: â‌Œ Not implemented
+â”œâ”€â”€ Purchase Gems: â‌Œ Not implemented
+â”œâ”€â”€ Spend Gems: â‌Œ Not implemented
+â”œâ”€â”€ History: âœ… Fake data
+â”œâ”€â”€ Gift: â‌Œ Not implemented
+â”œâ”€â”€ Refund: â‌Œ Not implemented
+â”œâ”€â”€ Referral Rewards: â‌Œ Not implemented
+â”œâ”€â”€ Daily Rewards: â‌Œ Not implemented
+â”œâ”€â”€ Streak Bonuses: â‌Œ Not implemented
+â””â”€â”€ Premium Currency: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Earn → Spend → Track
-Current Flow: View Balance → (can't earn or spend)
+Correct Flow: Earn â†’ Spend â†’ Track
+Current Flow: View Balance â†’ (can't earn or spend)
 Broken At: No currency system
 Production Impact: CRITICAL
 
@@ -1016,32 +1023,32 @@ FEATURE: Avatar Shop
 Purpose: Sell avatar customization items
 
 Required Functions:
-├── Browse Avatars
-├── Preview Avatar
-├── Purchase Avatar
-├── Equip Avatar
-├── Unequip Avatar
-├── Gift Avatar
-├── Custom Animation
-├── Rare Avatars
-├── Limited Editions
-└── Avatar Bundles
+â”œâ”€â”€ Browse Avatars
+â”œâ”€â”€ Preview Avatar
+â”œâ”€â”€ Purchase Avatar
+â”œâ”€â”€ Equip Avatar
+â”œâ”€â”€ Unequip Avatar
+â”œâ”€â”€ Gift Avatar
+â”œâ”€â”€ Custom Animation
+â”œâ”€â”€ Rare Avatars
+â”œâ”€â”€ Limited Editions
+â””â”€â”€ Avatar Bundles
 
 Current Status:
-├── Browse: ✅ Exists
-├── Preview: ❌ Not implemented
-├── Purchase: ❌ Not implemented
-├── Equip: ❌ Not implemented
-├── Unequip: ❌ Not implemented
-├── Gift: ❌ Not implemented
-├── Animation: ❌ Not implemented
-├── Rare: ❌ Not implemented
-├── Limited: ❌ Not implemented
-└── Bundles: ❌ Not implemented
+â”œâ”€â”€ Browse: âœ… Exists
+â”œâ”€â”€ Preview: â‌Œ Not implemented
+â”œâ”€â”€ Purchase: â‌Œ Not implemented
+â”œâ”€â”€ Equip: â‌Œ Not implemented
+â”œâ”€â”€ Unequip: â‌Œ Not implemented
+â”œâ”€â”€ Gift: â‌Œ Not implemented
+â”œâ”€â”€ Animation: â‌Œ Not implemented
+â”œâ”€â”€ Rare: â‌Œ Not implemented
+â”œâ”€â”€ Limited: â‌Œ Not implemented
+â””â”€â”€ Bundles: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Browse → Preview → Buy → Equip
-Current Flow: Browse → (can't buy)
+Correct Flow: Browse â†’ Preview â†’ Buy â†’ Equip
+Current Flow: Browse â†’ (can't buy)
 Broken At: No purchase logic
 Production Impact: MEDIUM
 
@@ -1051,30 +1058,30 @@ FEATURE: Frames Workshop
 Purpose: Sell profile frame items
 
 Required Functions:
-├── Browse Frames
-├── Preview Frame
-├── Purchase Frame
-├── Equip Frame
-├── Unequip Frame
-├── Gift Frame
-├── Animated Frames
-├── Rare Frames
-└── Frame Bundles
+â”œâ”€â”€ Browse Frames
+â”œâ”€â”€ Preview Frame
+â”œâ”€â”€ Purchase Frame
+â”œâ”€â”€ Equip Frame
+â”œâ”€â”€ Unequip Frame
+â”œâ”€â”€ Gift Frame
+â”œâ”€â”€ Animated Frames
+â”œâ”€â”€ Rare Frames
+â””â”€â”€ Frame Bundles
 
 Current Status:
-├── Browse: ✅ Exists
-├── Preview: ❌ Not implemented
-├── Purchase: ❌ Not implemented
-├── Equip: ❌ Not implemented
-├── Unequip: ❌ Not implemented
-├── Gift: ❌ Not implemented
-├── Animated: ❌ Not implemented
-├── Rare: ❌ Not implemented
-└── Bundles: ❌ Not implemented
+â”œâ”€â”€ Browse: âœ… Exists
+â”œâ”€â”€ Preview: â‌Œ Not implemented
+â”œâ”€â”€ Purchase: â‌Œ Not implemented
+â”œâ”€â”€ Equip: â‌Œ Not implemented
+â”œâ”€â”€ Unequip: â‌Œ Not implemented
+â”œâ”€â”€ Gift: â‌Œ Not implemented
+â”œâ”€â”€ Animated: â‌Œ Not implemented
+â”œâ”€â”€ Rare: â‌Œ Not implemented
+â””â”€â”€ Bundles: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Browse → Preview → Buy → Equip
-Current Flow: Browse → (can't buy)
+Correct Flow: Browse â†’ Preview â†’ Buy â†’ Equip
+Current Flow: Browse â†’ (can't buy)
 Broken At: No purchase logic
 Production Impact: MEDIUM
 
@@ -1084,28 +1091,28 @@ FEATURE: Backgrounds Shop
 Purpose: Sell chat/profile backgrounds
 
 Required Functions:
-├── Browse Backgrounds
-├── Preview Background
-├── Purchase Background
-├── Apply Background
-├── Remove Background
-├── Gift Background
-├── Animated Backgrounds
-└── Background Bundles
+â”œâ”€â”€ Browse Backgrounds
+â”œâ”€â”€ Preview Background
+â”œâ”€â”€ Purchase Background
+â”œâ”€â”€ Apply Background
+â”œâ”€â”€ Remove Background
+â”œâ”€â”€ Gift Background
+â”œâ”€â”€ Animated Backgrounds
+â””â”€â”€ Background Bundles
 
 Current Status:
-├── Browse: ✅ Exists
-├── Preview: ❌ Not implemented
-├── Purchase: ❌ Not implemented
-├── Apply: ❌ Not implemented
-├── Remove: ❌ Not implemented
-├── Gift: ❌ Not implemented
-├── Animated: ❌ Not implemented
-└── Bundles: ❌ Not implemented
+â”œâ”€â”€ Browse: âœ… Exists
+â”œâ”€â”€ Preview: â‌Œ Not implemented
+â”œâ”€â”€ Purchase: â‌Œ Not implemented
+â”œâ”€â”€ Apply: â‌Œ Not implemented
+â”œâ”€â”€ Remove: â‌Œ Not implemented
+â”œâ”€â”€ Gift: â‌Œ Not implemented
+â”œâ”€â”€ Animated: â‌Œ Not implemented
+â””â”€â”€ Bundles: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Browse → Preview → Buy → Apply
-Current Flow: Browse → (can't buy)
+Correct Flow: Browse â†’ Preview â†’ Buy â†’ Apply
+Current Flow: Browse â†’ (can't buy)
 Broken At: No purchase logic
 Production Impact: MEDIUM
 
@@ -1115,36 +1122,36 @@ FEATURE: Premium / Subscription
 Purpose: Premium membership
 
 Required Functions:
-├── View Plans
-├── Compare Plans
-├── Subscribe
-├── Cancel Subscription
-├── Restore Purchase
-├── Premium Badge
-├── Premium Features
-├── Billing History
-├── Payment Methods
-├── Trial Period
-├── Upgrade/Downgrade
-└── Family Plan
+â”œâ”€â”€ View Plans
+â”œâ”€â”€ Compare Plans
+â”œâ”€â”€ Subscribe
+â”œâ”€â”€ Cancel Subscription
+â”œâ”€â”€ Restore Purchase
+â”œâ”€â”€ Premium Badge
+â”œâ”€â”€ Premium Features
+â”œâ”€â”€ Billing History
+â”œâ”€â”€ Payment Methods
+â”œâ”€â”€ Trial Period
+â”œâ”€â”€ Upgrade/Downgrade
+â””â”€â”€ Family Plan
 
 Current Status:
-├── View Plans: ✅ Exists
-├── Compare: ❌ Not implemented
-├── Subscribe: ❌ Not implemented
-├── Cancel: ❌ Not implemented
-├── Restore: ❌ Not implemented
-├── Premium Badge: ❌ Not implemented
-├── Premium Features: ❌ Not implemented
-├── Billing: ❌ Not implemented
-├── Payment Methods: ❌ Not implemented
-├── Trial: ❌ Not implemented
-├── Upgrade: ❌ Not implemented
-└── Family: ❌ Not implemented
+â”œâ”€â”€ View Plans: âœ… Exists
+â”œâ”€â”€ Compare: â‌Œ Not implemented
+â”œâ”€â”€ Subscribe: â‌Œ Not implemented
+â”œâ”€â”€ Cancel: â‌Œ Not implemented
+â”œâ”€â”€ Restore: â‌Œ Not implemented
+â”œâ”€â”€ Premium Badge: â‌Œ Not implemented
+â”œâ”€â”€ Premium Features: â‌Œ Not implemented
+â”œâ”€â”€ Billing: â‌Œ Not implemented
+â”œâ”€â”€ Payment Methods: â‌Œ Not implemented
+â”œâ”€â”€ Trial: â‌Œ Not implemented
+â”œâ”€â”€ Upgrade: â‌Œ Not implemented
+â””â”€â”€ Family: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: View Plans → Select → Pay → Get Premium
-Current Flow: View Plans → (can't subscribe)
+Correct Flow: View Plans â†’ Select â†’ Pay â†’ Get Premium
+Current Flow: View Plans â†’ (can't subscribe)
 Broken At: No payment integration
 Production Impact: CRITICAL
 
@@ -1154,35 +1161,35 @@ FEATURE: Payment Processing
 Purpose: Handle real money transactions
 
 Required Functions:
-├── Add Payment Method
-├── Remove Payment Method
-├── Process Payment
-├── Handle Refund
-├── Receipt Generation
-├── Invoice
-├── Tax Calculation
-├── Currency Conversion
-├── Fraud Detection
-├── PCI Compliance
-├── Payment History
-└── Failed Payment Handling
+â”œâ”€â”€ Add Payment Method
+â”œâ”€â”€ Remove Payment Method
+â”œâ”€â”€ Process Payment
+â”œâ”€â”€ Handle Refund
+â”œâ”€â”€ Receipt Generation
+â”œâ”€â”€ Invoice
+â”œâ”€â”€ Tax Calculation
+â”œâ”€â”€ Currency Conversion
+â”œâ”€â”€ Fraud Detection
+â”œâ”€â”€ PCI Compliance
+â”œâ”€â”€ Payment History
+â””â”€â”€ Failed Payment Handling
 
 Current Status:
-├── Add Payment: ❌ Not implemented
-├── Remove: ❌ Not implemented
-├── Process: ❌ Not implemented
-├── Refund: ❌ Not implemented
-├── Receipt: ❌ Not implemented
-├── Invoice: ❌ Not implemented
-├── Tax: ❌ Not implemented
-├── Currency: ❌ Not implemented
-├── Fraud Detection: ❌ Not implemented
-├── PCI: ❌ Not implemented
-├── History: ❌ Not implemented
-└── Failed Handling: ❌ Not implemented
+â”œâ”€â”€ Add Payment: â‌Œ Not implemented
+â”œâ”€â”€ Remove: â‌Œ Not implemented
+â”œâ”€â”€ Process: â‌Œ Not implemented
+â”œâ”€â”€ Refund: â‌Œ Not implemented
+â”œâ”€â”€ Receipt: â‌Œ Not implemented
+â”œâ”€â”€ Invoice: â‌Œ Not implemented
+â”œâ”€â”€ Tax: â‌Œ Not implemented
+â”œâ”€â”€ Currency: â‌Œ Not implemented
+â”œâ”€â”€ Fraud Detection: â‌Œ Not implemented
+â”œâ”€â”€ PCI: â‌Œ Not implemented
+â”œâ”€â”€ History: â‌Œ Not implemented
+â””â”€â”€ Failed Handling: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Add Card → Pay → Receive Item
+Correct Flow: Add Card â†’ Pay â†’ Receive Item
 Current Flow: Non-functional
 Broken At: No payment gateway
 Production Impact: CRITICAL
@@ -1196,35 +1203,35 @@ FEATURE: Push Notifications
 Purpose: Alert users of events
 
 Required Functions:
-├── Register Device Token
-├── Receive Notifications
-├── Display Notification
-├── Tap to Open
-├── Notification Center
-├── Mark as Read
-├── Delete Notification
-├── Notification Settings
-├── Quiet Hours
-├── Notification Types
-├── Badge Count
-└── Clear All
+â”œâ”€â”€ Register Device Token
+â”œâ”€â”€ Receive Notifications
+â”œâ”€â”€ Display Notification
+â”œâ”€â”€ Tap to Open
+â”œâ”€â”€ Notification Center
+â”œâ”€â”€ Mark as Read
+â”œâ”€â”€ Delete Notification
+â”œâ”€â”€ Notification Settings
+â”œâ”€â”€ Quiet Hours
+â”œâ”€â”€ Notification Types
+â”œâ”€â”€ Badge Count
+â””â”€â”€ Clear All
 
 Current Status:
-├── Register Token: ❌ Not implemented
-├── Receive: ❌ No FCM
-├── Display: ❌ Not implemented
-├── Tap to Open: ❌ Not implemented
-├── Center: ✅ Exists
-├── Mark Read: ✅ Exists
-├── Delete: ❌ Not implemented
-├── Settings: ❌ Not implemented
-├── Quiet Hours: ❌ Not implemented
-├── Types: ❌ Not implemented
-├── Badge: ❌ Not implemented
-└── Clear All: ❌ Not implemented
+â”œâ”€â”€ Register Token: â‌Œ Not implemented
+â”œâ”€â”€ Receive: â‌Œ No FCM
+â”œâ”€â”€ Display: â‌Œ Not implemented
+â”œâ”€â”€ Tap to Open: â‌Œ Not implemented
+â”œâ”€â”€ Center: âœ… Exists
+â”œâ”€â”€ Mark Read: âœ… Exists
+â”œâ”€â”€ Delete: â‌Œ Not implemented
+â”œâ”€â”€ Settings: â‌Œ Not implemented
+â”œâ”€â”€ Quiet Hours: â‌Œ Not implemented
+â”œâ”€â”€ Types: â‌Œ Not implemented
+â”œâ”€â”€ Badge: â‌Œ Not implemented
+â””â”€â”€ Clear All: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Event → Send → Receive → Display → Tap → Open
+Correct Flow: Event â†’ Send â†’ Receive â†’ Display â†’ Tap â†’ Open
 Current Flow: No notifications
 Broken At: No FCM integration
 Production Impact: HIGH
@@ -1238,43 +1245,43 @@ FEATURE: App Settings
 Purpose: Configure app behavior
 
 Required Functions:
-├── Language Settings
-├── Theme (Light/Dark)
-├── Font Size
-├── Notifications Settings
-├── Privacy Settings
-├── Data Usage
-├── Download Settings
-├── Account Settings
-├── Help & Support
-├── About
-├── Terms of Service
-├── Privacy Policy
-├── Rate App
-├── Share App
-├── Logout
-└── Delete Account
+â”œâ”€â”€ Language Settings
+â”œâ”€â”€ Theme (Light/Dark)
+â”œâ”€â”€ Font Size
+â”œâ”€â”€ Notifications Settings
+â”œâ”€â”€ Privacy Settings
+â”œâ”€â”€ Data Usage
+â”œâ”€â”€ Download Settings
+â”œâ”€â”€ Account Settings
+â”œâ”€â”€ Help & Support
+â”œâ”€â”€ About
+â”œâ”€â”€ Terms of Service
+â”œâ”€â”€ Privacy Policy
+â”œâ”€â”€ Rate App
+â”œâ”€â”€ Share App
+â”œâ”€â”€ Logout
+â””â”€â”€ Delete Account
 
 Current Status:
-├── Language: ❌ Not implemented
-├── Theme: ✅ Dark only
-├── Font Size: ❌ Not implemented
-├── Notifications: ❌ Not implemented
-├── Privacy: ❌ Not implemented
-├── Data Usage: ❌ Not implemented
-├── Download: ❌ Not implemented
-├── Account: ❌ Not implemented
-├── Help: ❌ Not implemented
-├── About: ❌ Not implemented
-├── Terms: ❌ Not implemented
-├── Privacy Policy: ❌ Not implemented
-├── Rate App: ❌ Not implemented
-├── Share App: ❌ Not implemented
-├── Logout: ❌ Not implemented
-└── Delete Account: ❌ Not implemented
+â”œâ”€â”€ Language: â‌Œ Not implemented
+â”œâ”€â”€ Theme: âœ… Dark only
+â”œâ”€â”€ Font Size: â‌Œ Not implemented
+â”œâ”€â”€ Notifications: â‌Œ Not implemented
+â”œâ”€â”€ Privacy: â‌Œ Not implemented
+â”œâ”€â”€ Data Usage: â‌Œ Not implemented
+â”œâ”€â”€ Download: â‌Œ Not implemented
+â”œâ”€â”€ Account: â‌Œ Not implemented
+â”œâ”€â”€ Help: â‌Œ Not implemented
+â”œâ”€â”€ About: â‌Œ Not implemented
+â”œâ”€â”€ Terms: â‌Œ Not implemented
+â”œâ”€â”€ Privacy Policy: â‌Œ Not implemented
+â”œâ”€â”€ Rate App: â‌Œ Not implemented
+â”œâ”€â”€ Share App: â‌Œ Not implemented
+â”œâ”€â”€ Logout: â‌Œ Not implemented
+â””â”€â”€ Delete Account: â‌Œ Not implemented
 
 Flow Analysis:
-Correct Flow: Open Settings → Change → Save → Apply
+Correct Flow: Open Settings â†’ Change â†’ Save â†’ Apply
 Current Flow: No settings
 Broken At: No settings screen
 Production Impact: MEDIUM
@@ -1285,38 +1292,38 @@ SECTION 10: FEATURE COMPLETENESS MATRIX
 
 Feature Name                    | Completion | Missing | Ready | Priority
 --------------------------------|------------|---------|-------|----------
-User Registration               |    10%     |   8/9   |  ❌   | CRITICAL
-User Login                      |    10%     |   8/9   |  ❌   | CRITICAL
-User Profile                    |    15%     |  14/17  |  ❌   | HIGH
-Learning Path                   |    30%     |   9/13  |  ❌   | CRITICAL
-Lessons                         |    40%     |   9/15  |  ❌   | CRITICAL
-Flashcards                      |    15%     |  10/13  |  ❌   | MEDIUM
-Audio Lessons                   |    10%     |  12/13  |  ❌   | HIGH
-Speaking Practice               |    10%     |  10/11  |  ❌   | HIGH
-Pronunciation                   |    08%     |  11/12  |  ❌   | HIGH
-Quizzes                         |    35%     |   8/13  |  ❌   | MEDIUM
-Goethe Exam                     |    07%     |  12/13  |  ❌   | HIGH
-Progress Tracking               |    08%     |  11/12  |  ❌   | CRITICAL
-XP and Leveling                 |    10%     |   9/10  |  ❌   | HIGH
-Achievements                    |    11%     |   8/9   |  ❌   | MEDIUM
-Daily Streaks                   |    05%     |   8/9   |  ❌   | MEDIUM
-Daily Missions                  |    10%     |   9/10  |  ❌   | MEDIUM
-Leaderboard                     |    00%     |  10/10  |  ❌   | LOW
-Community Feed                  |    13%     |  14/16  |  ❌   | HIGH
-Friends System                  |    09%     |  10/11  |  ❌   | MEDIUM
-Messaging                       |    07%     |  12/13  |  ❌   | MEDIUM
-Live Learning                   |    00%     |  15/15  |  ❌   | HIGH
-AI Tutor                        |    08%     |  11/12  |  ❌   | HIGH
-AI Coach                        |    00%     |  10/10  |  ❌   | HIGH
-Store                           |    17%     |  10/12  |  ❌   | CRITICAL
-Wallet/Currency                 |    09%     |  10/11  |  ❌   | CRITICAL
-Avatar Shop                     |    11%     |   8/9   |  ❌   | MEDIUM
-Frames Workshop                 |    11%     |   8/9   |  ❌   | MEDIUM
-Backgrounds Shop                |    11%     |   7/8   |  ❌   | MEDIUM
-Premium/Subscription            |    08%     |  11/12  |  ❌   | CRITICAL
-Payment Processing              |    00%     |  11/11  |  ❌   | CRITICAL
-Push Notifications              |    09%     |  10/11  |  ❌   | HIGH
-App Settings                    |    06%     |  15/16  |  ❌   | MEDIUM
+User Registration               |    10%     |   8/9   |  â‌Œ   | CRITICAL
+User Login                      |    10%     |   8/9   |  â‌Œ   | CRITICAL
+User Profile                    |    15%     |  14/17  |  â‌Œ   | HIGH
+Learning Path                   |    30%     |   9/13  |  â‌Œ   | CRITICAL
+Lessons                         |    40%     |   9/15  |  â‌Œ   | CRITICAL
+Flashcards                      |    15%     |  10/13  |  â‌Œ   | MEDIUM
+Audio Lessons                   |    10%     |  12/13  |  â‌Œ   | HIGH
+Speaking Practice               |    10%     |  10/11  |  â‌Œ   | HIGH
+Pronunciation                   |    08%     |  11/12  |  â‌Œ   | HIGH
+Quizzes                         |    35%     |   8/13  |  â‌Œ   | MEDIUM
+Goethe Exam                     |    07%     |  12/13  |  â‌Œ   | HIGH
+Progress Tracking               |    08%     |  11/12  |  â‌Œ   | CRITICAL
+XP and Leveling                 |    10%     |   9/10  |  â‌Œ   | HIGH
+Achievements                    |    11%     |   8/9   |  â‌Œ   | MEDIUM
+Daily Streaks                   |    05%     |   8/9   |  â‌Œ   | MEDIUM
+Daily Missions                  |    10%     |   9/10  |  â‌Œ   | MEDIUM
+Leaderboard                     |    00%     |  10/10  |  â‌Œ   | LOW
+Community Feed                  |    13%     |  14/16  |  â‌Œ   | HIGH
+Friends System                  |    09%     |  10/11  |  â‌Œ   | MEDIUM
+Messaging                       |    07%     |  12/13  |  â‌Œ   | MEDIUM
+Live Learning                   |    00%     |  15/15  |  â‌Œ   | HIGH
+AI Tutor                        |    08%     |  11/12  |  â‌Œ   | HIGH
+AI Coach                        |    00%     |  10/10  |  â‌Œ   | HIGH
+Store                           |    17%     |  10/12  |  â‌Œ   | CRITICAL
+Wallet/Currency                 |    09%     |  10/11  |  â‌Œ   | CRITICAL
+Avatar Shop                     |    11%     |   8/9   |  â‌Œ   | MEDIUM
+Frames Workshop                 |    11%     |   8/9   |  â‌Œ   | MEDIUM
+Backgrounds Shop                |    11%     |   7/8   |  â‌Œ   | MEDIUM
+Premium/Subscription            |    08%     |  11/12  |  â‌Œ   | CRITICAL
+Payment Processing              |    00%     |  11/11  |  â‌Œ   | CRITICAL
+Push Notifications              |    09%     |  10/11  |  â‌Œ   | HIGH
+App Settings                    |    06%     |  15/16  |  â‌Œ   | MEDIUM
 
 OVERALL AVERAGE COMPLETION: 12%
 
@@ -1420,3 +1427,4 @@ RECOMMENDATION: Do NOT launch until all CRITICAL blockers are resolved.
 ================================================================================
                     END OF FEATURE SPECIFICATION
 ================================================================================
+

@@ -1,4 +1,3 @@
-
 class XpSystem {
   static const int xpPerLesson = 50;
   static const int xpPerQuiz = 25;
@@ -24,9 +23,19 @@ class XpSystem {
 
   static String getLevelTitle(int userLevel) {
     const levels = {
-      100: 'Language Master', 90: 'Sage', 80: 'Polyglot', 70: 'Linguist',
-      60: 'Master', 50: 'Scholar', 40: 'Expert', 30: 'Advanced',
-      20: 'Intermediate', 15: 'Learner', 10: 'Explorer', 5: 'Novice', 1: 'Beginner',
+      100: 'Language Master',
+      90: 'Sage',
+      80: 'Polyglot',
+      70: 'Linguist',
+      60: 'Master',
+      50: 'Scholar',
+      40: 'Expert',
+      30: 'Advanced',
+      20: 'Intermediate',
+      15: 'Learner',
+      10: 'Explorer',
+      5: 'Novice',
+      1: 'Beginner',
     };
     for (final entry in levels.entries) {
       if (userLevel >= entry.key) return entry.value;

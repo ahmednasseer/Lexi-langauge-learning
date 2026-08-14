@@ -46,7 +46,8 @@ class SpeakingProgress {
     return SpeakingProgress(
       totalSpeakingMinutes: totalSpeakingMinutes ?? this.totalSpeakingMinutes,
       totalWordsSpoken: totalWordsSpoken ?? this.totalWordsSpoken,
-      averagePronunciationScore: averagePronunciationScore ?? this.averagePronunciationScore,
+      averagePronunciationScore:
+          averagePronunciationScore ?? this.averagePronunciationScore,
       averageFluencyScore: averageFluencyScore ?? this.averageFluencyScore,
       totalSessions: totalSessions ?? this.totalSessions,
       currentStreak: currentStreak ?? this.currentStreak,
@@ -54,7 +55,8 @@ class SpeakingProgress {
       totalXpEarned: totalXpEarned ?? this.totalXpEarned,
       currentLevel: currentLevel ?? this.currentLevel,
       commonMistakes: commonMistakes ?? this.commonMistakes,
-      scenarioPracticeCount: scenarioPracticeCount ?? this.scenarioPracticeCount,
+      scenarioPracticeCount:
+          scenarioPracticeCount ?? this.scenarioPracticeCount,
       weeklyProgress: weeklyProgress ?? this.weeklyProgress,
     );
   }
@@ -74,24 +76,32 @@ class SpeakingProgress {
     'weeklyProgress': weeklyProgress.map((w) => w.toJson()).toList(),
   };
 
-  factory SpeakingProgress.fromJson(Map<String, dynamic> json) => SpeakingProgress(
-    totalSpeakingMinutes: json['totalSpeakingMinutes'] ?? 0,
-    totalWordsSpoken: json['totalWordsSpoken'] ?? 0,
-    averagePronunciationScore: (json['averagePronunciationScore'] ?? 0).toDouble(),
-    averageFluencyScore: (json['averageFluencyScore'] ?? 0).toDouble(),
-    totalSessions: json['totalSessions'] ?? 0,
-    currentStreak: json['currentStreak'] ?? 0,
-    longestStreak: json['longestStreak'] ?? 0,
-    totalXpEarned: json['totalXpEarned'] ?? 0,
-    currentLevel: json['currentLevel'] ?? 'A1',
-    commonMistakes: (json['commonMistakes'] as List?)
-        ?.map((m) => MistakePattern.fromJson(m))
-        .toList() ?? [],
-    scenarioPracticeCount: Map<String, int>.from(json['scenarioPracticeCount'] ?? {}),
-    weeklyProgress: (json['weeklyProgress'] as List?)
-        ?.map((w) => WeeklyProgress.fromJson(w))
-        .toList() ?? [],
-  );
+  factory SpeakingProgress.fromJson(Map<String, dynamic> json) =>
+      SpeakingProgress(
+        totalSpeakingMinutes: json['totalSpeakingMinutes'] ?? 0,
+        totalWordsSpoken: json['totalWordsSpoken'] ?? 0,
+        averagePronunciationScore: (json['averagePronunciationScore'] ?? 0)
+            .toDouble(),
+        averageFluencyScore: (json['averageFluencyScore'] ?? 0).toDouble(),
+        totalSessions: json['totalSessions'] ?? 0,
+        currentStreak: json['currentStreak'] ?? 0,
+        longestStreak: json['longestStreak'] ?? 0,
+        totalXpEarned: json['totalXpEarned'] ?? 0,
+        currentLevel: json['currentLevel'] ?? 'A1',
+        commonMistakes:
+            (json['commonMistakes'] as List?)
+                ?.map((m) => MistakePattern.fromJson(m))
+                .toList() ??
+            [],
+        scenarioPracticeCount: Map<String, int>.from(
+          json['scenarioPracticeCount'] ?? {},
+        ),
+        weeklyProgress:
+            (json['weeklyProgress'] as List?)
+                ?.map((w) => WeeklyProgress.fromJson(w))
+                .toList() ??
+            [],
+      );
 
   factory SpeakingProgress.empty() => const SpeakingProgress(
     totalSpeakingMinutes: 0,
@@ -242,32 +252,35 @@ class SpeakingChallenge {
     'reward': reward.toJson(),
   };
 
-  factory SpeakingChallenge.fromJson(Map<String, dynamic> json) => SpeakingChallenge(
-    id: json['id'] ?? '',
-    title: json['title'] ?? '',
-    description: json['description'] ?? '',
-    type: ChallengeType.values.firstWhere(
-      (t) => t.name == json['type'],
-      orElse: () => ChallengeType.daily,
-    ),
-    targetDays: json['targetDays'] ?? 1,
-    completedDays: json['completedDays'] ?? 0,
-    currentDay: json['currentDay'] ?? 1,
-    isActive: json['isActive'] ?? false,
-    startDate: DateTime.parse(json['startDate'] ?? DateTime.now().toIso8601String()),
-    endDate: json['endDate'] != null ? DateTime.parse(json['endDate']) : null,
-    days: (json['days'] as List?)
-        ?.map((d) => ChallengeDay.fromJson(d))
-        .toList() ?? [],
-    reward: ChallengeReward.fromJson(json['reward'] ?? {}),
-  );
+  factory SpeakingChallenge.fromJson(Map<String, dynamic> json) =>
+      SpeakingChallenge(
+        id: json['id'] ?? '',
+        title: json['title'] ?? '',
+        description: json['description'] ?? '',
+        type: ChallengeType.values.firstWhere(
+          (t) => t.name == json['type'],
+          orElse: () => ChallengeType.daily,
+        ),
+        targetDays: json['targetDays'] ?? 1,
+        completedDays: json['completedDays'] ?? 0,
+        currentDay: json['currentDay'] ?? 1,
+        isActive: json['isActive'] ?? false,
+        startDate: DateTime.parse(
+          json['startDate'] ?? DateTime.now().toIso8601String(),
+        ),
+        endDate: json['endDate'] != null
+            ? DateTime.parse(json['endDate'])
+            : null,
+        days:
+            (json['days'] as List?)
+                ?.map((d) => ChallengeDay.fromJson(d))
+                .toList() ??
+            [],
+        reward: ChallengeReward.fromJson(json['reward'] ?? {}),
+      );
 }
 
-enum ChallengeType {
-  daily,
-  weekly,
-  monthly,
-}
+enum ChallengeType { daily, weekly, monthly }
 
 extension ChallengeTypeExtension on ChallengeType {
   String get displayName {
@@ -321,7 +334,9 @@ class ChallengeDay {
     ),
     targetMinutes: json['targetMinutes'] ?? 5,
     isCompleted: json['isCompleted'] ?? false,
-    completedAt: json['completedAt'] != null ? DateTime.parse(json['completedAt']) : null,
+    completedAt: json['completedAt'] != null
+        ? DateTime.parse(json['completedAt'])
+        : null,
   );
 }
 
@@ -330,21 +345,14 @@ class ChallengeReward {
   final int gems;
   final String? badgeId;
 
-  const ChallengeReward({
-    required this.xp,
-    required this.gems,
-    this.badgeId,
-  });
+  const ChallengeReward({required this.xp, required this.gems, this.badgeId});
 
-  Map<String, dynamic> toJson() => {
-    'xp': xp,
-    'gems': gems,
-    'badgeId': badgeId,
-  };
+  Map<String, dynamic> toJson() => {'xp': xp, 'gems': gems, 'badgeId': badgeId};
 
-  factory ChallengeReward.fromJson(Map<String, dynamic> json) => ChallengeReward(
-    xp: json['xp'] ?? 0,
-    gems: json['gems'] ?? 0,
-    badgeId: json['badgeId'],
-  );
+  factory ChallengeReward.fromJson(Map<String, dynamic> json) =>
+      ChallengeReward(
+        xp: json['xp'] ?? 0,
+        gems: json['gems'] ?? 0,
+        badgeId: json['badgeId'],
+      );
 }

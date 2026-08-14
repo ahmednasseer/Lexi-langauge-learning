@@ -18,10 +18,7 @@ class GroupsTab extends StatelessWidget {
           // My Groups
           const Text(
             'My Groups',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
 
@@ -32,10 +29,7 @@ class GroupsTab extends StatelessWidget {
           // Discover Groups
           const Text(
             'Discover Groups',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
 
@@ -70,18 +64,12 @@ class GroupsTab extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               'No groups joined yet',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade600,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
             ),
             const SizedBox(height: 8),
             Text(
               'Join a group to connect with other learners!',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey.shade500,
-              ),
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
               textAlign: TextAlign.center,
             ),
           ],

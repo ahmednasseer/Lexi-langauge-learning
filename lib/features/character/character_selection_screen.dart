@@ -7,7 +7,8 @@ class CharacterSelectionScreen extends StatefulWidget {
   const CharacterSelectionScreen({super.key});
 
   @override
-  State<CharacterSelectionScreen> createState() => _CharacterSelectionScreenState();
+  State<CharacterSelectionScreen> createState() =>
+      _CharacterSelectionScreenState();
 }
 
 class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
@@ -125,88 +126,101 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
     );
   }
 
-  Widget _buildCharacterCard(_CharacterData character, bool isSelected, int index) {
+  Widget _buildCharacterCard(
+    _CharacterData character,
+    bool isSelected,
+    int index,
+  ) {
     return GestureDetector(
-      onTap: () => setState(() => _selectedCharacter = character.name),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        decoration: BoxDecoration(
-          gradient: isSelected
-              ? LinearGradient(
-                  colors: character.bgGradient,
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                )
-              : null,
-          color: isSelected ? null : AppColors.surface,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected ? character.bgGradient.first : AppColors.border,
-            width: isSelected ? 2 : 1,
-          ),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: character.bgGradient.first.withValues(alpha: 0.3),
-                    blurRadius: 20,
-                    spreadRadius: -5,
-                  ),
-                ]
-              : null,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [
-                    character.bgGradient.first.withValues(alpha: 0.3),
-                    character.bgGradient.last.withValues(alpha: 0.3),
-                  ],
-                ),
-                border: Border.all(
-                  color: isSelected ? Colors.white.withValues(alpha: 0.5) : AppColors.border,
-                  width: 2,
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  character.emoji,
-                  style: const TextStyle(fontSize: 40),
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              character.name,
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: isSelected ? Colors.white : AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              character.description,
-              style: GoogleFonts.poppins(
-                fontSize: 12,
+          onTap: () => setState(() => _selectedCharacter = character.name),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            decoration: BoxDecoration(
+              gradient: isSelected
+                  ? LinearGradient(
+                      colors: character.bgGradient,
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
+                  : null,
+              color: isSelected ? null : AppColors.surface,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
                 color: isSelected
-                    ? Colors.white.withValues(alpha: 0.8)
-                    : AppColors.textSecondary,
+                    ? character.bgGradient.first
+                    : AppColors.border,
+                width: isSelected ? 2 : 1,
               ),
+              boxShadow: isSelected
+                  ? [
+                      BoxShadow(
+                        color: character.bgGradient.first.withValues(
+                          alpha: 0.3,
+                        ),
+                        blurRadius: 20,
+                        spreadRadius: -5,
+                      ),
+                    ]
+                  : null,
             ),
-            if (isSelected) ...[
-              const SizedBox(height: 8),
-              const Icon(Icons.check_circle, color: Colors.white, size: 22),
-            ],
-          ],
-        ),
-      ),
-    ).animate().fadeIn(delay: Duration(milliseconds: 200 + index * 100)).scale(begin: const Offset(0.9, 0.9));
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [
+                        character.bgGradient.first.withValues(alpha: 0.3),
+                        character.bgGradient.last.withValues(alpha: 0.3),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: isSelected
+                          ? Colors.white.withValues(alpha: 0.5)
+                          : AppColors.border,
+                      width: 2,
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      character.emoji,
+                      style: const TextStyle(fontSize: 40),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  character.name,
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: isSelected ? Colors.white : AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  character.description,
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    color: isSelected
+                        ? Colors.white.withValues(alpha: 0.8)
+                        : AppColors.textSecondary,
+                  ),
+                ),
+                if (isSelected) ...[
+                  const SizedBox(height: 8),
+                  const Icon(Icons.check_circle, color: Colors.white, size: 22),
+                ],
+              ],
+            ),
+          ),
+        )
+        .animate()
+        .fadeIn(delay: Duration(milliseconds: 200 + index * 100))
+        .scale(begin: const Offset(0.9, 0.9));
   }
 
   Widget _buildSelectButton() {
@@ -222,7 +236,9 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                     content: Text('تم اختيار $_selectedCharacter!'),
                     backgroundColor: AppColors.success,
                     behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 );
               },
@@ -239,7 +255,9 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
           style: GoogleFonts.poppins(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: _selectedCharacter == null ? AppColors.textHint : Colors.white,
+            color: _selectedCharacter == null
+                ? AppColors.textHint
+                : Colors.white,
           ),
         ),
       ),

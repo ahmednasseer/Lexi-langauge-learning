@@ -81,10 +81,7 @@ class DailyStreakScreen extends StatelessWidget {
       child: Center(
         child: Column(
           children: [
-            const Text(
-              '🔥',
-              style: TextStyle(fontSize: 72),
-            ),
+            const Text('🔥', style: TextStyle(fontSize: 72)),
             const SizedBox(height: 16),
             Text(
               '45 يوم متتالي',
@@ -148,7 +145,9 @@ class DailyStreakScreen extends StatelessWidget {
                       color: day.isActive ? null : AppColors.surfaceLight,
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: day.isActive ? AppColors.streak : AppColors.border,
+                        color: day.isActive
+                            ? AppColors.streak
+                            : AppColors.border,
                         width: day.isActive ? 2 : 1,
                       ),
                       boxShadow: day.isActive
@@ -162,7 +161,11 @@ class DailyStreakScreen extends StatelessWidget {
                     ),
                     child: Center(
                       child: day.isActive
-                          ? const Icon(Icons.check, color: Colors.white, size: 20)
+                          ? const Icon(
+                              Icons.check,
+                              color: Colors.white,
+                              size: 20,
+                            )
                           : Text(
                               day.abbr[0],
                               style: GoogleFonts.poppins(
@@ -178,7 +181,9 @@ class DailyStreakScreen extends StatelessWidget {
                     day.abbr,
                     style: GoogleFonts.poppins(
                       fontSize: 11,
-                      color: day.isActive ? AppColors.streak : AppColors.textHint,
+                      color: day.isActive
+                          ? AppColors.streak
+                          : AppColors.textHint,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -301,10 +306,17 @@ class DailyStreakScreen extends StatelessWidget {
           ),
         ],
       ),
-    ).animate().fadeIn(delay: Duration(milliseconds: 700 + _statLabels.indexOf(label) * 80));
+    ).animate().fadeIn(
+      delay: Duration(milliseconds: 700 + _statLabels.indexOf(label) * 80),
+    );
   }
 
-  static const _statLabels = ['أطول متسلسلة', 'المجموع الكلي', 'معدل هذا الشهر', 'نقاط المتسلسلة'];
+  static const _statLabels = [
+    'أطول متسلسلة',
+    'المجموع الكلي',
+    'معدل هذا الشهر',
+    'نقاط المتسلسلة',
+  ];
 }
 
 class _DayData {

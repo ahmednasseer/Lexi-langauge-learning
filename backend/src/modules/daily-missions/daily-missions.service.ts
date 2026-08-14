@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
 
 interface DailyMission {
@@ -45,21 +45,30 @@ export class DailyMissionsService {
 
     const createdMissions = await Promise.all(
       defaultMissions.map(async (mission) => {
-        return this.prisma.dailyMission.create({
-          data: {
-            userId,
-            missionId: mission.id,
-            title: mission.title,
-            description: mission.description,
-            type: mission.type,
-            target: mission.target,
-            progress: 0,
-            rewardXp: mission.rewardXp,
-            rewardGems: mission.rewardGems,
-            icon: mission.icon,
-            date,
-          },
-        });
+        const data = {
+          userId,
+          missionId: mission.id,
+          title: mission.title,
+          description: mission.description,
+          type: mission.type,
+          target: mission.target,
+          progress: 0,
+          rewardXp: mission.rewardXp,
+          rewardGems: mission.rewardGems,
+          icon: mission.icon,
+          date,
+        };
+        try {
+          return await this.prisma.dailyMission.create({ data });
+        } catch (e: any) {
+          // Concurrent seed race (P2002) — mission already exists for this day.
+          if (e?.code === 'P2002') {
+            return this.prisma.dailyMission.findFirstOrThrow({
+              where: { userId, missionId: mission.id, date },
+            });
+          }
+          throw e;
+        }
       }),
     );
 
@@ -96,61 +105,119 @@ export class DailyMissionsService {
   }
 
   async claimReward(userId: string, missionId: string) {
-    const mission = await this.prisma.dailyMission.findFirst({
-      where: {
-        id: missionId,
-        userId,
-        isCompleted: true,
-        isClaimed: false,
-      },
+    // Atomic: only the first request that flips isClaimed false->true wins.
+    return this.prisma.$transaction(async (tx) => {
+      const mission = await tx.dailyMission.findFirst({
+        where: {
+          id: missionId,
+          userId,
+          isCompleted: true,
+          isClaimed: false,
+        },
+      });
+
+      if (!mission) {
+        throw new BadRequestException('Mission not found or already claimed');
+      }
+
+      // Conditional update acts as the concurrency/idempotency gate.
+      const claimed = await tx.dailyMission.updateMany({
+        where: { id: missionId, userId, isClaimed: false, isCompleted: true },
+        data: { isClaimed: true },
+      });
+
+      if (claimed.count === 0) {
+        throw new BadRequestException('Mission reward already claimed');
+      }
+
+      await tx.user.update({
+        where: { id: userId },
+        data: {
+          totalXp: { increment: mission.rewardXp },
+          xp: { increment: mission.rewardXp },
+        },
+      });
+
+      if (mission.rewardGems > 0) {
+        await tx.gemsWallet.upsert({
+          where: { userId },
+          create: { userId, gems: 100 },
+          update: { gems: { increment: mission.rewardGems } },
+        });
+
+        await tx.transaction.create({
+          data: {
+            userId,
+            type: 'reward',
+            amount: mission.rewardGems,
+            description: `Mission reward: ${mission.title}`,
+          },
+        });
+      }
+
+      return {
+        xp: mission.rewardXp,
+        gems: mission.rewardGems,
+      };
     });
-
-    if (!mission) {
-      throw new Error('Mission not found or already claimed');
-    }
-
-    await this.prisma.dailyMission.update({
-      where: { id: missionId },
-      data: { isClaimed: true },
-    });
-
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: {
-        totalXp: { increment: mission.rewardXp },
-      },
-    });
-
-    return {
-      xp: mission.rewardXp,
-      gems: mission.rewardGems,
-    };
   }
 
   async claimDailyBonus(userId: string) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    const todayDate = new Date(today.toISOString().split('T')[0]);
 
-    const missions = await this.prisma.dailyMission.findMany({
-      where: {
-        userId,
-        date: today,
-      },
+    // Atomic: the @@unique([userId, date]) DailyBonusClaim row guarantees each
+    // user can only receive the bonus once per day.
+    return this.prisma.$transaction(async (tx) => {
+      const missions = await tx.dailyMission.findMany({
+        where: {
+          userId,
+          date: today,
+        },
+      });
+
+      const allCompleted = missions.length > 0 && missions.every((m) => m.isCompleted);
+      if (!allCompleted) {
+        throw new BadRequestException('Not all missions completed');
+      }
+
+      try {
+        await tx.dailyBonusClaim.create({
+          data: { userId, date: todayDate },
+        });
+      } catch (e: any) {
+        if (e?.code === 'P2002') {
+          throw new BadRequestException('Daily bonus already claimed today');
+        }
+        throw e;
+      }
+
+      await tx.user.update({
+        where: { id: userId },
+        data: {
+          totalXp: { increment: 100 },
+          xp: { increment: 100 },
+        },
+      });
+
+      await tx.gemsWallet.upsert({
+        where: { userId },
+        create: { userId, gems: 100 },
+        update: { gems: { increment: 20 } },
+      });
+
+      await tx.transaction.create({
+        data: {
+          userId,
+          type: 'reward',
+          amount: 20,
+          description: 'Daily bonus',
+        },
+      });
+
+      return { xp: 100, gems: 20 };
     });
-
-    const allCompleted = missions.every((m) => m.isCompleted);
-    if (!allCompleted) {
-      throw new Error('Not all missions completed');
-    }
-
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: {
-        totalXp: { increment: 100 },
-      },
-    });
-
-    return { xp: 100, gems: 20 };
   }
 
   async getStats(userId: string) {

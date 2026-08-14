@@ -1,20 +1,18 @@
 import '../../core/services/api_service.dart';
 import '../../core/services/auth_service.dart';
-import 'models/passport.dart';
+import 'package:lexi/features/passport/models/passport.dart';
 
 class PassportRepository {
   final ApiService _api = ApiService();
-
   Future<Passport> getPassport() async {
-    try {
-      final result = await _api.getGrowthStats();
-      if (result.isSuccess && result.data != null) {
-        final data = result.data!;
-        if (data['passport'] != null) {
-          return Passport.fromJson(data['passport'] as Map<String, dynamic>);
-        }
-      }
-    } catch (_) {}
+    final result = await _api.getGrowthStats();
+    if (!result.isSuccess) {
+      throw Exception(result.error ?? 'Failed to load passport');
+    }
+    final data = result.data!;
+    if (data['passport'] != null) {
+      return Passport.fromJson(data['passport'] as Map<String, dynamic>);
+    }
     return _localPassport();
   }
 

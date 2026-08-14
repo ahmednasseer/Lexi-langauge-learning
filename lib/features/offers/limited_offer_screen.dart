@@ -223,10 +223,7 @@ class _LimitedOfferScreenState extends State<LimitedOfferScreen> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             gradient: LinearGradient(
-              colors: [
-                AppColors.surface,
-                AppColors.surfaceLight,
-              ],
+              colors: [AppColors.surface, AppColors.surfaceLight],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -243,10 +240,7 @@ class _LimitedOfferScreenState extends State<LimitedOfferScreen> {
             ],
           ),
           child: const Center(
-            child: Text(
-              '🎁',
-              style: TextStyle(fontSize: 72),
-            ),
+            child: Text('🎁', style: TextStyle(fontSize: 72)),
           ),
         ),
         Positioned(
@@ -277,10 +271,10 @@ class _LimitedOfferScreenState extends State<LimitedOfferScreen> {
         ),
       ],
     ).animate().scale(
-          delay: 300.ms,
-          duration: 500.ms,
-          curve: Curves.easeOutBack,
-        );
+      delay: 300.ms,
+      duration: 500.ms,
+      curve: Curves.easeOutBack,
+    );
   }
 
   Widget _buildOfferDescription() {
@@ -299,9 +293,7 @@ class _LimitedOfferScreenState extends State<LimitedOfferScreen> {
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: AppColors.gold.withValues(alpha: 0.2),
-          ),
+          border: Border.all(color: AppColors.gold.withValues(alpha: 0.2)),
         ),
         child: Text(
           'احصل على صندوق الجوائز بأفضل عملية شراء لك!',
@@ -340,61 +332,57 @@ class _LimitedOfferScreenState extends State<LimitedOfferScreen> {
           ...List.generate(prizes.length, (index) {
             final prize = prizes[index];
             return Container(
-              margin: const EdgeInsets.only(bottom: 10),
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AppColors.border),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: AppColors.surfaceLight,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Center(
-                      child: Text(
-                        prize['icon']!,
-                        style: const TextStyle(fontSize: 22),
+                  margin: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceLight,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Center(
+                          child: Text(
+                            prize['icon']!,
+                            style: const TextStyle(fontSize: 22),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          prize['title']!,
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
-                          ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              prize['title']!,
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              prize['subtitle']!,
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          prize['subtitle']!,
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                      Icon(Icons.check_circle, color: AppColors.gold, size: 22),
+                    ],
                   ),
-                  Icon(
-                    Icons.check_circle,
-                    color: AppColors.gold,
-                    size: 22,
-                  ),
-                ],
-              ),
-            )
+                )
                 .animate()
                 .fadeIn(
                   delay: Duration(milliseconds: 500 + index * 100),

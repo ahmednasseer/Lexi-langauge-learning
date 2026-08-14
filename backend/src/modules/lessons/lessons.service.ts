@@ -19,7 +19,7 @@ export class LessonsService {
 
     return this.prisma.lesson.findMany({
       where,
-      include: { _count: { select: { vocabulary: true, quiz: true } } },
+      include: { vocabulary: true, grammar: true, quiz: true },
       orderBy: { orderIndex: 'asc' },
     });
   }
@@ -31,6 +31,13 @@ export class LessonsService {
     });
     if (!lesson) throw new NotFoundException('Lesson not found');
     return lesson;
+  }
+
+  async getQuestionsForLevel(level: string) {
+    return this.prisma.quizQuestion.findMany({
+      where: { lesson: { level: level.toUpperCase() } },
+      orderBy: { orderIndex: 'asc' },
+    });
   }
 
   async createLesson(data: {

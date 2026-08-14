@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import '../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class MicrophoneAnimation extends StatefulWidget {
   final bool isActive;
   final VoidCallback? onPressed;
   final double size;
-
   const MicrophoneAnimation({
     super.key,
     required this.isActive,
     this.onPressed,
     this.size = 120,
   });
-
   @override
   State<MicrophoneAnimation> createState() => _MicrophoneAnimationState();
 }
@@ -24,29 +22,24 @@ class _MicrophoneAnimationState extends State<MicrophoneAnimation>
   late AnimationController _waveController;
   late Animation<double> _pulseAnimation;
   late Animation<double> _waveAnimation;
-
   @override
   void initState() {
     super.initState();
-
     _pulseController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-
     _waveController = AnimationController(
       duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
-
     _pulseAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
-
-    _waveAnimation = Tween<double>(begin: 0.0, end: 2 * math.pi).animate(
-      CurvedAnimation(parent: _waveController, curve: Curves.linear),
-    );
-
+    _waveAnimation = Tween<double>(
+      begin: 0.0,
+      end: 2 * math.pi,
+    ).animate(CurvedAnimation(parent: _waveController, curve: Curves.linear));
     if (widget.isActive) {
       _startAnimation();
     }
@@ -102,10 +95,7 @@ class _MicrophoneAnimationState extends State<MicrophoneAnimation>
                         Colors.blue.shade600,
                         Colors.purple.shade400,
                       ]
-                    : [
-                        AppColors.border,
-                        AppColors.borderLight,
-                      ],
+                    : [AppColors.border, AppColors.borderLight],
               ),
               boxShadow: widget.isActive
                   ? [
@@ -143,18 +133,14 @@ class _MicrophoneAnimationState extends State<MicrophoneAnimation>
 class _WavePainter extends CustomPainter {
   final double animation;
   final bool isActive;
-
   _WavePainter({required this.animation, required this.isActive});
-
   @override
   void paint(Canvas canvas, Size size) {
     if (!isActive) return;
-
     final center = Offset(size.width / 2, size.height / 2);
     final paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
-
     for (int i = 0; i < 3; i++) {
       final radius = (size.width / 2) + (i * 15.0) + (animation * 10 % 15);
       final opacity = (1.0 - (i * 0.3)).clamp(0.0, 1.0);
@@ -164,5 +150,6 @@ class _WavePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_WavePainter oldDelegate) => animation != oldDelegate.animation;
+  bool shouldRepaint(_WavePainter oldDelegate) =>
+      animation != oldDelegate.animation;
 }

@@ -143,11 +143,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
           children: [
             _buildHeader(),
             _buildProgressSection(),
-            Expanded(
-              child: Center(
-                child: _buildFlashcard(),
-              ),
-            ),
+            Expanded(child: Center(child: _buildFlashcard())),
             _buildActionButtons(),
             const SizedBox(height: 24),
           ],
@@ -169,10 +165,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
               decoration: BoxDecoration(
                 color: AppColors.surface,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: AppColors.border,
-                  width: 1,
-                ),
+                border: Border.all(color: AppColors.border, width: 1),
               ),
               child: const Icon(
                 Icons.close,
@@ -243,28 +236,28 @@ class _FlashcardScreenState extends State<FlashcardScreen>
 
   Widget _buildFlashcard() {
     return GestureDetector(
-      onTap: _flipCard,
-      child: AnimatedBuilder(
-        animation: _flipAnimation,
-        builder: (context, child) {
-          final angle = _flipAnimation.value * math.pi;
-          final isFront = angle < math.pi / 2;
-          return Transform(
-            alignment: Alignment.center,
-            transform: Matrix4.identity()
-              ..setEntry(3, 2, 0.001)
-              ..rotateY(isFront ? angle : angle),
-            child: isFront
-                ? _buildFront()
-                : Transform(
-                    alignment: Alignment.center,
-                    transform: Matrix4.identity()..rotateY(math.pi),
-                    child: _buildBack(),
-                  ),
-          );
-        },
-      ),
-    )
+          onTap: _flipCard,
+          child: AnimatedBuilder(
+            animation: _flipAnimation,
+            builder: (context, child) {
+              final angle = _flipAnimation.value * math.pi;
+              final isFront = angle < math.pi / 2;
+              return Transform(
+                alignment: Alignment.center,
+                transform: Matrix4.identity()
+                  ..setEntry(3, 2, 0.001)
+                  ..rotateY(isFront ? angle : angle),
+                child: isFront
+                    ? _buildFront()
+                    : Transform(
+                        alignment: Alignment.center,
+                        transform: Matrix4.identity()..rotateY(math.pi),
+                        child: _buildBack(),
+                      ),
+              );
+            },
+          ),
+        )
         .animate()
         .scale(
           begin: const Offset(0.9, 0.9),
@@ -299,27 +292,27 @@ class _FlashcardScreenState extends State<FlashcardScreen>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             GestureDetector(
-              onTap: () => _speak(word['german']!),
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  gradient: AppColors.primaryGradient,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.glowPrimary,
-                      blurRadius: 20,
-                      spreadRadius: -2,
+                  onTap: () => _speak(word['german']!),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: AppColors.primaryGradient,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.glowPrimary,
+                          blurRadius: 20,
+                          spreadRadius: -2,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.volume_up_rounded,
-                  color: Colors.white,
-                  size: 32,
-                ),
-              ),
-            )
+                    child: const Icon(
+                      Icons.volume_up_rounded,
+                      color: Colors.white,
+                      size: 32,
+                    ),
+                  ),
+                )
                 .animate(
                   onPlay: (controller) => controller.repeat(reverse: true),
                 )
@@ -428,7 +421,10 @@ class _FlashcardScreenState extends State<FlashcardScreen>
             GestureDetector(
               onTap: () => _speak(word['german']!),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   gradient: AppColors.warningGradient,
                   borderRadius: BorderRadius.circular(20),
@@ -503,10 +499,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
           ),
         ],
       ),
-    )
-        .animate()
-        .fadeIn(duration: 400.ms, delay: 300.ms)
-        .slideY(begin: 0.3);
+    ).animate().fadeIn(duration: 400.ms, delay: 300.ms).slideY(begin: 0.3);
   }
 
   Widget _buildDifficultyButton({

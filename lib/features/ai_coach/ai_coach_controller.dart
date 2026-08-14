@@ -71,12 +71,11 @@ class AiCoachController extends ChangeNotifier {
         level: _currentLevel,
       );
 
-      // Update XP
-      if (response.xpEarned != null) {
-        _todayXp += response.xpEarned!;
-        _totalXp += response.xpEarned!;
-        await AuthService.instance.addXp(response.xpEarned!);
-      }
+       // XP is awarded server-side. Local tracking is display-only.
+       if (response.xpEarned != null && response.xpEarned! > 0) {
+         _todayXp += response.xpEarned!;
+         _totalXp += response.xpEarned!;
+       }
 
       _isLoading = false;
       notifyListeners();
@@ -111,10 +110,7 @@ class AiCoachController extends ChangeNotifier {
 
   List<Map<String, dynamic>> getMistakeStats() {
     final stats = _repository.getMistakeStats();
-    return stats.entries.map((e) => {
-      'type': e.key,
-      'count': e.value,
-    }).toList();
+    return stats.entries.map((e) => {'type': e.key, 'count': e.value}).toList();
   }
 
   String getGreeting() {

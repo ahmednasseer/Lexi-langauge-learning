@@ -23,21 +23,25 @@ class ProgressBar extends StatelessWidget {
     this.showPercentage = false,
   });
 
-  const ProgressBar.linear({super.key, required this.value, this.label, this.showPercentage = true})
-      : height = 8,
-        backgroundColor = null,
-        valueColor = null,
-        gradient = AppColors.primaryGradient,
-        borderRadius = const BorderRadius.all(Radius.circular(4));
+  const ProgressBar.linear({
+    super.key,
+    required this.value,
+    this.label,
+    this.showPercentage = true,
+  }) : height = 8,
+       backgroundColor = null,
+       valueColor = null,
+       gradient = AppColors.primaryGradient,
+       borderRadius = const BorderRadius.all(Radius.circular(4));
 
   const ProgressBar.circular({super.key, required this.value})
-      : height = 8,
-        backgroundColor = null,
-        valueColor = AppColors.primary,
-        gradient = null,
-        borderRadius = null,
-        label = null,
-        showPercentage = false;
+    : height = 8,
+      backgroundColor = null,
+      valueColor = AppColors.primary,
+      gradient = null,
+      borderRadius = null,
+      label = null,
+      showPercentage = false;
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +57,23 @@ class ProgressBar extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                if (label != null) Text(label!, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
-                if (showPercentage) Text('${(value * 100).toInt()}%', style: TextStyle(fontSize: 12, color: effectiveColor, fontWeight: FontWeight.w600)),
+                if (label != null)
+                  Text(
+                    label!,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                if (showPercentage)
+                  Text(
+                    '${(value * 100).toInt()}%',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: effectiveColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
               ],
             ),
           ),
@@ -64,8 +83,11 @@ class ProgressBar extends StatelessWidget {
             height: height,
             child: LinearProgressIndicator(
               value: value.clamp(0.0, 1.0),
-              backgroundColor: backgroundColor ?? effectiveColor.withValues(alpha: 0.1),
-              valueColor: gradient != null ? AlwaysStoppedAnimation(gradient!.colors.first) : AlwaysStoppedAnimation(effectiveColor),
+              backgroundColor:
+                  backgroundColor ?? effectiveColor.withValues(alpha: 0.1),
+              valueColor: gradient != null
+                  ? AlwaysStoppedAnimation(gradient!.colors.first)
+                  : AlwaysStoppedAnimation(effectiveColor),
             ),
           ),
         ),

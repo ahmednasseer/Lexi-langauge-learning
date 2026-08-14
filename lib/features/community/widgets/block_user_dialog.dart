@@ -22,7 +22,10 @@ class BlockUserDialog extends StatelessWidget {
           const SizedBox(width: 8),
           Text(
             'Block User',
-            style: GoogleFonts.poppins(fontWeight: FontWeight.bold, color: Colors.white),
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
         ],
       ),
@@ -64,7 +67,10 @@ class BlockUserDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text('Cancel', style: TextStyle(color: Colors.white.withValues(alpha: 0.7))),
+          child: Text(
+            'Cancel',
+            style: TextStyle(color: Colors.white.withValues(alpha: 0.7)),
+          ),
         ),
         ElevatedButton(
           onPressed: () {
@@ -73,7 +79,9 @@ class BlockUserDialog extends StatelessWidget {
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.red,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
           child: const Text('Block', style: TextStyle(color: Colors.white)),
         ),
@@ -87,7 +95,10 @@ class BlockUserDialog extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('• ', style: TextStyle(color: Colors.white.withValues(alpha: 0.7))),
+          Text(
+            '• ',
+            style: TextStyle(color: Colors.white.withValues(alpha: 0.7)),
+          ),
           Expanded(
             child: Text(
               text,

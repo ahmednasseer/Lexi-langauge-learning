@@ -28,11 +28,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     this.logger.error(`${request.method} ${request.url} ${status}`, exception instanceof Error ? exception.stack : '');
 
+    const isProduction = process.env.NODE_ENV === 'production';
     response.status(status).json({
       statusCode: status,
       message,
       timestamp: new Date().toISOString(),
       path: request.url,
+      ...(isProduction ? {} : { stack: exception instanceof Error ? exception.stack : undefined }),
     });
   }
 }

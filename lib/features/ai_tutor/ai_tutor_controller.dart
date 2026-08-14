@@ -23,7 +23,10 @@ class AiTutorController extends ChangeNotifier {
     }
   }
 
-  Future<void> sendMessage(String learningLanguage, String nativeLanguage) async {
+  Future<void> sendMessage(
+    String learningLanguage,
+    String nativeLanguage,
+  ) async {
     final text = _messageController.text.trim();
     if (text.isEmpty) return;
 

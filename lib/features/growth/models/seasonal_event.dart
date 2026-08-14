@@ -1,15 +1,6 @@
-enum SeasonalEventType {
-  challenge,
-  marathon,
-  competition,
-  celebration,
-}
+enum SeasonalEventType { challenge, marathon, competition, celebration }
 
-enum SeasonalEventStatus {
-  upcoming,
-  active,
-  ended,
-}
+enum SeasonalEventStatus { upcoming, active, ended }
 
 extension SeasonalEventTypeExtension on SeasonalEventType {
   String get displayName {
@@ -56,7 +47,8 @@ class SeasonalEvent {
   });
 
   int get durationDays => endDate.difference(startDate).inDays;
-  int get daysRemaining => endDate.difference(DateTime.now()).inDays.clamp(0, durationDays);
+  int get daysRemaining =>
+      endDate.difference(DateTime.now()).inDays.clamp(0, durationDays);
   bool get isActive => status == SeasonalEventStatus.active;
   bool get canJoin => status != SeasonalEventStatus.ended && !isJoined;
 
@@ -123,11 +115,16 @@ class SeasonalEvent {
       (s) => s.name == json['status'],
       orElse: () => SeasonalEventStatus.upcoming,
     ),
-    startDate: DateTime.parse(json['startDate'] ?? DateTime.now().toIso8601String()),
-    endDate: DateTime.parse(json['endDate'] ?? DateTime.now().add(const Duration(days: 30)).toIso8601String()),
-    goals: (json['goals'] as List?)
-        ?.map((g) => EventGoal.fromJson(g))
-        .toList() ?? [],
+    startDate: DateTime.parse(
+      json['startDate'] ?? DateTime.now().toIso8601String(),
+    ),
+    endDate: DateTime.parse(
+      json['endDate'] ??
+          DateTime.now().add(const Duration(days: 30)).toIso8601String(),
+    ),
+    goals:
+        (json['goals'] as List?)?.map((g) => EventGoal.fromJson(g)).toList() ??
+        [],
     reward: EventReward.fromJson(json['reward'] ?? {}),
     participantsCount: json['participantsCount'] ?? 0,
     isJoined: json['isJoined'] ?? false,
@@ -198,7 +195,8 @@ class EventGoal {
     required this.unit,
   });
 
-  double get progress => targetValue > 0 ? (currentValue / targetValue).clamp(0.0, 1.0) : 0.0;
+  double get progress =>
+      targetValue > 0 ? (currentValue / targetValue).clamp(0.0, 1.0) : 0.0;
   bool get isCompleted => currentValue >= targetValue;
 
   EventGoal copyWith({

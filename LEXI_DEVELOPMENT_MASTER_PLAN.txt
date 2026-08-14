@@ -1,3 +1,10 @@
+﻿===============================================================================
+                            HISTORICAL REFERENCE
+===============================================================================
+Status: SUPERSEDED — DO NOT USE AS CURRENT STATE REFERENCE
+Current State Audit: See LEXI_CURRENT_STATE_AUDIT.md
+===============================================================================
+
 ================================================================================
               LEXI DEVELOPMENT MASTER PLAN
 ================================================================================
@@ -11,338 +18,338 @@ SECTION 1: DEPENDENCY TREES
 ================================================================================
 
 TREE: Authentication
-├── Firebase Initialization
-├── Authentication Service
-├── User Model
-├── Session Manager
-├── Login
-├── Register
-├── Forgot Password
-├── Logout
-└── Delete Account
+â”œâ”€â”€ Firebase Initialization
+â”œâ”€â”€ Authentication Service
+â”œâ”€â”€ User Model
+â”œâ”€â”€ Session Manager
+â”œâ”€â”€ Login
+â”œâ”€â”€ Register
+â”œâ”€â”€ Forgot Password
+â”œâ”€â”€ Logout
+â””â”€â”€ Delete Account
 
 TREE: Profile
-├── Authentication (dependency)
-├── User Profile Model
-├── Profile Service
-├── View Profile
-├── Edit Profile
-├── Image Picker
-├── Image Cropper
-├── Avatar Upload
-├── Username Change
-├── Email Change
-├── Password Change
-├── Privacy Settings
-├── Block User
-└── Delete Account
+â”œâ”€â”€ Authentication (dependency)
+â”œâ”€â”€ User Profile Model
+â”œâ”€â”€ Profile Service
+â”œâ”€â”€ View Profile
+â”œâ”€â”€ Edit Profile
+â”œâ”€â”€ Image Picker
+â”œâ”€â”€ Image Cropper
+â”œâ”€â”€ Avatar Upload
+â”œâ”€â”€ Username Change
+â”œâ”€â”€ Email Change
+â”œâ”€â”€ Password Change
+â”œâ”€â”€ Privacy Settings
+â”œâ”€â”€ Block User
+â””â”€â”€ Delete Account
 
 TREE: Learning
-├── Authentication (dependency)
-├── Lessons Service
-├── Lesson Model
-├── View Lessons
-├── Lesson Detail
-├── Quiz Engine
-├── Lesson Completion
-├── Progress Tracking
-├── XP System
-├── Level System
-├── Certificate Generation
-├── Bookmark System
-└── Notes System
+â”œâ”€â”€ Authentication (dependency)
+â”œâ”€â”€ Lessons Service
+â”œâ”€â”€ Lesson Model
+â”œâ”€â”€ View Lessons
+â”œâ”€â”€ Lesson Detail
+â”œâ”€â”€ Quiz Engine
+â”œâ”€â”€ Lesson Completion
+â”œâ”€â”€ Progress Tracking
+â”œâ”€â”€ XP System
+â”œâ”€â”€ Level System
+â”œâ”€â”€ Certificate Generation
+â”œâ”€â”€ Bookmark System
+â””â”€â”€ Notes System
 
 TREE: Store
-├── Authentication (dependency)
-├── Currency Model
-├── Wallet Service
-├── Store Service
-├── Purchase Flow
-├── Inventory Service
-├── Equip System
-├── Avatar Shop
-├── Frame Shop
-├── Background Shop
-└── Transaction History
+â”œâ”€â”€ Authentication (dependency)
+â”œâ”€â”€ Currency Model
+â”œâ”€â”€ Wallet Service
+â”œâ”€â”€ Store Service
+â”œâ”€â”€ Purchase Flow
+â”œâ”€â”€ Inventory Service
+â”œâ”€â”€ Equip System
+â”œâ”€â”€ Avatar Shop
+â”œâ”€â”€ Frame Shop
+â”œâ”€â”€ Background Shop
+â””â”€â”€ Transaction History
 
 TREE: Social
-├── Authentication (dependency)
-├── Profile (dependency)
-├── Community Service
-├── Post Model
-├── Post Creation
-├── Like System
-├── Comment System
-├── Friend Service
-├── Friend Request
-├── Message Service
-├── Message Model
-├── Real-time Updates
-├── Report System
-└── Block System
+â”œâ”€â”€ Authentication (dependency)
+â”œâ”€â”€ Profile (dependency)
+â”œâ”€â”€ Community Service
+â”œâ”€â”€ Post Model
+â”œâ”€â”€ Post Creation
+â”œâ”€â”€ Like System
+â”œâ”€â”€ Comment System
+â”œâ”€â”€ Friend Service
+â”œâ”€â”€ Friend Request
+â”œâ”€â”€ Message Service
+â”œâ”€â”€ Message Model
+â”œâ”€â”€ Real-time Updates
+â”œâ”€â”€ Report System
+â””â”€â”€ Block System
 
 TREE: AI
-├── Authentication (dependency)
-├── OpenAI Service
-├── Chat Model
-├── Chat Interface
-├── AI Response Generation
-├── Conversation Context
-├── Grammar Correction
-├── Writing Correction
-└── Personalized Learning
+â”œâ”€â”€ Authentication (dependency)
+â”œâ”€â”€ OpenAI Service
+â”œâ”€â”€ Chat Model
+â”œâ”€â”€ Chat Interface
+â”œâ”€â”€ AI Response Generation
+â”œâ”€â”€ Conversation Context
+â”œâ”€â”€ Grammar Correction
+â”œâ”€â”€ Writing Correction
+â””â”€â”€ Personalized Learning
 
 TREE: Live
-├── Authentication (dependency)
-├── Agora Service
-├── Room Model
-├── Room Creation
-├── Room Joining
-├── Video Stream
-├── Audio Stream
-├── Room Chat
-├── Screen Share
-├── Room Controls
-├── Room Recording
-└── Room Scheduling
+â”œâ”€â”€ Authentication (dependency)
+â”œâ”€â”€ Agora Service
+â”œâ”€â”€ Room Model
+â”œâ”€â”€ Room Creation
+â”œâ”€â”€ Room Joining
+â”œâ”€â”€ Video Stream
+â”œâ”€â”€ Audio Stream
+â”œâ”€â”€ Room Chat
+â”œâ”€â”€ Screen Share
+â”œâ”€â”€ Room Controls
+â”œâ”€â”€ Room Recording
+â””â”€â”€ Room Scheduling
 
 TREE: Gamification
-├── Authentication (dependency)
-├── Learning (dependency)
-├── Achievement Model
-├── Achievement Service
-├── Achievement Tracking
-├── Achievement Unlocking
-├── Daily Mission Service
-├── Daily Mission Generation
-├── Daily Mission Completion
-├── Streak Service
-├── Streak Calculation
-├── Streak Rewards
-├── Leaderboard Service
-└── Leaderboard Ranking
+â”œâ”€â”€ Authentication (dependency)
+â”œâ”€â”€ Learning (dependency)
+â”œâ”€â”€ Achievement Model
+â”œâ”€â”€ Achievement Service
+â”œâ”€â”€ Achievement Tracking
+â”œâ”€â”€ Achievement Unlocking
+â”œâ”€â”€ Daily Mission Service
+â”œâ”€â”€ Daily Mission Generation
+â”œâ”€â”€ Daily Mission Completion
+â”œâ”€â”€ Streak Service
+â”œâ”€â”€ Streak Calculation
+â”œâ”€â”€ Streak Rewards
+â”œâ”€â”€ Leaderboard Service
+â””â”€â”€ Leaderboard Ranking
 
 TREE: Notifications
-├── Authentication (dependency)
-├── FCM Service
-├── Notification Model
-├── Notification Service
-├── Push Notification
-├── Notification Center
-├── Notification Settings
-└── Deep Linking
+â”œâ”€â”€ Authentication (dependency)
+â”œâ”€â”€ FCM Service
+â”œâ”€â”€ Notification Model
+â”œâ”€â”€ Notification Service
+â”œâ”€â”€ Push Notification
+â”œâ”€â”€ Notification Center
+â”œâ”€â”€ Notification Settings
+â””â”€â”€ Deep Linking
 
 TREE: Settings
-├── Authentication (dependency)
-├── Profile (dependency)
-├── Settings Service
-├── Language Settings
-├── Theme Settings
-├── Font Settings
-├── Notification Settings
-├── Privacy Settings
-├── Data Settings
-├── Download Settings
-├── Help & Support
-├── About
-├── Terms of Service
-├── Privacy Policy
-├── Rate App
-├── Share App
-├── Logout
-└── Delete Account
+â”œâ”€â”€ Authentication (dependency)
+â”œâ”€â”€ Profile (dependency)
+â”œâ”€â”€ Settings Service
+â”œâ”€â”€ Language Settings
+â”œâ”€â”€ Theme Settings
+â”œâ”€â”€ Font Settings
+â”œâ”€â”€ Notification Settings
+â”œâ”€â”€ Privacy Settings
+â”œâ”€â”€ Data Settings
+â”œâ”€â”€ Download Settings
+â”œâ”€â”€ Help & Support
+â”œâ”€â”€ About
+â”œâ”€â”€ Terms of Service
+â”œâ”€â”€ Privacy Policy
+â”œâ”€â”€ Rate App
+â”œâ”€â”€ Share App
+â”œâ”€â”€ Logout
+â””â”€â”€ Delete Account
 
 TREE: Premium
-├── Authentication (dependency)
-├── Subscription Model
-├── Subscription Service
-├── Subscription Plans
-├── Subscription Purchase
-├── Subscription Cancellation
-├── Subscription Restoration
-├── Premium Features
-├── Billing History
-└── Payment Methods
+â”œâ”€â”€ Authentication (dependency)
+â”œâ”€â”€ Subscription Model
+â”œâ”€â”€ Subscription Service
+â”œâ”€â”€ Subscription Plans
+â”œâ”€â”€ Subscription Purchase
+â”œâ”€â”€ Subscription Cancellation
+â”œâ”€â”€ Subscription Restoration
+â”œâ”€â”€ Premium Features
+â”œâ”€â”€ Billing History
+â””â”€â”€ Payment Methods
 
 TREE: Payment
-├── Authentication (dependency)
-├── Stripe Service
-├── Payment Model
-├── Payment Method Management
-├── Payment Processing
-├── Refund Processing
-├── Receipt Generation
-├── Invoice Generation
-└── Tax Calculation
+â”œâ”€â”€ Authentication (dependency)
+â”œâ”€â”€ Stripe Service
+â”œâ”€â”€ Payment Model
+â”œâ”€â”€ Payment Method Management
+â”œâ”€â”€ Payment Processing
+â”œâ”€â”€ Refund Processing
+â”œâ”€â”€ Receipt Generation
+â”œâ”€â”€ Invoice Generation
+â””â”€â”€ Tax Calculation
 
 ================================================================================
 SECTION 2: EPICS
 ================================================================================
 
 EPIC 1: FOUNDATION
-├── Firebase Setup
-├── State Management
-├── Repository Pattern
-├── Network Layer
-└── Error Handling
+â”œâ”€â”€ Firebase Setup
+â”œâ”€â”€ State Management
+â”œâ”€â”€ Repository Pattern
+â”œâ”€â”€ Network Layer
+â””â”€â”€ Error Handling
 
 EPIC 2: AUTHENTICATION
-├── Firebase Auth
-├── Email/Password Auth
-├── Social Auth
-├── Guest Mode
-└── Session Management
+â”œâ”€â”€ Firebase Auth
+â”œâ”€â”€ Email/Password Auth
+â”œâ”€â”€ Social Auth
+â”œâ”€â”€ Guest Mode
+â””â”€â”€ Session Management
 
 EPIC 3: PROFILE
-├── Profile Display
-├── Profile Edit
-├── Avatar System
-├── Privacy Settings
-└── Account Management
+â”œâ”€â”€ Profile Display
+â”œâ”€â”€ Profile Edit
+â”œâ”€â”€ Avatar System
+â”œâ”€â”€ Privacy Settings
+â””â”€â”€ Account Management
 
 EPIC 4: LEARNING CORE
-├── Lessons System
-├── Quiz System
-├── Progress Tracking
-├── XP & Levels
-├── Certificates
-├── Bookmarks & Notes
-└── Flashcards
+â”œâ”€â”€ Lessons System
+â”œâ”€â”€ Quiz System
+â”œâ”€â”€ Progress Tracking
+â”œâ”€â”€ XP & Levels
+â”œâ”€â”€ Certificates
+â”œâ”€â”€ Bookmarks & Notes
+â””â”€â”€ Flashcards
 
 EPIC 5: MEDIA SYSTEM
-├── Audio System
-├── Speaking System
-├── Pronunciation System
-└── Media Storage
+â”œâ”€â”€ Audio System
+â”œâ”€â”€ Speaking System
+â”œâ”€â”€ Pronunciation System
+â””â”€â”€ Media Storage
 
 EPIC 6: GAMIFICATION
-├── Achievements
-├── Daily Missions
-├── Streaks
-├── Quests
-└── Leaderboard
+â”œâ”€â”€ Achievements
+â”œâ”€â”€ Daily Missions
+â”œâ”€â”€ Streaks
+â”œâ”€â”€ Quests
+â””â”€â”€ Leaderboard
 
 EPIC 7: MONETIZATION
-├── Currency System
-├── Wallet
-├── Store
-├── Inventory
-├── Premium
-└── Payment
+â”œâ”€â”€ Currency System
+â”œâ”€â”€ Wallet
+â”œâ”€â”€ Store
+â”œâ”€â”€ Inventory
+â”œâ”€â”€ Premium
+â””â”€â”€ Payment
 
 EPIC 8: SOCIAL
-├── Community Feed
-├── Friends
-├── Messaging
-├── Content Moderation
-└── Live Learning
+â”œâ”€â”€ Community Feed
+â”œâ”€â”€ Friends
+â”œâ”€â”€ Messaging
+â”œâ”€â”€ Content Moderation
+â””â”€â”€ Live Learning
 
 EPIC 9: AI FEATURES
-├── AI Tutor
-├── AI Coach
-└── Personalization
+â”œâ”€â”€ AI Tutor
+â”œâ”€â”€ AI Coach
+â””â”€â”€ Personalization
 
 EPIC 10: NOTIFICATIONS
-├── FCM Setup
-├── Push Notifications
-├── Notification Center
-└── Notification Settings
+â”œâ”€â”€ FCM Setup
+â”œâ”€â”€ Push Notifications
+â”œâ”€â”€ Notification Center
+â””â”€â”€ Notification Settings
 
 EPIC 11: SETTINGS
-├── App Settings
-├── User Preferences
-├── Help & Support
-└── Legal
+â”œâ”€â”€ App Settings
+â”œâ”€â”€ User Preferences
+â”œâ”€â”€ Help & Support
+â””â”€â”€ Legal
 
 EPIC 12: PRODUCTION
-├── Performance
-├── Security
-├── Analytics
-├── Testing
-└── Launch
+â”œâ”€â”€ Performance
+â”œâ”€â”€ Security
+â”œâ”€â”€ Analytics
+â”œâ”€â”€ Testing
+â””â”€â”€ Launch
 
 ================================================================================
 SECTION 3: KANBAN BOARD
 ================================================================================
 
 BACKLOG (All tasks start here):
-├── TASK-001 through TASK-150
+â”œâ”€â”€ TASK-001 through TASK-150
 
 READY (Dependencies met):
-├── None initially
+â”œâ”€â”€ None initially
 
 IN PROGRESS:
-├── None initially
+â”œâ”€â”€ None initially
 
 TESTING:
-├── None initially
+â”œâ”€â”€ None initially
 
 DONE:
-├── None initially
+â”œâ”€â”€ None initially
 
 ================================================================================
 SECTION 4: MILESTONES
 ================================================================================
 
 MILESTONE 1: Foundation Complete
-├── TASK-001: Initialize Firebase Project
-├── TASK-002: Configure Firestore Rules
-├── TASK-003: Configure Storage Rules
-├── TASK-004: State Management Setup
-├── TASK-005: Repository Pattern
-├── TASK-006: Network Layer
-├── TASK-007: Error Handling
-└── TASK-008: Logger
+â”œâ”€â”€ TASK-001: Initialize Firebase Project
+â”œâ”€â”€ TASK-002: Configure Firestore Rules
+â”œâ”€â”€ TASK-003: Configure Storage Rules
+â”œâ”€â”€ TASK-004: State Management Setup
+â”œâ”€â”€ TASK-005: Repository Pattern
+â”œâ”€â”€ TASK-006: Network Layer
+â”œâ”€â”€ TASK-007: Error Handling
+â””â”€â”€ TASK-008: Logger
 
 MILESTONE 2: Authentication Complete
-├── TASK-009: Firebase Auth Service
-├── TASK-010: Email/Password Registration
-├── TASK-011: Email/Password Login
-├── TASK-012: Email Verification
-├── TASK-013: Password Reset
-├── TASK-014: Google Sign-In
-├── TASK-015: Apple Sign-In
-├── TASK-016: Guest Mode
-├── TASK-017: Session Manager
-├── TASK-018: Logout
-└── TASK-019: Delete Account
+â”œâ”€â”€ TASK-009: Firebase Auth Service
+â”œâ”€â”€ TASK-010: Email/Password Registration
+â”œâ”€â”€ TASK-011: Email/Password Login
+â”œâ”€â”€ TASK-012: Email Verification
+â”œâ”€â”€ TASK-013: Password Reset
+â”œâ”€â”€ TASK-014: Google Sign-In
+â”œâ”€â”€ TASK-015: Apple Sign-In
+â”œâ”€â”€ TASK-016: Guest Mode
+â”œâ”€â”€ TASK-017: Session Manager
+â”œâ”€â”€ TASK-018: Logout
+â””â”€â”€ TASK-019: Delete Account
 
 MILESTONE 3: Profile Complete
-├── TASK-020: User Model
-├── TASK-021: Profile Service
-├── TASK-022: View Profile
-├── TASK-023: Edit Profile
-├── TASK-024: Image Picker
-├── TASK-025: Image Cropper
-├── TASK-026: Avatar Upload
-├── TASK-027: Change Username
-├── TASK-028: Change Email
-├── TASK-029: Change Password
-├── TASK-030: Privacy Settings
-├── TASK-031: Block User
-└── TASK-032: Report User
+â”œâ”€â”€ TASK-020: User Model
+â”œâ”€â”€ TASK-021: Profile Service
+â”œâ”€â”€ TASK-022: View Profile
+â”œâ”€â”€ TASK-023: Edit Profile
+â”œâ”€â”€ TASK-024: Image Picker
+â”œâ”€â”€ TASK-025: Image Cropper
+â”œâ”€â”€ TASK-026: Avatar Upload
+â”œâ”€â”€ TASK-027: Change Username
+â”œâ”€â”€ TASK-028: Change Email
+â”œâ”€â”€ TASK-029: Change Password
+â”œâ”€â”€ TASK-030: Privacy Settings
+â”œâ”€â”€ TASK-031: Block User
+â””â”€â”€ TASK-032: Report User
 
 MILESTONE 4: Learning Complete
-├── TASK-033: Lesson Model
-├── TASK-034: Lesson Service
-├── TASK-035: View Lessons
-├── TASK-036: Lesson Detail
-├── TASK-037: Quiz Engine
-├── TASK-038: Lesson Completion
-├── TASK-039: Progress Tracking
-├── TASK-040: XP System
-├── TASK-041: Level System
-├── TASK-042: Certificate Generation
-├── TASK-043: Bookmark System
-├── TASK-044: Notes System
-└── TASK-045: Flashcards
+â”œâ”€â”€ TASK-033: Lesson Model
+â”œâ”€â”€ TASK-034: Lesson Service
+â”œâ”€â”€ TASK-035: View Lessons
+â”œâ”€â”€ TASK-036: Lesson Detail
+â”œâ”€â”€ TASK-037: Quiz Engine
+â”œâ”€â”€ TASK-038: Lesson Completion
+â”œâ”€â”€ TASK-039: Progress Tracking
+â”œâ”€â”€ TASK-040: XP System
+â”œâ”€â”€ TASK-041: Level System
+â”œâ”€â”€ TASK-042: Certificate Generation
+â”œâ”€â”€ TASK-043: Bookmark System
+â”œâ”€â”€ TASK-044: Notes System
+â””â”€â”€ TASK-045: Flashcards
 
 MILESTONE 5: Production Ready
-├── All previous milestones complete
-├── Performance optimization
-├── Security audit
-├── QA testing
-└── Launch preparation
+â”œâ”€â”€ All previous milestones complete
+â”œâ”€â”€ Performance optimization
+â”œâ”€â”€ Security audit
+â”œâ”€â”€ QA testing
+â””â”€â”€ Launch preparation
 
 ================================================================================
 SECTION 5: MASTER DEVELOPMENT QUEUE
@@ -527,3 +534,4 @@ TASK-150: Premium Badge
 ================================================================================
                     END OF MASTER DEVELOPMENT QUEUE
 ================================================================================
+

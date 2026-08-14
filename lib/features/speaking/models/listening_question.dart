@@ -35,20 +35,23 @@ class ListeningQuestion {
     'xpReward': xpReward,
   };
 
-  factory ListeningQuestion.fromJson(Map<String, dynamic> json) => ListeningQuestion(
-    id: json['id'] ?? '',
-    audioText: json['audioText'] ?? '',
-    audioUrl: json['audioUrl'],
-    question: json['question'] ?? '',
-    options: List<String>.from(json['options'] ?? []),
-    correctIndex: json['correctIndex'] ?? 0,
-    explanation: json['explanation'] ?? '',
-    translation: json['translation'] ?? '',
-    xpReward: json['xpReward'] ?? 20,
-  );
+  factory ListeningQuestion.fromJson(Map<String, dynamic> json) =>
+      ListeningQuestion(
+        id: json['id'] ?? '',
+        audioText: json['audioText'] ?? '',
+        audioUrl: json['audioUrl'],
+        question: json['question'] ?? '',
+        options: List<String>.from(json['options'] ?? []),
+        correctIndex: json['correctIndex'] ?? 0,
+        explanation: json['explanation'] ?? '',
+        translation: json['translation'] ?? '',
+        xpReward: json['xpReward'] ?? 20,
+      );
 
   static List<ListeningQuestion> getQuestionsByLevel(String level) {
-    return _allQuestions.where((q) => _getLevelForQuestion(q.id) == level).toList();
+    return _allQuestions
+        .where((q) => _getLevelForQuestion(q.id) == level)
+        .toList();
   }
 
   static String _getLevelForQuestion(String id) {
@@ -77,7 +80,8 @@ class ListeningQuestion {
       question: 'Was möchte die Person?',
       options: ['Tee', 'Kaffee', 'Wasser', 'Saft'],
       correctIndex: 1,
-      explanation: 'The person says "einen Kaffee bestellen" which means "order a coffee".',
+      explanation:
+          'The person says "einen Kaffee bestellen" which means "order a coffee".',
       translation: 'I would like to order a coffee.',
     ),
 
@@ -86,9 +90,15 @@ class ListeningQuestion {
       id: 'l3',
       audioText: 'Ich habe gestern einen Film im Kino gesehen.',
       question: 'Was hat die Person gestern gemacht?',
-      options: ['Ein Buch gelesen', 'Einen Film gesehen', 'Musik gehört', 'Ein Lied gesungen'],
+      options: [
+        'Ein Buch gelesen',
+        'Einen Film gesehen',
+        'Musik gehört',
+        'Ein Lied gesungen',
+      ],
       correctIndex: 1,
-      explanation: 'The person says "einen Film gesehen" which means "watched a movie".',
+      explanation:
+          'The person says "einen Film gesehen" which means "watched a movie".',
       translation: 'I watched a movie in the cinema yesterday.',
     ),
     const ListeningQuestion(
@@ -97,7 +107,8 @@ class ListeningQuestion {
       question: 'Wann fährt der Zug?',
       options: ['Um sieben Uhr', 'Um acht Uhr', 'Um neun Uhr', 'Um zehn Uhr'],
       correctIndex: 1,
-      explanation: 'The person says "um acht Uhr" which means "at eight o\'clock".',
+      explanation:
+          'The person says "um acht Uhr" which means "at eight o\'clock".',
       translation: 'The train departs at eight o\'clock.',
     ),
 
@@ -106,18 +117,30 @@ class ListeningQuestion {
       id: 'l5',
       audioText: 'Obwohl es sehr kalt ist, gehe ich jeden Tag zur Arbeit.',
       question: 'Was macht die Person trotz des Wetters?',
-      options: ['Bleibt sie zu Hause', 'Geht sie zur Arbeit', 'Fährt sie in den Urlaub', 'Trinkt sie einen Kaffee'],
+      options: [
+        'Bleibt sie zu Hause',
+        'Geht sie zur Arbeit',
+        'Fährt sie in den Urlaub',
+        'Trinkt sie einen Kaffee',
+      ],
       correctIndex: 1,
-      explanation: 'The person says "gehe ich jeden Tag zur Arbeit" which means "I go to work every day".',
+      explanation:
+          'The person says "gehe ich jeden Tag zur Arbeit" which means "I go to work every day".',
       translation: 'Although it is very cold, I go to work every day.',
     ),
     const ListeningQuestion(
       id: 'l6',
       audioText: 'Ich hätte gerne einen Tisch für zwei Personen, bitte.',
       question: 'Was möchte die Person?',
-      options: ['Einen Tisch für vier', 'Einen Tisch für zwei', 'Einen Stuhl', 'Ein Menü'],
+      options: [
+        'Einen Tisch für vier',
+        'Einen Tisch für zwei',
+        'Einen Stuhl',
+        'Ein Menü',
+      ],
       correctIndex: 1,
-      explanation: 'The person says "einen Tisch für zwei Personen" which means "a table for two people".',
+      explanation:
+          'The person says "einen Tisch für zwei Personen" which means "a table for two people".',
       translation: 'I would like a table for two people, please.',
     ),
 
@@ -126,9 +149,15 @@ class ListeningQuestion {
       id: 'l7',
       audioText: 'Die Situation hat sich grundlegend verändert.',
       question: 'Was ist passiert?',
-      options: ['Nichts hat sich geändert', 'Die Situation hat sich verändert', 'Die Person ist umgezogen', 'Das Wetter hat sich verändert'],
+      options: [
+        'Nichts hat sich geändert',
+        'Die Situation hat sich verändert',
+        'Die Person ist umgezogen',
+        'Das Wetter hat sich verändert',
+      ],
       correctIndex: 1,
-      explanation: 'The person says "Die Situation hat sich grundlegend verändert" which means "The situation has fundamentally changed".',
+      explanation:
+          'The person says "Die Situation hat sich grundlegend verändert" which means "The situation has fundamentally changed".',
       translation: 'The situation has fundamentally changed.',
     ),
     const ListeningQuestion(
@@ -137,30 +166,47 @@ class ListeningQuestion {
       question: 'Was hat die Person erreicht?',
       options: ['Nichts', 'Ihr Ziel', 'Einen Preis', 'Einen Freund'],
       correctIndex: 1,
-      explanation: 'The person says "habe ich mein Ziel erreicht" which means "I achieved my goal".',
+      explanation:
+          'The person says "habe ich mein Ziel erreicht" which means "I achieved my goal".',
       translation: 'Despite the difficulties, I achieved my goal.',
     ),
 
     // C1 Questions
     const ListeningQuestion(
       id: 'l9',
-      audioText: 'Die Forschungsergebnisse deuten darauf hin, dass die Klimaveränderungen schneller voranschreiten als erwartet.',
+      audioText:
+          'Die Forschungsergebnisse deuten darauf hin, dass die Klimaveränderungen schneller voranschreiten als erwartet.',
       question: 'Was sagen die Forschungsergebnisse?',
-      options: ['Das Klima verbessert sich', 'Die Klimaveränderungen sind langsamer', 'Die Klimaveränderungen sind schneller', 'Das Klima ist stabil'],
+      options: [
+        'Das Klima verbessert sich',
+        'Die Klimaveränderungen sind langsamer',
+        'Die Klimaveränderungen sind schneller',
+        'Das Klima ist stabil',
+      ],
       correctIndex: 2,
-      explanation: 'The research results suggest that climate changes are progressing faster than expected.',
-      translation: 'The research results suggest that climate changes are progressing faster than expected.',
+      explanation:
+          'The research results suggest that climate changes are progressing faster than expected.',
+      translation:
+          'The research results suggest that climate changes are progressing faster than expected.',
     ),
 
     // C2 Questions
     const ListeningQuestion(
       id: 'l10',
-      audioText: 'Es ist unbestreitbar, dass die digitale Transformation die Art und Weise, wie wir kommunizieren, revolutioniert hat.',
+      audioText:
+          'Es ist unbestreitbar, dass die digitale Transformation die Art und Weise, wie wir kommunizieren, revolutioniert hat.',
       question: 'Was hat die digitale Transformation gemacht?',
-      options: ['Die Kommunikation verschlechtert', 'Die Kommunikation revolutioniert', 'Die Kommunikation verlangsamt', 'Die Kommunikation beendet'],
+      options: [
+        'Die Kommunikation verschlechtert',
+        'Die Kommunikation revolutioniert',
+        'Die Kommunikation verlangsamt',
+        'Die Kommunikation beendet',
+      ],
       correctIndex: 1,
-      explanation: 'The digital transformation has revolutionized the way we communicate.',
-      translation: 'It is undeniable that the digital transformation has revolutionized the way we communicate.',
+      explanation:
+          'The digital transformation has revolutionized the way we communicate.',
+      translation:
+          'It is undeniable that the digital transformation has revolutionized the way we communicate.',
     ),
   ];
 }

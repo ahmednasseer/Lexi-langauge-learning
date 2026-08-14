@@ -13,7 +13,8 @@ class PronunciationResult {
     this.suggestions,
   });
 
-  factory PronunciationResult.empty() => const PronunciationResult(word: '', score: 0);
+  factory PronunciationResult.empty() =>
+      const PronunciationResult(word: '', score: 0);
 
   String get grade {
     if (score >= 90) return 'Excellent';

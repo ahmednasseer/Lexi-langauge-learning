@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/live_room.dart';
 import '../models/language_partner.dart';
@@ -22,14 +23,17 @@ class LiveLearningService {
         return list.map((j) => LiveRoom.fromJson(j)).toList();
       }
     } catch (e) {
-      // Fall through to default
+      debugPrint('Failed to load cached rooms: $e');
     }
-    return _getDemoRooms();
+    return [];
   }
 
   Future<void> saveRooms(List<LiveRoom> rooms) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_roomsKey, jsonEncode(rooms.map((r) => r.toJson()).toList()));
+    await prefs.setString(
+      _roomsKey,
+      jsonEncode(rooms.map((r) => r.toJson()).toList()),
+    );
   }
 
   Future<LiveRoom> createRoom({
@@ -63,7 +67,11 @@ class LiveLearningService {
     return room;
   }
 
-  Future<LiveRoom?> joinRoom(String roomId, String userId, String userName) async {
+  Future<LiveRoom?> joinRoom(
+    String roomId,
+    String userId,
+    String userName,
+  ) async {
     final rooms = await getRooms();
     final roomIndex = rooms.indexWhere((r) => r.id == roomId);
 
@@ -113,14 +121,17 @@ class LiveLearningService {
         return list.map((j) => LanguagePartner.fromJson(j)).toList();
       }
     } catch (e) {
-      // Fall through to default
+      debugPrint('Failed to load cached partners: $e');
     }
-    return _getDemoPartners();
+    return [];
   }
 
   Future<void> savePartners(List<LanguagePartner> partners) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_partnersKey, jsonEncode(partners.map((p) => p.toJson()).toList()));
+    await prefs.setString(
+      _partnersKey,
+      jsonEncode(partners.map((p) => p.toJson()).toList()),
+    );
   }
 
   Future<PartnerMatch?> findMatch({
@@ -132,12 +143,15 @@ class LiveLearningService {
   }) async {
     final partners = await getPartners();
 
-    final availablePartners = partners.where((p) =>
-        p.userId != userId &&
-        p.status == PartnerStatus.pending &&
-        p.nativeLanguage == learningLanguage &&
-        p.learningLanguage == nativeLanguage
-    ).toList();
+    final availablePartners = partners
+        .where(
+          (p) =>
+              p.userId != userId &&
+              p.status == PartnerStatus.pending &&
+              p.nativeLanguage == learningLanguage &&
+              p.learningLanguage == nativeLanguage,
+        )
+        .toList();
 
     if (availablePartners.isEmpty) return null;
 
@@ -190,17 +204,24 @@ class LiveLearningService {
         return list.map((j) => LearningGroup.fromJson(j)).toList();
       }
     } catch (e) {
-      // Fall through to default
+      debugPrint('Failed to load cached groups: $e');
     }
-    return _getDemoGroups();
+    return [];
   }
 
   Future<void> saveGroups(List<LearningGroup> groups) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_groupsKey, jsonEncode(groups.map((g) => g.toJson()).toList()));
+    await prefs.setString(
+      _groupsKey,
+      jsonEncode(groups.map((g) => g.toJson()).toList()),
+    );
   }
 
-  Future<LearningGroup?> joinGroup(String groupId, String userId, String userName) async {
+  Future<LearningGroup?> joinGroup(
+    String groupId,
+    String userId,
+    String userName,
+  ) async {
     final groups = await getGroups();
     final groupIndex = groups.indexWhere((g) => g.id == groupId);
 
@@ -215,9 +236,7 @@ class LiveLearningService {
       joinedAt: DateTime.now(),
     );
 
-    final updatedGroup = group.copyWith(
-      members: [...group.members, member],
-    );
+    final updatedGroup = group.copyWith(members: [...group.members, member]);
 
     groups[groupIndex] = updatedGroup;
     await saveGroups(groups);
@@ -233,17 +252,24 @@ class LiveLearningService {
         return list.map((j) => CommunityEvent.fromJson(j)).toList();
       }
     } catch (e) {
-      // Fall through to default
+      debugPrint('Failed to load cached events: $e');
     }
-    return _getDemoEvents();
+    return [];
   }
 
   Future<void> saveEvents(List<CommunityEvent> events) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_eventsKey, jsonEncode(events.map((e) => e.toJson()).toList()));
+    await prefs.setString(
+      _eventsKey,
+      jsonEncode(events.map((e) => e.toJson()).toList()),
+    );
   }
 
-  Future<CommunityEvent?> joinEvent(String eventId, String userId, String userName) async {
+  Future<CommunityEvent?> joinEvent(
+    String eventId,
+    String userId,
+    String userName,
+  ) async {
     final events = await getEvents();
     final eventIndex = events.indexWhere((e) => e.id == eventId);
 
@@ -286,7 +312,10 @@ class LiveLearningService {
     messages.insert(0, message);
 
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_voiceMessagesKey, jsonEncode(messages.map((m) => m.toJson()).toList()));
+    await prefs.setString(
+      _voiceMessagesKey,
+      jsonEncode(messages.map((m) => m.toJson()).toList()),
+    );
   }
 
   List<LiveRoom> _getDemoRooms() {
@@ -302,9 +331,22 @@ class LiveLearningService {
         status: RoomStatus.waiting,
         maxParticipants: 10,
         participants: [
-          RoomParticipant(userId: 'user_1', userName: 'Ahmed', joinedAt: DateTime.now(), isHost: false),
-          RoomParticipant(userId: 'user_2', userName: 'Lena', joinedAt: DateTime.now()),
-          RoomParticipant(userId: 'user_3', userName: 'Marco', joinedAt: DateTime.now()),
+          RoomParticipant(
+            userId: 'user_1',
+            userName: 'Ahmed',
+            joinedAt: DateTime.now(),
+            isHost: false,
+          ),
+          RoomParticipant(
+            userId: 'user_2',
+            userName: 'Lena',
+            joinedAt: DateTime.now(),
+          ),
+          RoomParticipant(
+            userId: 'user_3',
+            userName: 'Marco',
+            joinedAt: DateTime.now(),
+          ),
         ],
         createdAt: DateTime.now().subtract(const Duration(minutes: 5)),
         durationMinutes: 30,
@@ -320,11 +362,14 @@ class LiveLearningService {
         level: RoomLevel.a2,
         status: RoomStatus.active,
         maxParticipants: 8,
-        participants: List.generate(5, (i) => RoomParticipant(
-          userId: 'user_${i + 10}',
-          userName: ['Anna', 'Ben', 'Clara', 'David', 'Eva'][i],
-          joinedAt: DateTime.now().subtract(const Duration(minutes: 10)),
-        )),
+        participants: List.generate(
+          5,
+          (i) => RoomParticipant(
+            userId: 'user_${i + 10}',
+            userName: ['Anna', 'Ben', 'Clara', 'David', 'Eva'][i],
+            joinedAt: DateTime.now().subtract(const Duration(minutes: 10)),
+          ),
+        ),
         createdAt: DateTime.now().subtract(const Duration(minutes: 30)),
         startedAt: DateTime.now().subtract(const Duration(minutes: 15)),
         durationMinutes: 45,
@@ -388,17 +433,21 @@ class LiveLearningService {
       LearningGroup(
         id: 'group_1',
         name: 'B1 Speaking Club',
-        description: 'Practice speaking German at B1 level with fellow learners',
+        description:
+            'Practice speaking German at B1 level with fellow learners',
         level: 'B1',
         category: 'Speaking',
         status: GroupStatus.active,
         maxMembers: 50,
-        members: List.generate(25, (i) => GroupMember(
-          userId: 'user_${i + 1}',
-          userName: 'Member ${i + 1}',
-          joinedAt: DateTime.now().subtract(Duration(days: i)),
-          attendanceCount: 10 - (i % 5),
-        )),
+        members: List.generate(
+          25,
+          (i) => GroupMember(
+            userId: 'user_${i + 1}',
+            userName: 'Member ${i + 1}',
+            joinedAt: DateTime.now().subtract(Duration(days: i)),
+            attendanceCount: 10 - (i % 5),
+          ),
+        ),
         createdAt: DateTime.now().subtract(const Duration(days: 30)),
         frequency: SessionFrequency.weekly,
         teacherName: 'Lexi AI',
@@ -414,12 +463,15 @@ class LiveLearningService {
         category: 'General',
         status: GroupStatus.active,
         maxMembers: 30,
-        members: List.generate(18, (i) => GroupMember(
-          userId: 'user_${i + 100}',
-          userName: 'Beginner ${i + 1}',
-          joinedAt: DateTime.now().subtract(Duration(days: i * 2)),
-          attendanceCount: 8 - (i % 3),
-        )),
+        members: List.generate(
+          18,
+          (i) => GroupMember(
+            userId: 'user_${i + 100}',
+            userName: 'Beginner ${i + 1}',
+            joinedAt: DateTime.now().subtract(Duration(days: i * 2)),
+            attendanceCount: 8 - (i % 3),
+          ),
+        ),
         createdAt: DateTime.now().subtract(const Duration(days: 60)),
         frequency: SessionFrequency.weekly,
         teacherName: 'Lexi AI',
@@ -435,17 +487,21 @@ class LiveLearningService {
       CommunityEvent(
         id: 'event_1',
         title: '30 Days German Challenge',
-        description: 'Practice German every day for 30 days and earn exclusive rewards!',
+        description:
+            'Practice German every day for 30 days and earn exclusive rewards!',
         type: EventType.challenge,
         status: EventStatus.upcoming,
         startDate: DateTime.now().add(const Duration(days: 1)),
         endDate: DateTime.now().add(const Duration(days: 31)),
         maxParticipants: 10000,
-        participants: List.generate(500, (i) => EventParticipant(
-          userId: 'user_${i + 1}',
-          userName: 'Participant ${i + 1}',
-          joinedAt: DateTime.now().subtract(Duration(hours: i)),
-        )),
+        participants: List.generate(
+          500,
+          (i) => EventParticipant(
+            userId: 'user_${i + 1}',
+            userName: 'Participant ${i + 1}',
+            joinedAt: DateTime.now().subtract(Duration(hours: i)),
+          ),
+        ),
         reward: const EventReward(
           xp: 5000,
           gems: 500,
@@ -469,11 +525,14 @@ class LiveLearningService {
         startDate: DateTime.now().subtract(const Duration(hours: 2)),
         endDate: DateTime.now().add(const Duration(hours: 1)),
         maxParticipants: 50,
-        participants: List.generate(35, (i) => EventParticipant(
-          userId: 'user_${i + 500}',
-          userName: 'Learner ${i + 1}',
-          joinedAt: DateTime.now().subtract(const Duration(hours: 1)),
-        )),
+        participants: List.generate(
+          35,
+          (i) => EventParticipant(
+            userId: 'user_${i + 500}',
+            userName: 'Learner ${i + 1}',
+            joinedAt: DateTime.now().subtract(const Duration(hours: 1)),
+          ),
+        ),
         reward: const EventReward(
           xp: 500,
           gems: 50,

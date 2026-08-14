@@ -14,10 +14,7 @@ class LoadingState extends StatelessWidget {
           const CircularProgressIndicator(),
           if (message != null) ...[
             const SizedBox(height: 16),
-            Text(
-              message!,
-              style: const TextStyle(color: AppColors.textHint),
-            ),
+            Text(message!, style: const TextStyle(color: AppColors.textHint)),
           ],
         ],
       ),
@@ -38,7 +35,11 @@ class ErrorState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline, size: 64, color: AppColors.textHint.withValues(alpha: 0.5)),
+            Icon(
+              Icons.error_outline,
+              size: 64,
+              color: AppColors.textHint.withValues(alpha: 0.5),
+            ),
             const SizedBox(height: 16),
             Text(
               message,
@@ -87,7 +88,11 @@ class EmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 64, color: AppColors.textHint.withValues(alpha: 0.4)),
+            Icon(
+              icon,
+              size: 64,
+              color: AppColors.textHint.withValues(alpha: 0.4),
+            ),
             const SizedBox(height: 16),
             Text(
               title,
@@ -102,7 +107,9 @@ class EmptyState extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 subtitle!,
-                style: TextStyle(color: AppColors.textHint.withValues(alpha: 0.8)),
+                style: TextStyle(
+                  color: AppColors.textHint.withValues(alpha: 0.8),
+                ),
                 textAlign: TextAlign.center,
               ),
             ],

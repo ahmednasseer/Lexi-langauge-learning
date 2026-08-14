@@ -88,7 +88,9 @@ class Lesson {
       vocabulary: (json['vocabulary'] as List? ?? [])
           .map((v) => VocabularyItem.fromJson(v))
           .toList(),
-      grammar: json['grammar'] != null ? Grammar.fromJson(json['grammar']) : null,
+      grammar: json['grammar'] != null
+          ? Grammar.fromJson(json['grammar'])
+          : null,
       phrases: (json['phrases'] as List? ?? [])
           .map((p) => Phrase.fromJson(p))
           .toList(),
@@ -101,11 +103,7 @@ class VocabularyItem {
   final String arabic;
   final String? example;
 
-  VocabularyItem({
-    required this.german,
-    required this.arabic,
-    this.example,
-  });
+  VocabularyItem({required this.german, required this.arabic, this.example});
 
   factory VocabularyItem.fromJson(Map<String, dynamic> json) {
     return VocabularyItem(
@@ -116,10 +114,10 @@ class VocabularyItem {
   }
 
   Map<String, dynamic> toJson() => {
-        'german': german,
-        'arabic': arabic,
-        if (example != null) 'example': example,
-      };
+    'german': german,
+    'arabic': arabic,
+    if (example != null) 'example': example,
+  };
 }
 
 class Grammar {
@@ -174,15 +172,9 @@ class Phrase {
   final String german;
   final String arabic;
 
-  Phrase({
-    required this.german,
-    required this.arabic,
-  });
+  Phrase({required this.german, required this.arabic});
 
   factory Phrase.fromJson(Map<String, dynamic> json) {
-    return Phrase(
-      german: json['german'] ?? '',
-      arabic: json['arabic'] ?? '',
-    );
+    return Phrase(german: json['german'] ?? '', arabic: json['arabic'] ?? '');
   }
 }

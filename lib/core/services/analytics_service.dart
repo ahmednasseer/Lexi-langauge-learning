@@ -21,15 +21,20 @@ class AnalyticsService {
   }
 
   void logEvent(String name, {Map<String, dynamic>? parameters}) {
-    _localEvents.add(AnalyticsEvent(
-      name: name,
-      parameters: parameters ?? {},
-      timestamp: DateTime.now(),
-    ));
+    _localEvents.add(
+      AnalyticsEvent(
+        name: name,
+        parameters: parameters ?? {},
+        timestamp: DateTime.now(),
+      ),
+    );
 
     if (_initialized) {
       try {
-        _analytics.logEvent(name: name, parameters: parameters?.cast<String, Object>());
+        _analytics.logEvent(
+          name: name,
+          parameters: parameters?.cast<String, Object>(),
+        );
       } catch (e) {
         debugPrint('Analytics log error: $e');
       }
@@ -39,27 +44,37 @@ class AnalyticsService {
   void logLogin({required String method}) {
     logEvent('login', parameters: {'method': method});
     if (_initialized) {
-      try {
+       try {
         _analytics.logLogin(loginMethod: method);
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('Analytics logLogin failed: $e');
+      }
     }
   }
 
   void logScreenView(String screenName) {
     logEvent('screen_view', parameters: {'screen': screenName});
     if (_initialized) {
-      try {
+       try {
         _analytics.logScreenView(screenName: screenName);
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('Analytics logScreenView failed: $e');
+      }
     }
   }
 
   void logLessonStart(String lessonId, {String? level}) {
-    logEvent('lesson_start', parameters: {'lessonId': lessonId, 'level': level});
+    logEvent(
+      'lesson_start',
+      parameters: {'lessonId': lessonId, 'level': level},
+    );
   }
 
   void logLessonComplete(String lessonId, double score, {int? xpEarned}) {
-    logEvent('lesson_complete', parameters: {'lessonId': lessonId, 'score': score, 'xpEarned': xpEarned});
+    logEvent(
+      'lesson_complete',
+      parameters: {'lessonId': lessonId, 'score': score, 'xpEarned': xpEarned},
+    );
   }
 
   void logXpEarned(int amount, {String? source}) {
@@ -75,7 +90,10 @@ class AnalyticsService {
   }
 
   void logPremiumPurchase(String planId, double amount) {
-    logEvent('premium_purchase', parameters: {'plan': planId, 'amount': amount});
+    logEvent(
+      'premium_purchase',
+      parameters: {'plan': planId, 'amount': amount},
+    );
   }
 
   void logStreakUpdate(int streak) {
@@ -83,11 +101,17 @@ class AnalyticsService {
   }
 
   void logFlashcardReview(String wordId, bool correct) {
-    logEvent('flashcard_review', parameters: {'wordId': wordId, 'correct': correct});
+    logEvent(
+      'flashcard_review',
+      parameters: {'wordId': wordId, 'correct': correct},
+    );
   }
 
   void logSpeakingPractice({String? scenarioId, double? score}) {
-    logEvent('speaking_practice', parameters: {'scenarioId': scenarioId, 'score': score});
+    logEvent(
+      'speaking_practice',
+      parameters: {'scenarioId': scenarioId, 'score': score},
+    );
   }
 
   void logCommunityPost(String postId) {
@@ -103,18 +127,26 @@ class AnalyticsService {
   }
 
   void logSearch({required String query, int? resultCount}) {
-    logEvent('search', parameters: {'query': query, 'resultCount': resultCount});
+    logEvent(
+      'search',
+      parameters: {'query': query, 'resultCount': resultCount},
+    );
   }
 
   void logError(String error, {String? screen, String? action}) {
-    logEvent('error', parameters: {'error': error, 'screen': screen, 'action': action});
+    logEvent(
+      'error',
+      parameters: {'error': error, 'screen': screen, 'action': action},
+    );
   }
 
   void setUserId(String? userId) {
     if (_initialized) {
-      try {
+       try {
         _analytics.setUserId(id: userId);
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('Analytics setUserId failed: $e');
+      }
     }
   }
 
@@ -122,7 +154,9 @@ class AnalyticsService {
     if (_initialized) {
       try {
         _analytics.setUserProperty(name: name, value: value);
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('Analytics setUserProperty failed: $e');
+      }
     }
   }
 

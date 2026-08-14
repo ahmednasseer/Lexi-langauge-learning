@@ -16,10 +16,7 @@ class ChallengesTab extends StatelessWidget {
         children: [
           const Text(
             'Active Challenges',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
 
@@ -41,10 +38,7 @@ class ChallengesTab extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Colors.purple.shade50,
-            Colors.pink.shade50,
-          ],
+          colors: [Colors.purple.shade50, Colors.pink.shade50],
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.purple.shade200),
@@ -60,15 +54,15 @@ class ChallengesTab extends StatelessWidget {
                 height: 50,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [
-                      Colors.purple.shade400,
-                      Colors.pink.shade400,
-                    ],
+                    colors: [Colors.purple.shade400, Colors.pink.shade400],
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Center(
-                  child: Text(challenge.icon, style: const TextStyle(fontSize: 28)),
+                  child: Text(
+                    challenge.icon,
+                    style: const TextStyle(fontSize: 28),
+                  ),
                 ),
               ),
 
@@ -126,10 +120,7 @@ class ChallengesTab extends StatelessWidget {
               const SizedBox(width: 4),
               Text(
                 '${challenge.participantCount} participants',
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Colors.grey.shade500,
-                ),
+                style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
               ),
               const Spacer(),
               Container(
@@ -141,7 +132,9 @@ class ChallengesTab extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  challenge.duration == ChallengeDuration.weekly ? '7 Days' : '30 Days',
+                  challenge.duration == ChallengeDuration.weekly
+                      ? '7 Days'
+                      : '30 Days',
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
@@ -157,7 +150,10 @@ class ChallengesTab extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.purple,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -184,10 +180,7 @@ class ChallengesTab extends StatelessWidget {
           const SizedBox(width: 4),
           Text(
             text,
-            style: const TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
           ),
         ],
       ),

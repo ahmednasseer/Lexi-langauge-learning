@@ -10,7 +10,8 @@ class NotificationService {
   NotificationService._();
 
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
-  final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _localNotifications =
+      FlutterLocalNotificationsPlugin();
   bool _initialized = false;
   String? _fcmToken;
 
@@ -29,14 +30,22 @@ class NotificationService {
   }
 
   Future<void> _initLocalNotifications() async {
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
       requestSoundPermission: false,
     );
-    const settings = InitializationSettings(android: androidSettings, iOS: iosSettings);
-    await _localNotifications.initialize(settings, onDidReceiveNotificationResponse: _onNotificationTap);
+    const settings = InitializationSettings(
+      android: androidSettings,
+      iOS: iosSettings,
+    );
+    await _localNotifications.initialize(
+      settings,
+      onDidReceiveNotificationResponse: _onNotificationTap,
+    );
   }
 
   Future<void> _initFCM() async {
@@ -49,11 +58,9 @@ class NotificationService {
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       _fcmToken = await _fcm.getToken();
-      debugPrint('FCM Token: $_fcmToken');
 
       _fcm.onTokenRefresh.listen((token) {
         _fcmToken = token;
-        debugPrint('FCM Token refreshed: $token');
       });
     }
 
@@ -93,7 +100,10 @@ class NotificationService {
       icon: '@mipmap/ic_launcher',
     );
     const iosDetails = DarwinNotificationDetails();
-    const details = NotificationDetails(android: androidDetails, iOS: iosDetails);
+    const details = NotificationDetails(
+      android: androidDetails,
+      iOS: iosDetails,
+    );
     await _localNotifications.show(0, title, body, details, payload: payload);
   }
 

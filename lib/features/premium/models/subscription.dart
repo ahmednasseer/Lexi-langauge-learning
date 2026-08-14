@@ -1,4 +1,5 @@
 enum SubscriptionType { free, premiumMonthly, premiumYearly }
+
 enum SubscriptionStatus { active, cancelled, expired, trial }
 
 class Plan {
@@ -139,7 +140,8 @@ class UserSubscription {
     this.paymentId,
   });
 
-  bool get isActive => status == SubscriptionStatus.active && endDate.isAfter(DateTime.now());
+  bool get isActive =>
+      status == SubscriptionStatus.active && endDate.isAfter(DateTime.now());
   bool get isPremium => isActive && plan.id != 'free';
   int get daysRemaining => endDate.difference(DateTime.now()).inDays;
 
@@ -154,14 +156,18 @@ class UserSubscription {
     'paymentId': paymentId,
   };
 
-  factory UserSubscription.fromJson(Map<String, dynamic> json) => UserSubscription(
-    id: json['id'] ?? '',
-    userId: json['userId'] ?? '',
-    plan: Plan.fromJson(json['plan'] ?? {}),
-    status: SubscriptionStatus.values.firstWhere((e) => e.name == json['status'], orElse: () => SubscriptionStatus.expired),
-    startDate: DateTime.parse(json['startDate']),
-    endDate: DateTime.parse(json['endDate']),
-    autoRenew: json['autoRenew'] ?? true,
-    paymentId: json['paymentId'],
-  );
+  factory UserSubscription.fromJson(Map<String, dynamic> json) =>
+      UserSubscription(
+        id: json['id'] ?? '',
+        userId: json['userId'] ?? '',
+        plan: Plan.fromJson(json['plan'] ?? {}),
+        status: SubscriptionStatus.values.firstWhere(
+          (e) => e.name == json['status'],
+          orElse: () => SubscriptionStatus.expired,
+        ),
+        startDate: DateTime.parse(json['startDate']),
+        endDate: DateTime.parse(json['endDate']),
+        autoRenew: json['autoRenew'] ?? true,
+        paymentId: json['paymentId'],
+      );
 }

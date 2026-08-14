@@ -48,10 +48,7 @@ class _DailyMissionsScreenState extends State<DailyMissionsScreen> {
         ),
         title: const Text(
           'Daily Missions',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         actions: [
@@ -116,10 +113,7 @@ class _DailyMissionsScreenState extends State<DailyMissionsScreen> {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Colors.blue.shade400,
-            Colors.purple.shade400,
-          ],
+          colors: [Colors.blue.shade400, Colors.purple.shade400],
         ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
@@ -132,10 +126,7 @@ class _DailyMissionsScreenState extends State<DailyMissionsScreen> {
       ),
       child: Column(
         children: [
-          const Text(
-            '🎯',
-            style: TextStyle(fontSize: 48),
-          ),
+          const Text('🎯', style: TextStyle(fontSize: 48)),
           const SizedBox(height: 16),
           const Text(
             'Today\'s Missions',
@@ -256,10 +247,7 @@ class _DailyMissionsScreenState extends State<DailyMissionsScreen> {
         ),
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.white54,
-          ),
+          style: const TextStyle(fontSize: 12, color: Colors.white54),
         ),
       ],
     );
@@ -299,10 +287,7 @@ class _DailyMissionsScreenState extends State<DailyMissionsScreen> {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Colors.amber.shade400,
-            Colors.orange.shade400,
-          ],
+          colors: [Colors.amber.shade400, Colors.orange.shade400],
         ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
@@ -315,10 +300,7 @@ class _DailyMissionsScreenState extends State<DailyMissionsScreen> {
       ),
       child: Column(
         children: [
-          const Text(
-            '🎉',
-            style: TextStyle(fontSize: 48),
-          ),
+          const Text('🎉', style: TextStyle(fontSize: 48)),
           const SizedBox(height: 16),
           const Text(
             'All Missions Complete!',
@@ -331,10 +313,7 @@ class _DailyMissionsScreenState extends State<DailyMissionsScreen> {
           const SizedBox(height: 8),
           const Text(
             'Claim your daily bonus!',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.white,
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.white),
           ),
           const SizedBox(height: 16),
           ElevatedButton(
@@ -349,10 +328,7 @@ class _DailyMissionsScreenState extends State<DailyMissionsScreen> {
             ),
             child: const Text(
               'Claim Bonus (+100 XP, +20 Gems)',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
         ],

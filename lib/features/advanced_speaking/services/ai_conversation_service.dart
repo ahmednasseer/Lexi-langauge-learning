@@ -4,10 +4,16 @@ import '../models/ai_character.dart';
 class AIConversationService {
   final Map<ConversationScenario, List<Map<String, String>>> _scenarios = {
     ConversationScenario.restaurant: [
-      {'role': 'ai', 'content': 'Willkommen im Restaurant! Was möchten Sie bestellen?'},
+      {
+        'role': 'ai',
+        'content': 'Willkommen im Restaurant! Was möchten Sie bestellen?',
+      },
       {'role': 'ai', 'content': 'Haben Sie bereits eine Bestellung im Sinn?'},
       {'role': 'ai', 'content': 'Möchten Sie die Speisekarte sehen?'},
-      {'role': 'ai', 'content': 'Haben Sie Allergien, die wir beachten sollten?'},
+      {
+        'role': 'ai',
+        'content': 'Haben Sie Allergien, die wir beachten sollten?',
+      },
       {'role': 'ai', 'content': 'Ist der Tisch in Ordnung für Sie?'},
     ],
     ConversationScenario.travel: [
@@ -28,7 +34,10 @@ class AIConversationService {
       {'role': 'ai', 'content': 'Guten Tag! Wie kann ich Ihnen helfen?'},
       {'role': 'ai', 'content': 'Für welches Fach interessieren Sie sich?'},
       {'role': 'ai', 'content': 'Haben Sie Fragen zum Stundenplan?'},
-      {'role': 'ai', 'content': 'Möchten Sie sich für eine Vorlesung anmelden?'},
+      {
+        'role': 'ai',
+        'content': 'Möchten Sie sich für eine Vorlesung anmelden?',
+      },
       {'role': 'ai', 'content': 'Kann ich Ihnen bei der Bibliothek helfen?'},
     ],
     ConversationScenario.doctorVisit: [
@@ -53,7 +62,11 @@ class AIConversationService {
       {'role': 'ai', 'content': 'Haben Sie Lust auf eine Pause?'},
     ],
     ConversationScenario.goetheSpeakingExam: [
-      {'role': 'ai', 'content': 'Willkommen zur mündlichen Prüfung. Bitte stellen Sie sich vor.'},
+      {
+        'role': 'ai',
+        'content':
+            'Willkommen zur mündlichen Prüfung. Bitte stellen Sie sich vor.',
+      },
       {'role': 'ai', 'content': 'Beschreiben Sie das Bild.'},
       {'role': 'ai', 'content': 'Erzählen Sie mir von Ihrem Alltag.'},
       {'role': 'ai', 'content': 'Was würden Sie in dieser Situation tun?'},
@@ -61,7 +74,10 @@ class AIConversationService {
     ],
   };
 
-  String getInitialMessage(ConversationScenario scenario, AICharacter character) {
+  String getInitialMessage(
+    ConversationScenario scenario,
+    AICharacter character,
+  ) {
     final scenarioMessages = _scenarios[scenario];
     if (scenarioMessages != null && scenarioMessages.isNotEmpty) {
       return scenarioMessages[0]['content']!;
@@ -86,7 +102,10 @@ class AIConversationService {
     return nextMessage['content']!;
   }
 
-  String _generateClosingMessage(ConversationScenario scenario, ConversationContext context) {
+  String _generateClosingMessage(
+    ConversationScenario scenario,
+    ConversationContext context,
+  ) {
     switch (scenario) {
       case ConversationScenario.restaurant:
         return 'Vielen Dank für Ihren Besuch! Ich wünsche Ihnen einen schönen Abend.';
@@ -114,13 +133,19 @@ class AIConversationService {
     final spokenLower = spokenText.toLowerCase().trim();
     final targetLower = targetText.toLowerCase().trim();
 
-    final pronunciation = _calculatePronunciationScore(spokenLower, targetLower);
+    final pronunciation = _calculatePronunciationScore(
+      spokenLower,
+      targetLower,
+    );
     final accent = _calculateAccentScore(spokenLower, targetLower);
     final speakingSpeed = _calculateSpeakingSpeed(spokenText);
     final pauses = _calculatePauseScore(spokenText);
     final confidence = _calculateConfidence(spokenText);
     final wordAccuracy = _calculateWordAccuracy(spokenLower, targetLower);
-    final mispronouncedWords = _findMispronouncedWords(spokenLower, targetLower);
+    final mispronouncedWords = _findMispronouncedWords(
+      spokenLower,
+      targetLower,
+    );
     final suggestions = _generatePronunciationSuggestions(
       pronunciation: pronunciation,
       accent: accent,
@@ -204,7 +229,8 @@ class AIConversationService {
   double _calculatePauseScore(String spoken) {
     if (spoken.isEmpty) return 0.0;
 
-    final hasPunctuation = spoken.contains('.') || spoken.contains('!') || spoken.contains('?');
+    final hasPunctuation =
+        spoken.contains('.') || spoken.contains('!') || spoken.contains('?');
     final hasComma = spoken.contains(',');
 
     double score = 70;
@@ -218,7 +244,8 @@ class AIConversationService {
     if (spoken.isEmpty) return 0.0;
 
     final words = spoken.split(' ').length;
-    final hasPunctuation = spoken.contains('.') || spoken.contains('!') || spoken.contains('?');
+    final hasPunctuation =
+        spoken.contains('.') || spoken.contains('!') || spoken.contains('?');
 
     double score = 60;
     if (words > 3) score += 10;
@@ -303,18 +330,26 @@ class AIConversationService {
   }
 
   ConversationFeedback generateFeedback(ConversationSession session) {
-    final userMessages = session.messages.where((m) => m.role == 'user').toList();
+    final userMessages = session.messages
+        .where((m) => m.role == 'user')
+        .toList();
     final corrections = userMessages.where((m) => m.isCorrected).toList();
-    final perfect = userMessages.where((m) =>
-        m.pronunciationAnalysis != null &&
-        m.pronunciationAnalysis!.overallScore >= 90).toList();
+    final perfect = userMessages
+        .where(
+          (m) =>
+              m.pronunciationAnalysis != null &&
+              m.pronunciationAnalysis!.overallScore >= 90,
+        )
+        .toList();
 
     final whatYouDidWell = <String>[];
     final mistakes = <String>[];
     final betterSentences = <String>[];
 
     if (perfect.isNotEmpty) {
-      whatYouDidWell.add('Excellent pronunciation in ${perfect.length} sentences!');
+      whatYouDidWell.add(
+        'Excellent pronunciation in ${perfect.length} sentences!',
+      );
     }
     if (userMessages.length >= 5) {
       whatYouDidWell.add('Great conversation flow and engagement!');
@@ -332,16 +367,21 @@ class AIConversationService {
 
     final averageScore = userMessages.isNotEmpty
         ? userMessages
-            .where((m) => m.pronunciationAnalysis != null)
-            .fold(0.0, (sum, m) => sum + m.pronunciationAnalysis!.overallScore) /
-            userMessages.where((m) => m.pronunciationAnalysis != null).length
+                  .where((m) => m.pronunciationAnalysis != null)
+                  .fold(
+                    0.0,
+                    (sum, m) => sum + m.pronunciationAnalysis!.overallScore,
+                  ) /
+              userMessages.where((m) => m.pronunciationAnalysis != null).length
         : 0.0;
 
     final xp = (averageScore * 2).toInt().clamp(10, 200);
 
     return ConversationFeedback(
       sessionId: session.id,
-      whatYouDidWell: whatYouDidWell.isEmpty ? ['Good effort!'] : whatYouDidWell,
+      whatYouDidWell: whatYouDidWell.isEmpty
+          ? ['Good effort!']
+          : whatYouDidWell,
       mistakes: mistakes,
       betterSentences: betterSentences,
       nextPractice: _generateNextPractice(session.scenario, averageScore),
