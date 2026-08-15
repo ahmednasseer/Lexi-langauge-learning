@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lexi/core/services/api_service.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../models/user_model.dart';
@@ -99,15 +100,27 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<User?> signInAsGuest() async {
     try {
-      final credential = await _firebaseAuth.signInAnonymously();
-      final firebaseUser = credential.user;
-      if (firebaseUser == null) return null;
-
-      final user = UserModel(id: firebaseUser.uid, name: 'Guest', email: '');
-      await saveUser(user);
-      return user;
-    } on fb.FirebaseAuthException catch (e) {
-      throw _mapFirebaseAuthError(e);
+      final api = ApiService();
+      final result = await api.loginAsGuest();
+      if (result.isSuccess && result.data != null) {
+        final data = result.data!;
+        final token = data['accessToken'] as String?;
+        if (token != null) {
+          api.setToken(token);
+        }
+        final userData = data['user'] as Map<String, dynamic>? ?? data;
+        final user = UserModel(
+          id: userData['id'] ?? 'guest_${DateTime.now().millisecondsSinceEpoch}',
+          name: userData['name'] ?? 'Guest User',
+          email: userData['email'] ?? '',
+          photoUrl: userData['photoUrl'] ?? userData['avatar'],
+        );
+        await saveUser(user);
+        return user;
+      }
+      return null;
+    } on Exception catch (e) {
+      throw Exception('Guest login failed: $e');
     }
   }
 

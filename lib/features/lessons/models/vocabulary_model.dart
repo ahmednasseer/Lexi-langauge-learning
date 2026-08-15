@@ -21,11 +21,19 @@ class VocabularyItem {
     'audioUrl': audioUrl,
   };
 
-  factory VocabularyItem.fromJson(Map<String, dynamic> json) => VocabularyItem(
-    word: json['word'] ?? '',
-    translation: json['translation'] ?? '',
-    example: json['example'] ?? '',
-    exampleTranslation: json['exampleTranslation'] ?? '',
-    audioUrl: json['audioUrl'],
-  );
+  factory VocabularyItem.fromJson(Map<String, dynamic> json) {
+    final word = json['word'] ?? json['german'] ?? '';
+    final translation = json['translation'] ?? json['arabic'] ?? '';
+    final example = json['example'] ?? '';
+    final exampleTranslation = json['exampleTranslation'] ?? '';
+    final audioUrl = json['audioUrl'] as String?;
+    
+    return VocabularyItem(
+      word: word,
+      translation: translation,
+      example: example,
+      exampleTranslation: exampleTranslation,
+      audioUrl: audioUrl,
+    );
+  }
 }

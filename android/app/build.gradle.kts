@@ -87,4 +87,19 @@ gradle.projectsEvaluated {
             println("[LEXi] .aab not found at ${aabFile.absolutePath}")
         }
     }
+
+    tasks.findByName("assembleDebug")?.doLast {
+        val srcApk = file("${layout.buildDirectory.get()}/outputs/apk/debug/app-debug.apk")
+        val destDir = file("../../build/app/outputs/apk/debug")
+        if (srcApk.exists()) {
+            destDir.mkdirs()
+            project.copy {
+                from(srcApk)
+                into(destDir)
+            }
+            println("[LEXi] Copied debug .apk to ${destDir.absolutePath}")
+        } else {
+            println("[LEXi] debug .apk not found at ${srcApk.absolutePath}")
+        }
+    }
 }

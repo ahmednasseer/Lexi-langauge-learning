@@ -82,34 +82,37 @@ class LessonModel {
     'progress': progress,
   };
 
-  factory LessonModel.fromJson(Map<String, dynamic> json) => LessonModel(
-    id: json['id'] ?? '',
-    title: json['title'] ?? '',
-    description: json['description'] ?? '',
-    level: json['level'] ?? 'A1',
-    language: json['language'] ?? json['languageId'] ?? '',
-    category: json['category'] ?? '',
-    vocabulary:
-        (json['vocabulary'] as List?)
-            ?.map((v) => VocabularyItem.fromJson(Map<String, dynamic>.from(v)))
-            .toList() ??
-        [],
-    grammar:
-        (json['grammar'] as List?)
-            ?.map((g) => GrammarRule.fromJson(Map<String, dynamic>.from(g)))
-            .toList() ??
-        [],
-    quiz:
-        (json['quiz'] as List?)
-            ?.map((q) => QuizQuestion.fromJson(Map<String, dynamic>.from(q)))
-            .toList() ??
-        [],
-    xpReward: json['xpReward'] ?? 50,
-    orderIndex: json['orderIndex'] ?? 0,
-    isLocked: json['isLocked'] ?? false,
-    isCompleted: json['isCompleted'] ?? false,
-    progress: (json['progress'] ?? 0.0).toDouble(),
-  );
+  factory LessonModel.fromJson(Map<String, dynamic> json) {
+    final vocabularyList = json['vocabulary'] as List? ??
+        (json['content']?['body'] as List?) ??
+        [];
+    
+    final grammarList = json['grammar'] as List? ?? [];
+    final quizList = json['quiz'] as List? ?? [];
+    
+    return LessonModel(
+      id: json['id'] ?? '',
+      title: json['title'] ?? '',
+      description: json['description'] ?? '',
+      level: json['level'] ?? 'A1',
+      language: json['language'] ?? json['languageId'] ?? '',
+      category: json['category'] ?? '',
+      vocabulary: vocabularyList
+          .map((v) => VocabularyItem.fromJson(Map<String, dynamic>.from(v)))
+          .toList(),
+      grammar: grammarList
+          .map((g) => GrammarRule.fromJson(Map<String, dynamic>.from(g)))
+          .toList(),
+      quiz: quizList
+          .map((q) => QuizQuestion.fromJson(Map<String, dynamic>.from(q)))
+          .toList(),
+      xpReward: json['xpReward'] ?? 50,
+      orderIndex: json['orderIndex'] ?? 0,
+      isLocked: json['isLocked'] ?? false,
+      isCompleted: json['isCompleted'] ?? false,
+      progress: (json['progress'] ?? 0.0).toDouble(),
+    );
+  }
 }
 
 class GrammarRule {

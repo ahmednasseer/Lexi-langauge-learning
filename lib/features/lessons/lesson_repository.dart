@@ -1,3 +1,4 @@
+import 'dart:developer';
 import '../../core/services/api_service.dart';
 import 'models/lesson_model.dart';
 
@@ -14,12 +15,25 @@ class LessonRepository {
       level: level,
       category: category,
     );
+    log('LESSONS API RESULT: isSuccess=${result.isSuccess}, data=${result.data?.length ?? 0}, error=${result.error}');
     if (result.isSuccess && result.data != null) {
-      return result.data!
-          .map((e) => LessonModel.fromJson(e as Map<String, dynamic>))
-          .toList();
+      try {
+        final lessons = result.data!
+            .map((e) {
+              log('PARSING ITEM: ${e.runtimeType}');
+              return LessonModel.fromJson(e as Map<String, dynamic>);
+            })
+            .toList();
+        log('LESSONS PARSED: ${lessons.length} lessons');
+        return lessons;
+      } catch (e, stack) {
+        log('LESSONS PARSE ERROR: $e\n$stack');
+        throw Exception('Failed to parse lessons: $e');
+      }
     }
-    throw Exception(result.error ?? 'Failed to load lessons');
+    final errorMsg = result.error ?? 'Failed to load lessons';
+    log('LESSONS ERROR: $errorMsg');
+    throw Exception(errorMsg);
   }
 
   Future<List<LessonModel>> getAllLessons(String language) async {

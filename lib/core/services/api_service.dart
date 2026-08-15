@@ -187,7 +187,7 @@ class ApiService {
     return response;
   }
 
-  Map<String, dynamic> _handleResponse(http.Response response) {
+  dynamic _handleResponse(http.Response response) {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       if (response.body.isEmpty) return {};
       return jsonDecode(response.body);
@@ -345,7 +345,10 @@ class ApiService {
 
   Future<ApiResult<Map<String, dynamic>>> loginAsGuest() async {
     try {
+      debugPrint('API POST: $baseUrl/auth/guest');
       final response = await _request('POST', '$baseUrl/auth/guest');
+      debugPrint('API GUEST RESPONSE STATUS: ${response.statusCode}');
+      debugPrint('API GUEST RESPONSE BODY: ${response.body}');
       return ApiResult.success(
         _handleResponse(response),
         statusCode: response.statusCode,
@@ -416,24 +419,31 @@ class ApiService {
     }
   }
 
-   Future<ApiResult<List<dynamic>>> getLessons(
-     String language, {
-     String? level,
-     String? category,
-   }) async {
-     try {
-       var url = '$baseUrl/lessons/$language';
-       final params = <String, String>{};
-       if (level != null) params['level'] = level;
-       if (category != null) params['category'] = category;
-       if (params.isNotEmpty) url += '?${Uri(queryParameters: params).query}';
+    Future<ApiResult<List<dynamic>>> getLessons(
+      String language, {
+      String? level,
+      String? category,
+    }) async {
+      try {
+        var url = '$baseUrl/lessons/$language';
+        final params = <String, String>{};
+        if (level != null) params['level'] = level;
+        if (category != null) params['category'] = category;
+        if (params.isNotEmpty) url += '?${Uri(queryParameters: params).query}';
 
-       final response = await _request('GET', url);
-       final data = _handleResponse(response);
-       return ApiResult.success(
-         data is List ? data : (data['data'] ?? []),
-         statusCode: response.statusCode,
-       );
+        debugPrint('API GET: $url');
+        debugPrint('API HEADERS: $_headers');
+        
+        final response = await _request('GET', url);
+        final data = _handleResponse(response);
+        
+        debugPrint('API RESPONSE STATUS: ${response.statusCode}');
+        debugPrint('API RESPONSE BODY: ${response.body.substring(0, response.body.length > 200 ? 200 : response.body.length)}...');
+        
+        return ApiResult.success(
+          data is List ? data : (data['data'] ?? []),
+          statusCode: response.statusCode,
+        );
      } on ApiException catch (e) {
        return ApiResult.failure(
          e.message,
