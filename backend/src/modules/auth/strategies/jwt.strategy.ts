@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy as PassportBaseStrategy } from 'passport';
+import { Strategy as PassportJwtStrategy } from 'passport-jwt';
 import { ExtractJwt } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { DecodedIdToken } from 'firebase-admin/auth';
@@ -19,7 +19,7 @@ import { PrismaService } from '../../../config/prisma.service';
  * `req.user` always exposes `sub` = the PostgreSQL user id (ServerS).
  */
 @Injectable()
-export class JwtStrategy extends PassportStrategy(PassportBaseStrategy, 'jwt') {
+export class JwtStrategy extends PassportStrategy(PassportJwtStrategy) {
   constructor(
     private firebase: FirebaseService,
     private prisma: PrismaService,
