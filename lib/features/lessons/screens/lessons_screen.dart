@@ -63,7 +63,7 @@ class _LessonsScreenState extends State<LessonsScreen>
     _isOffline = ConnectivityService().isOffline;
 
     try {
-      final lessons = await _repository.getLessons(_level, category, 'German');
+      final lessons = await _repository.getLessons(_level, category, 'de');
       if (!mounted) return;
       setState(() {
         _lessonsByCategory[category] = lessons;
